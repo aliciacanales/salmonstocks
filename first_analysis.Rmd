@@ -1,0 +1,877 @@
+r ---
+title: "Analysis"
+author: "Alicia Canales"
+date: "2023-05-04"
+output: 
+  html_document:
+    code_folding: 'hide'
+---
+
+```{r setup, include=FALSE, message=FALSE, echo=TRUE}
+knitr::opts_chunk$set(echo = TRUE, results=FALSE, message=FALSE)
+# removed "include" to plot figues on the Markdown
+```
+
+```{r}
+library(tidyverse) 
+library(here)
+library(janitor)
+library(readxl)
+library(tsibble)
+library(lubridate)
+library(feasts)
+library(patchwork)
+library(kableExtra)
+library(purrr)
+library(quadprog)
+```
+
+### Importing data **this is only the first page of the excel sheet**
+```{r}
+coho <- readxl::read_xlsx(here('data', 'OC Coho Abundance.xlsx')) %>%
+  clean_names() %>% 
+  distinct()
+```
+
+
+### Figures of each population from 1994-2019
+```{r}
+coho_yr <- coho %>%
+  mutate(date = lubridate::mdy(year)) #Convert to date for tibble, this didn't work tho so we need to revisit this.
+
+coho_ts <- coho_yr %>%
+ as_tsibble(key = NULL, index = year) #Convert to tibble for timeseries, this didn't work tho so we need to revisit this.
+
+pop_alsea <- ggplot(data = coho_ts, aes(x = year, y = alsea)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Alsea") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_beaver <- ggplot(data = coho_ts, aes(x = year, y = beaver)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Beaver") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_coos <- ggplot(data = coho_ts, aes(x = year, y = coos)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Coos") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_coquille <- ggplot(data = coho_ts, aes(x = year, y = coquille)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Coquille") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_floras <- ggplot(data = coho_ts, aes(x = year, y = floras)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Floras") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_lower_umpqua <- ggplot(data = coho_ts, aes(x = year, y = lower_umpqua)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Lower Umpqua") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_middle_umpqua <- ggplot(data = coho_ts, aes(x = year, y = middle_umpqua)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Middle Umpqua") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_necanicum <- ggplot(data = coho_ts, aes(x = year, y = necanicum)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Necanicum") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_nehalem <- ggplot(data = coho_ts, aes(x = year, y = nehalem)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Mehalem") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_nestucca <- ggplot(data = coho_ts, aes(x = year, y = nestucca)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Nestucca") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_north_umpqua <- ggplot(data = coho_ts, aes(x = year, y = north_umpqua)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "North Umpqua") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_salmon <- ggplot(data = coho_ts, aes(x = year, y = salmon)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Salmon") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_siletz <- ggplot(data = coho_ts, aes(x = year, y = siletz)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Siletz") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_siltcoos <- ggplot(data = coho_ts, aes(x = year, y = siltcoos)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Siltcoos") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_siuslaw <- ggplot(data = coho_ts, aes(x = year, y = siuslaw)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Siuslaw") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_sixes <- ggplot(data = coho_ts, aes(x = year, y = sixes)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Sixes") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_south_umpqua <- ggplot(data = coho_ts, aes(x = year, y = south_umpqua)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "South Umpqua") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_tahkenitch <- ggplot(data = coho_ts, aes(x = year, y = tahkenitch)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Tahkenitch") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_tenmile <- ggplot(data = coho_ts, aes(x = year, y = tenmile)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Tenmile") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_tillamook <- ggplot(data = coho_ts, aes(x = year, y = tillamook)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Tillamook") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+pop_yaquina <- ggplot(data = coho_ts, aes(x = year, y = yaquina)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Population Count",
+      title = "Yaquina") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+
+#pop_alsea
+#pop_beaver
+#pop_coos
+#pop_coquille
+#pop_floras
+#pop_lower_umpqua
+#pop_middle_umpqua
+#pop_necanicum
+#pop_nehalem
+#pop_nestucca
+#pop_north_umpqua
+#pop_salmon
+#pop_siletz
+#pop_siltcoos
+#pop_siuslaw
+#pop_sixes
+#pop_south_umpqua
+#pop_tahkenitch
+#pop_tenmile
+#pop_tillamook
+#pop_yaquina
+```
+
+### Panel of figures of Y(it) - Annual population for each independent population
+```{r}
+patchwork::plot_layout(pop_alsea + pop_beaver + pop_coos + pop_coquille)
+
+patchwork::plot_layout(pop_floras + pop_lower_umpqua + pop_middle_umpqua + pop_necanicum)
+
+patchwork::plot_layout(pop_nehalem + pop_nestucca + pop_north_umpqua + pop_salmon)
+
+patchwork::plot_layout(pop_siletz + pop_siltcoos + pop_siuslaw + pop_sixes)
+
+patchwork::plot_layout(pop_south_umpqua + pop_tahkenitch + pop_tenmile + pop_tillamook)
+
+patchwork::plot_layout(pop_yaquina)
+```
+
+
+### Population Mean, Population Variance, and Population SD
+```{r}
+pop_mean <- sapply(coho[2:22], mean)
+pop_variance <- sapply(coho[2:22], var)
+pop_sd <- sapply(coho[2:22], sd)
+
+population_df <- data.frame(pop_mean, pop_variance, pop_sd) #combine data into one data frame
+
+## Plot table
+population_table <- population_df %>% 
+  kable(col.names = c("Population Mean", "Population Variance", "Pop SD")) %>% 
+  kable_styling(bootstrap_options = "striped",
+                position = "left", full_width = FALSE)
+
+population_table
+
+## In case we need to get the variance of a population (instead of a sample):
+# var_pop <- function(x) {
+#   mean((x-mean(x))^2)
+# }
+
+# var_pop(coho$alsea)
+```
+
+
+### Covariance of each population
+```{r, results = TRUE}
+## Calculate covariance
+population_cov <- cov(coho[2:22])
+
+# population_cov
+
+## Only show bottom triangle of covariances
+upper<-population_cov
+upper[upper.tri(population_cov)] <-""
+upper<-as.data.frame(upper)
+upper
+
+```
+
+
+### Returns of each population
+```{r}
+## running a for loop to pass this function to each population in the dataset
+calculate_returns <- function(data) {
+  rt <- numeric(length(data) - 1)  
+  for (i in 2:length(data)) {
+    rt[i-1] <- (data[i-1] / data[i]) - 1
+  }
+  return(rt)
+} ## i-1 is the current population for whatever year we are looking at and i is the initial population from the previous year
+
+returns <- data.frame(apply(coho[2:22], 2, calculate_returns))
+
+```
+
+
+### Returns mean, returns sd, returns variance
+```{r}
+## calculation for returns
+
+## means of the returns for each population
+pop_return_mean <- sapply(returns, mean)
+pop_return_mean_df <- as.data.frame(pop_return_mean)
+
+## mean of ALL means -- should return one number: 0.774
+mean_returns <- mean(pop_return_mean)
+
+
+## variance of the returns
+pop_return_variance <- sapply(returns, var)
+
+## mean of ALL variances -- should return one number: 6.889
+mean_variance <- mean(pop_return_variance)
+
+pop_return_sd <- sapply(returns, sd)
+
+
+## putting everything into a data frame and nice table
+return_df <- data.frame(pop_return_mean, pop_return_variance, pop_return_sd)
+
+return_table <- return_df %>% 
+  kable(col.names = c("Returns Mean", "Returns Variance", "Returns SD")) %>% 
+  kable_styling(bootstrap_options = "striped",
+                position = "left", full_width = FALSE)
+
+
+return_table
+```
+
+### Covariance of returns -- (Dmat)
+```{r, results = TRUE}
+
+## Calculate variance covariance matrix. 
+dmat <- cov(returns) #This is the variance covariance matrix which is amat (diagonal is the variance) that will be inputted into Quadprog
+
+# pop_cov
+
+## Only show bottom triangle of covariances
+upper<-dmat
+upper[upper.tri(dmat)] <-""
+upper<-as.data.frame(upper)
+upper
+
+dmat
+```
+
+### Plotting R(it) -- Returns
+```{r}
+
+# combining date column to new returns df
+returns_yr<- cbind(returns, coho_yr$year[-1]) %>% 
+  rename('year' = 'coho_yr$year[-1]')
+
+return_ts <- returns_yr %>%
+ as_tsibble(key = NULL, index = year)
+
+rt_alsea <- ggplot(data = return_ts, aes(x = year, y = alsea)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Alsea") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_beaver <- ggplot(data = return_ts, aes(x = year, y = beaver)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Beaver") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_coos <- ggplot(data = return_ts, aes(x = year, y = coos)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Coos") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_coquille <- ggplot(data = return_ts, aes(x = year, y = coquille)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Coquille") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_floras <- ggplot(data = return_ts, aes(x = year, y = floras)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Floras") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_lower_umpqua <- ggplot(data = return_ts, aes(x = year, y = lower_umpqua)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Lower Umpqua") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_middle_umpqua <- ggplot(data = return_ts, aes(x = year, y = middle_umpqua)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Middle Umpqua") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_necanicum <- ggplot(data = return_ts, aes(x = year, y = necanicum)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Necanicum") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_nehalem <- ggplot(data = return_ts, aes(x = year, y = nehalem)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Mehalem") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_nestucca <- ggplot(data = return_ts, aes(x = year, y = nestucca)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Nestucca") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_north_umpqua <- ggplot(data = return_ts, aes(x = year, y = north_umpqua)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "North Umpqua") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_salmon <- ggplot(data = return_ts, aes(x = year, y = salmon)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Salmon") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_siletz <- ggplot(data = return_ts, aes(x = year, y = siletz)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Siletz") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_siltcoos <- ggplot(data = return_ts, aes(x = year, y = siltcoos)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Siltcoos") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_siuslaw <- ggplot(data = return_ts, aes(x = year, y = siuslaw)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Siuslaw") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_sixes <- ggplot(data = return_ts, aes(x = year, y = sixes)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Sixes") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_south_umpqua <- ggplot(data = return_ts, aes(x = year, y = south_umpqua)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "South Umpqua") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_tahkenitch <- ggplot(data = return_ts, aes(x = year, y = tahkenitch)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Tahkenitch") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_tenmile <- ggplot(data = return_ts, aes(x = year, y = tenmile)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Tenmile") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_tillamook <- ggplot(data = return_ts, aes(x = year, y = tillamook)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Tillamook") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+rt_yaquina <- ggplot(data = return_ts, aes(x = year, y = yaquina)) +
+  geom_line(color = "#453781FF") +
+  scale_x_continuous(breaks=seq(1994, 2019, by = 1)) +
+  labs(x = "Year",
+      y = "Return",
+      title = "Yaquina") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+```
+
+
+
+### Panel of figures of R(it) - Annual returns for each independent population
+```{r}
+patchwork::plot_layout(rt_alsea + rt_beaver + rt_coos + rt_coquille)
+
+patchwork::plot_layout(rt_floras + rt_lower_umpqua + rt_middle_umpqua + rt_necanicum)
+
+patchwork::plot_layout(rt_nehalem + rt_nestucca + rt_north_umpqua + rt_salmon)
+
+patchwork::plot_layout(rt_siletz + rt_siltcoos + rt_siuslaw + rt_sixes)
+
+patchwork::plot_layout(rt_south_umpqua + rt_tahkenitch + rt_tenmile + rt_tillamook)
+
+patchwork::plot_layout(rt_yaquina)
+```
+
+
+### Developing amat, bvec, dmat, and dvec
+```{r}
+
+## first row of amat
+mean_returns_df <- data.frame(0.5195554, 0.8668412, 1.0668467, 0.8037888, 0.8741770, 0.6100251, 0.6810882, 0.4573553, 0.4978172, 0.8339032, 0.0761665, 2.5722876, 0.5931486, 0.2879635, 0.6849828, 0.9460155, 0.7222910, 0.7872894, 0.3794362, 1.0945078, 0.9048277) # making  df with just the mean returns from each population
+colnames(mean_returns_df) <- c('1':'21') # renaming column headers
+
+## second row of amat
+line_2_df <- data.frame(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1) #Create a row of 1's
+colnames(line_2_df) <- c('1':'21') #Rename column headers
+
+## bottom of amat
+id_matrix <- diag(21) #Create identity matrix 21x21
+colnames(id_matrix) <- c('1':'21')
+
+amat<- rbind(mean_returns_df, line_2_df, id_matrix)
+
+## bvec with our mean of all pop returns 
+bvec <- data.frame(mean_returns,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0) 
+colnames(bvec) <- c('1':'23') #Rename column headers
+
+## dmat
+dmat <- cov(returns)
+
+dmat_new <- dmat
+dmat_new[12,12]=10
+
+
+## making everything as a matrix for quadprog
+amat_matrix <- t(as.matrix(amat)) #Create amat data frame 
+
+bvec_matrix <- t(as.matrix(bvec))
+
+dvec_matrix <- t(as.matrix(rep(0,21)))
+dvec <- rep(0,21)
+```
+
+### Running quadprog
+```{r}
+y <- solve.QP(dmat, dvec_matrix, amat_matrix, bvec_matrix, meq = 2)
+y
+
+sum(y$solution) #1 var_star = .549
+#mean_list <- as.numeric(seq(min(pop_return_mean_df),max(pop_return_mean_df), length.out = 100)) #this line is not running, so using an alternative mean list (next line)
+mean_list <- seq(0.1,2.5,length.out=1000)
+min(pop_return_mean_df)
+max(pop_return_mean_df)
+#high returns low variance for largest
+ ## so this min is a negative number so I should make it .0001 right?
+
+##Clean up code and run it as a loop to try to create graph
+##Change bvec with new Rbar
+##Table of all Rbar and corresponding $values and plot
+
+```
+
+### Mapping 
+```{r}
+## made a function for solve.QP
+mpt_fun <- function(x) {
+  bvec <- c(x, 1,rep(0, 21))
+  y = solve.QP(dmat, dvec_matrix, amat_matrix, bvec, meq = 2)
+  
+  return(list(solution = y$solution, var = y$value))
+}
+
+
+front = map(mean_list, ~mpt_fun(.x)) %>%
+  transpose()
+
+pop_return_mean_df_t <- t(pop_return_mean_df) #transpose the df so that we can rename each of the pop columns
+
+## contains the weights for each stream (population)
+solution <- as.data.frame(pluck(front$solution)) %>%
+  rename_with(~paste0("Run",1:length(front$solution))) %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  rename_with(~paste0('w', 1:length(pop_return_mean_df_t))) %>% #This line was not running because we need to transpose the pop_return_mean_df so that the length would fit. I did this in a quick way, but should probs clean it up later
+  mutate(var = t(as.data.frame(pluck(front$var)))[,1])
+```
+
+#function to calcualte weights
+```{r}
+var_fcn <- function(weights,dmat){
+  temp = as.matrix(dmat) %*% as.matrix(weights)
+  out = t(as.matrix(weights)) %*% temp
+  return(out)
+}
+
+var_df_fcn<-function(weights,cov){
+  temp=as.matrix(dmat) %*% t(as.matrix(weights))
+  out=as.matrix(weights)%*%temp
+  return(out)
+}
+
+mu_fcn<-function(weights,means){
+  out=weights %*% means
+  return(out)
+}
+
+#Notice the var_res column is simply double the var column which came from solve.QP
+var_out<-solution %>% 
+  nest(weights=w1:w21) %>% #I changed this from "w1:w3" to "w1:w21" and then it ran. Was that okay to do?
+  mutate(var_res=var*2) %>% 
+  mutate(port_mean = mean_list)
+
+
+```
+
+### Natural states
+```{r}
+
+n=1000
+nvar=(length(pop_return_mean_df_t))
+#nvar=length(pop_return_mean_df$pop_return_mean)
+set.seed(123)
+rand<-matrix(0,nrow=n,ncol=nvar+2)
+for(i in 1:n){
+  pull=runif(21)
+  rand[i,1:nvar]<-pull/sum(pull)
+  
+ 
+  rand[i,nvar+1]<-var_fcn(rand[i,1:nvar],dmat)
+  
+  rand[i,nvar+2]<-mu_fcn(rand[i,1:nvar],pop_return_mean)
+  
+}
+
+colnames(rand)<-c(paste0("weight_",1:length(pop_return_mean_df_t)),"var","mu")
+```
+
+#Initial plot
+```{r}
+p_initial<-ggplot(data=var_out,aes(y=port_mean,x=var_res))+
+  #geom_point(color="grey",alpha=0.5)+
+  #geom_point(aes(x=rand[hold,4],y=rand[hold,5]),size=3)+
+  #geom_line()+
+  geom_line() +
+  #annotate("label",x=.8,y=1.75,label=paste("Weights currently:\n","(",paste(round(rand[hold,1:3],3),collapse = ", "),")"))+
+  #xlim(-0.5,1.5)+
+  #ylim(0,3.5)+
+  theme_classic()
+
+p_initial
+```
+
+```{r}
+hold=1#Chosen to best show case results #How do we find what the 2019 data
+
+
+p1<-ggplot(as.data.frame(rand),aes(x=var,y=mu))+
+  geom_point(color="grey",alpha=0.5)+
+  geom_point(aes(x=3.084847,y=0.7088897),size=3)+
+  geom_line(data=var_out,aes(y=port_mean,x=var_res))+
+  annotate("label",x=6.8,y=.75,label=paste("Weights currently:\n","(",paste(round(rand[hold,1:6],3),collapse = ", "),")"))+
+  xlim(-0.5,10)+
+  #ylim(0,3.5)+
+  theme_classic()
+
+p1
+```
+
+
+```{r}
+#This is to show the point that we initially calc'd using rand[1,1:21] - first row
+var_2019 <-3.084847 
+mean_2019 <- 0.7088897
+
+p_a<-ggplot(data=var_out,aes(y=port_mean,x=var_res))+
+  #geom_point(color="grey",alpha=0.5)+
+  #geom_point(aes(x=rand[hold,4],y=rand[hold,5]),size=3)+
+  #geom_line()+
+  geom_path() +
+  geom_point(aes(x=var_2019, y=mean_2019), size=2) +
+  labs(x="Variance", y="Mean Return")+
+  #xlim(-0.5,1.5)+
+  #ylim(0,3.5)+
+  theme_classic()
+
+p_a
+```
+
+```{r}
+var_2019 <-3.084847 
+mean_2019 <- 0.7088897
+
+var_keep=which.min(abs(var_out$var_res-var_2019))
+mean_keep=which.min(abs(mean_list-mean_2019))
+
+
+p2 <- p_a + annotate("segment",x=var_2019,y=mean_2019,xend=var_out$var_res[var_keep],yend=mean_list[var_keep],color="red")+
+  annotate("pointrange",x=var_out$var_res[var_keep],y=mean_list[var_keep],ymin=mean_2019,ymax=mean_list[mean_keep],color="red")
+ 
+
+p2
+
+
+weights_2019 <-df_2019/tot_pop ## make this into a graph for 2019 
+
+var_out$weights[var_keep] ## showing us the weights for 2019 round them 
+```
+
+
+```{r}
+p3<-p2+ annotate("segment",x=var_2019,y=mean_2019,xend=var_out$var_res[mean_keep],yend=mean_list[mean_keep],color="purple")+
+  annotate("pointrange",x=var_out$var_res[mean_keep],y=mean_list[mean_keep],xmin=var_2019,xmax=var_out$var_res[mean_keep],color="purple")
+
+p3
+
+```
+### Weights table
+```{r}
+#table 1
+table_1_2019 <- weights_2019 %>% 
+  round(3) %>% 
+  kable(align = "c") %>% 
+  kable_styling(bootstrap_options = "striped",
+                position = "center", full_width = FALSE)
+
+table_1_2019 # weights for 2019 in a kable
+
+#Table 2
+weights_mean_df<- as.data.frame(var_out$weights[var_keep]) %>% 
+  round(3)
+
+colnames(weights_mean_df) <- c("alsea","beaver","coos","coquille","floras","lower_umpqua","middle_umpqua","necanicum","nehalem","nestucca","north_umpqua","salmon","siletz","siltcoos","siuslaw","sixes","south_umpqua","tahkenitch","tenmile","tillamook","yaquina") #check that naming is ok
+
+sum2 <- rbind(weights_2019, weights_mean_df)
+
+table_2_2019 <- sum2 %>%
+  round(3) %>% 
+  kable(align = "c") %>% 
+  kable_styling(bootstrap_options = "striped",
+                position = "center", full_width = FALSE)
+table_2_2019 ## weights for 2019 when variance is held
+
+#Table 3
+weights_var_df<- as.data.frame(var_out$weights[mean_keep]) %>% 
+  round(3)
+colnames(weights_var_df) <- c("alsea","beaver","coos","coquille","floras","lower_umpqua","middle_umpqua","necanicum","nehalem","nestucca","north_umpqua","salmon","siletz","siltcoos","siuslaw","sixes","south_umpqua","tahkenitch","tenmile","tillamook","yaquina")
+
+sum3 <- rbind(weights_2019, weights_mean_df, weights_var_df) %>%
+  round(3) %>% 
+  rename_with(str_to_title)
+
+sum3$Weights<- c('2019', 'Scenario_1', 'Scenario_2')
+
+sum3<- sum3 %>%     
+relocate(Weights, .before = 'Alsea')
+
+
+
+table_3_2019 <- sum3 %>% 
+  kable(align = "c") %>% 
+  kable_styling(bootstrap_options = "striped",
+                position = "center", full_width = FALSE, html_font = 'Cambria', font_size = 15)
+table_3_2019 ## weights for 2019 when variance is held
+
+sum(var_out$weights[mean_keep])
+
+
+
+weights_df ## weights for 2019 when mean is held
+```
+
+```{r}
+## calculate sharp ratio of all 21 then take the ratio of the two slopes
+## bias to more healthy streams
+
+## histogram of numbers bigger with 1 on the right on the graphs
+## plotting the watershed along the efficient frontier could visualize which streams have the most impact
+## maybe jsut giving them a tool (shiny)
+```
+
+
+
+
+
+
