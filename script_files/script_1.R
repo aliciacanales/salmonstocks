@@ -19,3 +19,9 @@ coho_yr <- coho %>%
 
 coho_ts <- coho_yr %>%
   as_tsibble(key = NULL, index = year) 
+
+pop_mean <- sapply(coho[2:22], mean)
+pop_variance <- sapply(coho[2:22], var)
+pop_sd <- sapply(coho[2:22], sd)
+
+population_df <- data.frame(pop_mean, pop_variance, pop_sd)
