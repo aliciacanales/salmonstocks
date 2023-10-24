@@ -1,3 +1,15 @@
+library(tidyverse) 
+library(here)
+library(janitor)
+library(readxl)
+library(tsibble)
+library(lubridate)
+library(feasts)
+library(patchwork)
+library(kableExtra)
+library(purrr)
+library(quadprog)
+
 coho <- readxl::read_xlsx(here('data', 'OC Coho Abundance.xlsx')) %>%
   clean_names() %>% 
   distinct()
