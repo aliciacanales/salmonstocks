@@ -25,3 +25,13 @@ pop_variance <- sapply(coho[2:22], var)
 pop_sd <- sapply(coho[2:22], sd)
 
 population_df <- data.frame(pop_mean, pop_variance, pop_sd)
+
+population_cov <- cov(coho[2:22])
+
+# population_cov
+
+## Only show bottom triangle of covariances
+upper<-population_cov
+upper[upper.tri(population_cov)] <-""
+upper<-as.data.frame(upper)
+upper
