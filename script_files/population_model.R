@@ -23,4 +23,5 @@ run_nls = nls(abundance~calculate_spawners(abundance, prod, capacity),
 
 ## Gauss-Newton
 ## Use AIC or BIC or cross fold validation to compare different model fits
-    
+
+## logs of 1... update with random numbers for vectors. We will then get individual pi and ci
