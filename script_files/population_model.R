@@ -20,8 +20,6 @@ run_nls = nls(abundance~calculate_spawners(abundance, prod, capacity),
                            capacity = guess_vec[2]),
               trace = TRUE)
 
-
-
 ## Gauss-Newton
 ## Use AIC or BIC or cross fold validation to compare different model fits
 
