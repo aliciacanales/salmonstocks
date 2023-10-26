@@ -10,13 +10,14 @@ calculate_spawners <- function(abundance, prod, capacity){
 
 ## guesses for nls
 
-guess_vec = 
+guess_vec = c(sample(1:16000, 21))
 
 ## running nls with the nls wrapper function
 
 run_nls = nls(abundance~calculate_spawners(abundance, prod, capacity),
               data = coho,
-              start=list,
+              start = list(prod = guess_vec[1],
+                           capacity = guess_vec[2]),
               trace = TRUE)
 
 
