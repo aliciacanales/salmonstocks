@@ -24,7 +24,7 @@ pop_mean <- sapply(coho[2:22], mean)
 pop_var <- sapply(coho[2:22], var)
 pop_sd <- sapply(coho[2:22], sd)
 
-pop_df <- data.frame(pop_mean, pop_variance, pop_sd)
+pop_df <- data.frame(pop_mean, pop_var, pop_sd)
 
 pop_cov <- cov(coho[2:22])
 
