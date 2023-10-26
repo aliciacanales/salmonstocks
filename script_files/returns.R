@@ -13,20 +13,20 @@ returns <- data.frame(apply(coho[2:22], 2, calculate_returns))
 ## calculation for returns
 
 ## means of the returns for each population
-pop_return_mean <- sapply(returns, mean)
-pop_return_mean_df <- as.data.frame(pop_return_mean)
+rt_mean <- sapply(returns, mean)
+rt_mean_df <- as.data.frame(rt_mean)
 
 ## mean of ALL means -- should return one number: 0.774
-mean_returns <- mean(pop_return_mean)
+mean_all_rt <- mean(rt_mean)
 
 
 ## variance of the returns
-pop_return_variance <- sapply(returns, var)
+rt_var <- sapply(returns, var)
 
 ## mean of ALL variances -- should return one number: 6.889
-mean_variance <- mean(pop_return_variance)
+mean_var <- mean(rt_var)
 
-pop_return_sd <- sapply(returns, sd)
+rt_sd <- sapply(returns, sd)
 
 ###Table is in rmarkdown
 
@@ -43,7 +43,6 @@ upper<-as.data.frame(upper)
 upper
 
 dmat
-
 
 # combining date column to new returns df
 returns_yr<- cbind(returns, coho_yr$year[-1]) %>% 
