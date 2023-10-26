@@ -4,7 +4,7 @@ mean_returns_df <- data.frame(0.5195554, 0.8668412, 1.0668467, 0.8037888, 0.8741
 colnames(mean_returns_df) <- c('1':'21') # renaming column headers
 
 ## second row of amat
-line_2_df <- data.frame(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1) #Create a row of 1's
+line_2_df <- data.frame(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
 colnames(line_2_df) <- c('1':'21') #Rename column headers
 
 ## bottom of amat
