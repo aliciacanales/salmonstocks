@@ -9,7 +9,7 @@ colnames(line_2_df) <- c('1':'21') #Rename column headers
 
 ## bottom of amat
 id_matrix <- diag(21) #Create identity matrix 21x21
-colnames(id_matrix) <- c('1':'21')
+colnames(id_matrix) <- c('1':'21') 
 
 amat<- rbind(mean_returns_df, line_2_df, id_matrix)
 
