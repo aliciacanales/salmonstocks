@@ -19,7 +19,8 @@ calculate_spawners <- function(abundance, prod, capacity){
 
 ## guesses for nls
 
-guess_vec = c(sample(1:16000, 21)) ## Question from Olivia: why choose 1:16000?
+guess_vec = c(sample(1:16000, 21)) ## Question from Olivia: why choose 1:16000? Answer from Alicia: I didn't know what the threshold should be for the guess vector so I just looked at our returns and saw the highest value was under 16000
+
 
 ## running nls with the nls wrapper function
 
