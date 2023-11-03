@@ -8,20 +8,13 @@ alsea_coho <- coho %>%
   mutate(return_flip = 1/return,
          flip_abundance = 1/alsea)
   
-
-calculate_raw_rts <- function(data) {
-  rt <- numeric(length(data))  
-  for (i in 2:length(data)) {
-    rt[i-1] <- (data[i] - data[i-1])
-  }
-  return(rt)
-}
-
 pre_hat <- lm(return_flip~flip_abundance, data = alsea_coho)
 
 # taking it out of flipped form
-alsea_coho <- c(1 / pre_hat$coefficients[2],
-                     pre_hat$coefficients[1] / pre_hat$coefficients[2]) 
+alsea_guess <- c(1 / pre_hat$coefficients[2],
+                    1 / (pre_hat$coefficients[1] * (1/pre_hat$coefficients[2]))) 
+
+800 *5 / (1 + 800/345)
 
 
 ## initial visualization
@@ -39,19 +32,20 @@ calculate_spawners <- function(abundance, prod, capacity){
 
 ## guesses for nls
 
-guess_vec = c(log(prod(abundance)) - log(1 + abundance/capacity)) ## guess vec will be estimated by log fitting
+guess_vec = alsea_guess
 
-## other idea
-guess_vec = c(log_rts~log(prod(abundance)) - log(1 + abundance/capacity))
 
 ## running nls with the nls wrapper function
 
 # copied original nls function that Alicia created (copied down below) and ran it with just the Alsea data as a test
-run_nls = nls(alsea~calculate_spawners(alsea, prod, capacity),
+run_nls = nls(return~calculate_spawners(alsea, prod, capacity),
               data = alsea_coho,
               start = list(prod = guess_vec[1],
                            capacity = guess_vec[2]),
               trace = TRUE)
+
+# Official outputs for p hat and c hat
+broom::tidy(run_nls)
 
 # run_nls = nls(abundance~calculate_spawners(abundance, prod, capacity),
 #               data = coho,
