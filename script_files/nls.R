@@ -21,6 +21,8 @@ calculate_spawners <- function(abundance, prod, capacity){
 
 guess_vec = c(log(prod(abundance)) - log(1 + abundance/capacity)) ## guess vec will be estimated by log fitting
 
+## other idea
+guess_vec = c(log_rts~log(prod(abundance)) - log(1 + abundance/capacity))
 
 ## running nls with the nls wrapper function
 
