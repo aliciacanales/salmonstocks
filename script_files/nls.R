@@ -2,7 +2,27 @@
 
 ## filter for a single population to start
 alsea_coho <- coho %>% 
-  select(year, alsea)
+  select(year, alsea) %>% 
+  mutate(return = lead(alsea)) %>% 
+  drop_na() %>% 
+  mutate(return_flip = 1/return,
+         flip_abundance = 1/alsea)
+  
+
+calculate_raw_rts <- function(data) {
+  rt <- numeric(length(data))  
+  for (i in 2:length(data)) {
+    rt[i-1] <- (data[i] - data[i-1])
+  }
+  return(rt)
+}
+
+pre_hat <- lm(return_flip~flip_abundance, data = alsea_coho)
+
+# taking it out of flipped form
+alsea_coho <- c(1 / pre_hat$coefficients[2],
+                     pre_hat$coefficients[1] / pre_hat$coefficients[2]) 
+
 
 ## initial visualization
 ggplot(data=alsea_coho,aes(x=year,y=alsea))+
