@@ -47,13 +47,6 @@ run_nls = nls(return~calculate_spawners(alsea, prod, capacity),
 # Official outputs for p hat and c hat
 broom::tidy(run_nls)
 
-# run_nls = nls(abundance~calculate_spawners(abundance, prod, capacity),
-#               data = coho,
-#               start = list(prod = guess_vec[1],
-#                            capacity = guess_vec[2]),
-#               trace = TRUE)
-
-## show how the model fits the data by making a prediction based on the data
 nls_predict<-alsea_coho %>% 
   mutate(predict=predict(run_nls,newdata=.))
 
@@ -77,12 +70,3 @@ broom::tidy(control_nls) %>%
 broom::tidy(run_nls) %>% 
   kable(caption = "Original NLS") %>% 
   kable_classic()
-
-
-## run with purrr
-
-
-## Gauss-Newton
-## Use AIC or BIC or cross fold validation to compare different model fits
-
-## logs of 1... update with random numbers for vectors. We will then get individual pi and ci
