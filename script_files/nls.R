@@ -4,34 +4,34 @@
 alsea_coho <- coho %>% 
   select(year, alsea) %>% 
   mutate(return = lead(alsea)) %>% 
-  drop_na() %>% 
+  drop_na() %>% #drops year 2019
   mutate(return_flip = 1/return,
          flip_abundance = 1/alsea)
   
 pre_hat <- lm(return_flip~flip_abundance, data = alsea_coho)
+pre_hat
 
 # taking it out of flipped form
 alsea_guess <- c(1 / pre_hat$coefficients[2],
-                    1 / (pre_hat$coefficients[1] * (1/pre_hat$coefficients[2]))) 
+                    1 / (pre_hat$coefficients[1] * (1/pre_hat$coefficients[2])))
+alsea_guess
 
-800 *5 / (1 + 800/345)
+800 *5 / (1 + 800/345) #check output to make sure coefficients make sense. The output is the stock equilibrium abundance using our guess vectors
 
 
-## initial visualization
+## initial visualization of population size over time
 ggplot(data=alsea_coho,aes(x=year,y=alsea))+
   geom_point(size=2,color="black")+
   theme_minimal()
 
 
 ## s_t+1 = ((p_i)(S_t_i))/(1+ (S_t_i/c_i))
-
 calculate_spawners <- function(abundance, prod, capacity){
   y = (prod * abundance)/(1 + (abundance/capacity))
   return(y)
 }
 
-## guesses for nls
-
+## optimized/informed guesses for nls
 guess_vec = alsea_guess
 
 
@@ -54,13 +54,6 @@ ggplot(data=nls_predict)+
   geom_point(aes(x=year,y=alsea))+
   geom_path(aes(x=year,y=predict),color='red')+
   theme_minimal()
-
-## add control nls model to compare
-control_nls=nls(alsea~calculate_spawners(alsea, prod, capacity),
-                data = alsea_coho,
-                start = list(prod = guess_vec[1],
-                             capacity = guess_vec[2]),
-                control = nls.control(tol = 2.1e-9,minFactor=1e-10,warnOnly = TRUE)) #these values are the same from lab 4, was not sure how to edit these values
 
 ## tables of nls values for control and first run. The productivity and capacity are negative... shouldn't they be positive?
 broom::tidy(control_nls) %>% 
