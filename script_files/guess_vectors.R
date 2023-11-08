@@ -24,10 +24,4 @@ pre_hat
 coho_guess <- pre_hat %>% 
   mutate(p_hat = 1/coefficient,
          c_hat = 1/ (intercept * (1/ coefficient)))
-
-## Take pre_hat out of flipped form to calculate guess vectors (p_hat and c_hat)
-
-alsea_guess <- c(1 / pre_hat$coefficients[2],
-                 1 / (pre_hat$coefficients[1] * (1/pre_hat$coefficients[2])))
-alsea_guess
-
+coho_guess

@@ -1,48 +1,24 @@
-## creating new population model
-
-## filter for a single population to start
-alsea_coho <- coho %>% 
-  select(year, alsea) %>% 
-  mutate(return = lead(alsea)) %>% 
-  drop_na() %>% #drops year 2019
-  mutate(return_flip = 1/return,
-         flip_abundance = 1/alsea)
-  
-pre_hat <- lm(return_flip~flip_abundance, data = alsea_coho)
-pre_hat
-
-# taking it out of flipped form
-alsea_guess <- c(1 / pre_hat$coefficients[2],
-                    1 / (pre_hat$coefficients[1] * (1/pre_hat$coefficients[2])))
-alsea_guess
-
-800 *5 / (1 + 800/345) #check output to make sure coefficients make sense. The output is the stock equilibrium abundance using our guess vectors
-
-
-## initial visualization of population size over time
-ggplot(data=alsea_coho,aes(x=year,y=alsea))+
-  geom_point(size=2,color="black")+
-  theme_minimal()
-
-
 ## s_t+1 = ((p_i)(S_t_i))/(1+ (S_t_i/c_i))
-calculate_spawners <- function(abundance, prod, capacity){
-  y = (prod * abundance)/(1 + (abundance/capacity))
+calculate_equil_abund <- function(abundance, p_hat, c_hat){
+  y = (p_hat * abundance)/(1 + (abundance/c_hat))
   return(y)
 }
 
 ## optimized/informed guesses for nls
-guess_vec = alsea_guess
+guess_vec = coho_guess
 
+## creating function that will run over the entire datset
+all_nls<- function(coho_recruits){
+  nls(return~calculate_equil_abund(abundance, p_hat, c_hat),
+              data = coho_recruits,
+              start = list(p_hat = guess_vec$p_hat,
+                           c_hat = guess_vec$c_hat))
+}
 
-## running nls with the nls wrapper function
-
-# copied original nls function that Alicia created (copied down below) and ran it with just the Alsea data as a test
-run_nls = nls(return~calculate_spawners(alsea, prod, capacity),
-              data = alsea_coho,
-              start = list(prod = guess_vec[1],
-                           capacity = guess_vec[2]),
-              trace = TRUE)
+equilibrium_all <- coho_recruits %>% 
+  group_by(population) %>% 
+  nest() %>% 
+  mutate(nls_model = map(data, ~all_nls(.x)))
 
 # Official outputs for p hat and c hat
 broom::tidy(run_nls)
