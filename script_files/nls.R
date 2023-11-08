@@ -4,15 +4,13 @@ calculate_equil_abund <- function(abundance, p_hat, c_hat){
   return(y)
 }
 
-## optimized/informed guesses for nls
-guess_vec = coho_guess
 
 ## creating function that will run over the entire datset
 all_nls<- function(coho_recruits){
   nls(return~calculate_equil_abund(abundance, p_hat, c_hat),
               data = coho_recruits,
-              start = list(p_hat = guess_vec$p_hat,
-                           c_hat = guess_vec$c_hat))
+              start = list(p_hat = coho_guess$p_hat,
+                           c_hat = coho_guess$c_hat))
 }
 
 equilibrium_all <- coho_recruits %>% 
