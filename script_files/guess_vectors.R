@@ -20,6 +20,9 @@ coho_recruits %>%
   nest() %>% 
   mutate(coeff = map(lm(recruits_flip~abundance_flip, data = .x)))
 
+pre_hat <- coho_recruits %>% 
+  group_by(population) %>% 
+  summarize(intercept = coefficients(lm(recruits_flip ~ abundance_flip))[1], coef=coef(lm(recruits_flip ~ abundance_flip))[2])
 
-pre_hat <- do(tidy(lm(recruits_flip~abundance_flip, data = coho_recruits)))
 pre_hat
+
