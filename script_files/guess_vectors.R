@@ -16,13 +16,16 @@ coeff_fun<- function(rec, abund, data){
     lm(recruits_flip~abundance_flip, data = )
 }
 
-coho_recruits %>% 
-  nest() %>% 
-  mutate(coeff = map(lm(recruits_flip~abundance_flip, data = .x)))
-
+## calculate pre_hat to then calculate p_hat and c_hat not in flipped form.
 pre_hat <- coho_recruits %>% 
   group_by(population) %>% 
-  summarize(intercept = coefficients(lm(recruits_flip ~ abundance_flip))[1], coef=coef(lm(recruits_flip ~ abundance_flip))[2])
+  summarize(intercept = coefficients(lm(recruits_flip ~ abundance_flip))[1], coefficient=coefficients(lm(recruits_flip ~ abundance_flip))[2])
 
 pre_hat
+
+## Take pre_hat out of flipped form to calculate guess vectors (p_hat and c_hat)
+
+alsea_guess <- c(1 / pre_hat$coefficients[2],
+                 1 / (pre_hat$coefficients[1] * (1/pre_hat$coefficients[2])))
+alsea_guess
 
