@@ -7,9 +7,13 @@ calculate_equil_abund <- function(abundance, p_hat, c_hat){
 
 ## creating function that will run over the entire datset
 all_nls<- function(coho_recruits){
+  group_by(population) %>% 
+    summarize(intercept = coefficients(lm(recruits_flip ~ abundance_flip))[1], 
+              coefficient = coefficients(lm(recruits_flip ~ abundance_flip))[2])
+  
   nls(return~calculate_equil_abund(abundance, p_hat, c_hat),
               data = coho_recruits,
-              start = list(p_hat = coho_guess$p_hat,
+              start = list(p_hat = coho_guess$p_hat[1],
                            c_hat = coho_guess$c_hat))
 }
 
