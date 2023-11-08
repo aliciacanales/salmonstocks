@@ -9,6 +9,8 @@ library(patchwork)
 library(kableExtra)
 library(purrr)
 library(quadprog)
+library(dplyr)
+library(broom)
 
 coho <- readxl::read_xlsx(here('data', 'OC Coho Abundance.xlsx')) %>%
   clean_names() %>% 
