@@ -28,7 +28,8 @@ all_nls<- function(coho_recruits){
 equilibrium_all <- coho_recruits %>% 
   filter(population!="tahkenitch") %>% 
   nest() %>% 
-  mutate(nls_model = map(data, ~all_nls(.x)))
+  mutate(nls_model = map(data, ~all_nls(.x))) %>% 
+  mutate(coeff=map(nls_model, ~coefficients(.x)))
 
 # Official outputs for p hat and c hat
 broom::tidy(run_nls)
