@@ -11,9 +11,11 @@ calculate_equil_abund <- function(abundance, p_hat, c_hat){
 ## creating function that will run over the entire datset
 all_nls<- function(coho_recruits){
   group_by(population) %>%
-    mutate(mdl1 = coefficients(lm(recruits_flip ~ abundance_flip))) %>%  
-    mutate(p_hat = 1/coefficients,
-           c_hat = 1/ (intercept * (1/coefficients))) %>%  
+    mutate(intercept = coefficients(lm(coho_recruits$recruits_flip ~ coho_recruits$abundance_flip))[1], 
+              coefficient = coefficients(lm(coho_recruits$recruits_flip ~ coho_recruits$abundance_flip))[2]) %>% 
+    #mutate(mdl1 = coefficients(lm(coho_recruits$recruits_flip ~ coho_recruits$abundance_flip))) %>%  
+    mutate(p_hat = 1/coho_recruits$coefficients,
+           c_hat = 1/ (coho_recruits$intercept * (1/coho_recruits$coefficients))) %>%  
   nls(return~calculate_equil_abund(abundance, p_hat, c_hat),
               data = coho_recruits,
               start = list(p_hat,
