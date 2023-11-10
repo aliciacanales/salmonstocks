@@ -16,12 +16,14 @@ pivot_longer(cols = 2:22,
 pre_hat <- coho_recruits %>% 
   group_by(population) %>% 
   summarize(intercept = coefficients(lm(recruits_flip ~ abundance_flip))[1], 
-            coefficient = coefficients(lm(recruits_flip ~ abundance_flip))[2])
+            coefficient = coefficients(lm(recruits_flip ~ abundance_flip))[2]) %>%
+  mutate(p_hat = 1/coefficient, ## calculating p_hat and c_hat for all 21 populations
+         c_hat = 1/ (intercept * (1/ coefficient)))
 
 pre_hat
 
 ## calculating p_hat and c_hat for all 21 populations
-coho_guess <- pre_hat %>% 
-  mutate(p_hat = 1/coefficient,
-         c_hat = 1/ (intercept * (1/ coefficient)))
-coho_guess
+# pre_hat <- pre_hat %>% 
+#   mutate(p_hat = 1/coefficient,
+#          c_hat = 1/ (intercept * (1/ coefficient)))
+# coho_guess
