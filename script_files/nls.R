@@ -10,19 +10,23 @@ calculate_equil_abund <- function(abundance, p_hat, c_hat){
 
 ## creating function that will run over the entire datset
 all_nls<- function(coho_recruits){
-  group_by(population) %>%
-    mutate(intercept = coefficients(lm(coho_recruits$recruits_flip ~ coho_recruits$abundance_flip))[1], 
-              coefficient = coefficients(lm(coho_recruits$recruits_flip ~ coho_recruits$abundance_flip))[2]) %>% 
-    #mutate(mdl1 = coefficients(lm(coho_recruits$recruits_flip ~ coho_recruits$abundance_flip))) %>%  
-    mutate(p_hat = 1/coho_recruits$coefficients,
-           c_hat = 1/ (coho_recruits$intercept * (1/coho_recruits$coefficients))) %>%  
-  nls(return~calculate_equil_abund(abundance, p_hat, c_hat),
+  
+#  browser()
+
+    intercept = coefficients(lm(coho_recruits$recruits_flip ~ coho_recruits$abundance_flip,data=coho_recruits))[1]
+  coefficient = coefficients(lm(coho_recruits$recruits_flip ~ coho_recruits$abundance_flip,data=coho_recruits))[2] 
+    
+  guess_p=1/coefficient
+  guess_c=1/ (intercept * (1/ coefficient))
+
+  nls(recruits~calculate_equil_abund(abundance, p_hat, c_hat),
               data = coho_recruits,
-              start = list(p_hat,
-                           c_hat)) #list(p_hat = coho_guess$p_hat[1],c_hat = coho_guess$c_hat))
+              start = list(p_hat=guess_p,c_hat=guess_c),
+              control=nls.control(minFactor=1/8000,maxiter = 500,tol = 1e-03))#list(p_hat = coho_guess$p_hat[1],c_hat = coho_guess$c_hat))
 }
 
 equilibrium_all <- coho_recruits %>% 
+  filter(population!="tahkenitch") %>% 
   nest() %>% 
   mutate(nls_model = map(data, ~all_nls(.x)))
 
