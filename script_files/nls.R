@@ -28,22 +28,27 @@ equilibrium_all <- coho_recruits %>%
   mutate(nls_model = map(data, ~all_nls(.x))) %>% 
   mutate(coeff=map(nls_model, ~coefficients(.x)))
 
-# Official outputs for p hat and c hat
-broom::tidy(run_nls)
 
-nls_predict<-alsea_coho %>% 
-  mutate(predict=predict(run_nls,newdata=.))
+###################################################################################################################################################################################
+## Don't think we need any of this 
 
-ggplot(data=nls_predict)+
-  geom_point(aes(x=year,y=alsea))+
-  geom_path(aes(x=year,y=predict),color='red')+
-  theme_minimal()
 
-## tables of nls values for control and first run. The productivity and capacity are negative... shouldn't they be positive?
-broom::tidy(control_nls) %>% 
-  kable(caption = "Control NLS") %>% 
-  kable_classic()
-
-broom::tidy(run_nls) %>% 
-  kable(caption = "Original NLS") %>% 
-  kable_classic()
+# # Official outputs for p hat and c hat
+# broom::tidy(run_nls)
+# 
+# nls_predict<-alsea_coho %>% 
+#   mutate(predict=predict(run_nls,newdata=.))
+# 
+# ggplot(data=nls_predict)+
+#   geom_point(aes(x=year,y=alsea))+
+#   geom_path(aes(x=year,y=predict),color='red')+
+#   theme_minimal()
+# 
+# ## tables of nls values for control and first run. The productivity and capacity are negative... shouldn't they be positive?
+# broom::tidy(control_nls) %>% 
+#   kable(caption = "Control NLS") %>% 
+#   kable_classic()
+# 
+# broom::tidy(run_nls) %>% 
+#   kable(caption = "Original NLS") %>% 
+#   kable_classic()
