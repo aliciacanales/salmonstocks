@@ -1,14 +1,11 @@
-## s_t+1 = ((p_i)(S_t_i))/(1+ (S_t_i/c_i))
+## making a function using our original question --> s_t+1 = ((p_i)(S_t_i))/(1+ (S_t_i/c_i))
 calculate_equil_abund <- function(abundance, p_hat, c_hat){
   y = (p_hat * abundance)/(1 + (abundance/c_hat))
   return(y)
 }
 
 
-## intercept = coefficients(lm(recruits_flip ~ abundance_flip))[1],
-##coefficient = coefficients(lm(recruits_flip ~ abundance_flip))[2])
-
-## creating function that will run over the entire datset
+## creating function that will run over the entire dataset
 all_nls<- function(coho_recruits){
   
 #  browser()
@@ -22,7 +19,7 @@ all_nls<- function(coho_recruits){
   nls(recruits~calculate_equil_abund(abundance, p_hat, c_hat),
               data = coho_recruits,
               start = list(p_hat=guess_p,c_hat=guess_c),
-              control=nls.control(minFactor=1/8000,maxiter = 500,tol = 1e-03))#list(p_hat = coho_guess$p_hat[1],c_hat = coho_guess$c_hat))
+              control=nls.control(minFactor=1/8000,maxiter = 500,tol = 1e-03))
 }
 
 equilibrium_all <- coho_recruits %>% 
