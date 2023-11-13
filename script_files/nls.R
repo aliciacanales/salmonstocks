@@ -29,6 +29,18 @@ equilibrium_all <- coho_recruits %>%
   mutate(coeff=map(nls_model, ~coefficients(.x)))
 
 
+#####################
+
+### Code up the model for a hypothetical scenario to create framework:
+## $10 of investment leads to a 1% increase in p and c
+
+calculate_return_investment <- function(p, c, alpha, beta, weight){
+  y = (((p*alpha(weight))-1)*(c*beta(weight)))
+  return(y)
+}
+
+
+
 ###################################################################################################################################################################################
 ## Don't think we need any of this 
 
