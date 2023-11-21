@@ -39,6 +39,25 @@ calculate_return_investment <- function(p, c, alpha, beta, weight){
   return(y)
 }
 
+### Notes from Nathan's office hours on 11/17
+## Big Function
+S <- function(w, p_change, c_change){
+  equilibrium <- (p_hat(w,p_change)-1)c_hat(w,c_change)
+}
+
+## Calculate change in p_hat which will be put into "big equation"
+## This really means: P is a function of Beta(passage) * w(i) + p_hat (from NLS)
+p_hat <- function(w,p_change, c_hat_nls){ #can probably remove p_hat_nls
+  p <- (w * p_change) + p_hat_nls
+}
+
+## Calculate change in c_hat which will be put into "big equation"
+c_hat <- function(w, c_change, c_hat_nls){ #can probably remove p_hat_nls
+  c <- (w * c_change) + c_hat_nls
+}
+
+
+
 
 
 ###################################################################################################################################################################################
