@@ -47,13 +47,13 @@ S <- function(w, p_change, c_change){
 
 ## Calculate change in p_hat which will be put into "big equation"
 ## This really means: P is a function of Beta(passage) * w(i) + p_hat (from NLS)
-p_hat <- function(w,p_change, c_hat_nls){ #can probably remove p_hat_nls
-  p <- (w * p_change) + p_hat_nls
+p_hat <- function(w,p_change, p_hat){ #can probably remove p_hat_nls
+  p <- (w * p_change) + p_hat
 }
 
 ## Calculate change in c_hat which will be put into "big equation"
-c_hat <- function(w, c_change, c_hat_nls){ #can probably remove p_hat_nls
-  c <- (w * c_change) + c_hat_nls
+c_hat <- function(w, c_change, c_hat){ #can probably remove p_hat_nls
+  c <- (w * c_change) + c_hat
 }
 
 ## Big Function
@@ -61,7 +61,16 @@ S <- function(p, c){
   equilibrium <- (p-1)c
 }
 
-
+## bringing out the coefficients into seperate columns and applying a $10 investment which will have a .01 increase
+new_stock <- equilibrium_all %>% 
+  mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
+         c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
+  select(population, p_hat, c_hat) %>% 
+  mutate(weight = 10,
+         p_change = .01,
+         c_change = .01,
+         delta_p = map(p_hat, ~p_hat(.x,p_change, p_hat)),
+         delta_c = map(c_hat, ~c_hat(.x,c_change, c_hat)))
 
 
 
