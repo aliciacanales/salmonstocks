@@ -56,6 +56,11 @@ c_hat <- function(w, c_change, c_hat_nls){ #can probably remove p_hat_nls
   c <- (w * c_change) + c_hat_nls
 }
 
+## Big Function
+S <- function(p, c){
+  equilibrium <- (p-1)c
+}
+
 
 
 
