@@ -48,12 +48,12 @@ s_fun <- function(population, w, p_change, c_change){
 
 ## Calculate change in p_hat which will be put into "big equation"
 ## This really means: P is a function of Beta(passage) * w(i) + p_hat (from NLS)
-p_hat <- function(p_hat,p_change, w){ #can probably remove p_hat_nls
+p_hat <- function(p_hat,p_change, w){ 
   p <- (w * p_change) + p_hat
 }
 
 ## Calculate change in c_hat which will be put into "big equation"
-c_hat <- function(c_hat, c_change, w){ #can probably remove p_hat_nls
+c_hat <- function(c_hat, c_change, w){ 
   c <- (w * c_change) + c_hat
 }
 
