@@ -40,10 +40,10 @@ calculate_return_investment <- function(p, c, alpha, beta, weight){
 }
 
 ## Big Function
-# s_fun <- function(population, w, p_change, c_change){
-#   eq <- (p_hat(weight, p_change) - 1) * c_hat(weight,c_change)
-#   return(eq)
-# }
+s_fun <- function(population, w, p_change, c_change){
+  eq <- (p_hat(weight, p_change) - 1) * c_hat(weight,c_change)
+  return(eq)
+}
 
 ## Calculate change in p_hat which will be put into "big equation"
 # This really means: P is a function of Alpha(passage) * w(i) + p_hat (from nls)
@@ -69,6 +69,10 @@ new_stock <- equilibrium_all %>%
          delta_c = map(c_hat, ~c_hat(.x,c_change, weight)))
 
 new_stock2 <- pmap(new_stock, ~s_fun(..1, ..3, ..4, ..5))
+
+
+
+## Make plot with new S, if possible
 
 
 
