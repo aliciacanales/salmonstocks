@@ -39,27 +39,24 @@ calculate_return_investment <- function(p, c, alpha, beta, weight){
   return(y)
 }
 
-## Big Function - can we instead use the simpler function 's_fun_new' to calculate s?
+## Big Function - can we instead use the simpler function below (s_fun_new) to calculate s? - OS
 s_fun <- function(population, weight, p_change, c_change){
   eq <- (p_hat(weight, p_change) - 1) * c_hat(weight,c_change)
   return(eq)
 }
 
-## for the "big" function, can we not use simpler notation and use this instead?
 s_fun_new <- function(delta_p, delta_c){
   s_invest <- (delta_p-1)*delta_c
   return(s_invest)
 }
 
-## Calculate change in p_hat which will be put into "big equation"
-# This really means: P is a function of Alpha(passage) * w(i) + p_hat (from nls)
-p_hat <- function(p_hat,p_change, weight){ 
+## Calculate change in p_hat which will be put into "big equation" (This means: P is a function of Alpha(passage) * w(i) + p_hat (from nls))
+p_hat_fun <- function(p_hat,p_change, weight){ 
   p <- (weight * p_change) + p_hat
 }
 
-## Calculate change in c_hat which will be put into "big equation"
-# This really means: c is a function of Beta(passage) * w(i) + c_hat (from nls)
-c_hat <- function(c_hat, c_change, weight){ 
+## Calculate change in c_hat which will be put into "big equation" (This means: c is a function of Beta(passage) * w(i) + c_hat (from nls))
+c_hat_fun <- function(c_hat, c_change, weight){ 
   c <- (weight * c_change) + c_hat
 }
 
@@ -71,19 +68,43 @@ new_stock <- equilibrium_all %>%
   mutate(weight = 10,
          p_change = .01,
          c_change = .01,
-         delta_p = map(p_hat, ~p_hat(.x,p_change, weight)),
-         delta_c = map(c_hat, ~c_hat(.x,c_change, weight)),
+         delta_p = map(p_hat, ~p_hat_fun(.x,p_change, weight)),
+         delta_c = map(c_hat, ~c_hat_fun(.x,c_change, weight)),
          s_baseline = pmap(list(p_hat,c_hat),s_fun_new), #calculate s before investment to compare with s after investment
          s_invest = pmap(c(delta_p,delta_c),s_fun_new)) # calculate s after investment using new p and c
-## I created a new function "s_fun_new", but feel free to change naming. I called it 'new' just to be clear that is is different from the other - OS
+## I created a new function "s_fun_new", but feel free to change naming -- called it 'new' just to be clear that is is different from the other - OS
+
+## calculate difference in investment to visualize
+new_stock <- new_stock %>% 
+  group_by(population) %>% 
+  mutate(return_investment = s_invest-s_baseline)
 
 
 new_stock2 <- pmap(new_stock, ~s_fun(..1, ..3, ..4, ..5))
 
 
 
+#############
+# Solve allocation with MPT
+#############
 
-## Make plot with new S, if possible
+
+
+#############
+## Visualizations
+ggplot(new_stock, aes(x=population, y=p_hat)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggplot(new_stock, aes(x=population, y=c_hat)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+
+ggplot(new_stock, aes(x=population, y=s_invest)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) #not working
+
+
 
 
 
