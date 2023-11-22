@@ -39,30 +39,25 @@ calculate_return_investment <- function(p, c, alpha, beta, weight){
   return(y)
 }
 
-### Notes from Nathan's office hours on 11/17
 ## Big Function
-s_fun <- function(population, w, p_change, c_change){
-  eq <- (p_hat(weight, p_change) - 1) * c_hat(weight,c_change)
-  return(eq)
-}
+# s_fun <- function(population, w, p_change, c_change){
+#   eq <- (p_hat(weight, p_change) - 1) * c_hat(weight,c_change)
+#   return(eq)
+# }
 
 ## Calculate change in p_hat which will be put into "big equation"
-## This really means: P is a function of Beta(passage) * w(i) + p_hat (from NLS)
+# This really means: P is a function of Alpha(passage) * w(i) + p_hat (from nls)
 p_hat <- function(p_hat,p_change, w){ 
   p <- (w * p_change) + p_hat
 }
 
 ## Calculate change in c_hat which will be put into "big equation"
+# This really means: c is a function of Beta(passage) * w(i) + c_hat (from nls)
 c_hat <- function(c_hat, c_change, w){ 
   c <- (w * c_change) + c_hat
 }
 
-## Big Function
-S <- function(p, c){
-  equilibrium <- (p-1)c
-}
-
-## bringing out the coefficients into seperate columns and applying a $10 investment which will have a .01 increase
+## bringing out the coefficients into separate columns and applying a $10 investment which will have a .01 increase
 new_stock <- equilibrium_all %>% 
   mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
