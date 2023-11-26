@@ -1,0 +1,1 @@
+## Use Tamma and Nathan's overleaf as a guide for estimating variance
