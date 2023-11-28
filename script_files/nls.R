@@ -81,9 +81,29 @@ new_stock <- new_stock %>%
 
 new_stock2 <- pmap(new_stock, ~s_fun(..1, ..3, ..4, ..5))
 
+## Create a set of budgets for the ESU
+budget <- 
+
 ## Create a vector of weight allocation options
 w <- seq(10,1000, by=10)
 w
+
+
+
+## Need to come up with budgets for the entire ESU and randomly assign weights to populations for a given budget
+## Come up with all possible options.
+## Need to call in this dataframe for weight in p_hat_fun and c_hat_fun
+
+## Creating a dataframe of budgets and weights
+budget <- data.frame(matrix(10,ncol=21)) #will need to do this for many budgets, but starting with this. Nest budgets
+colnames(budget) <- c('1':'21')
+rownames(budget) <- "budget"
+
+w_matrix <- diag(21)
+colnames(w_matrix) <- c('1':'21')
+#rownames(w_matrix) <- 
+
+budget_weight <- rbind(budget,w_matrix)
 
 
 #############
