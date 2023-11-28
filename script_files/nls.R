@@ -73,23 +73,10 @@ new_stock <- equilibrium_all %>%
          s_baseline = pmap(list(p_hat,c_hat),s_fun), #calculate s before investment to compare with s after investment
          s_invest = pmap(c(delta_p,delta_c),s_fun)) # calculate s after investment using new p and c
 
-# ## test with weight allocation of $30 to verify all is running correctly
-# new_stock_30 <- equilibrium_all %>% 
-#   mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
-#          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
-#   select(population, p_hat, c_hat) %>% 
-#   mutate(weight = 30,
-#          p_change = .01,
-#          c_change = .01,
-#          delta_p = map(p_hat, ~p_hat_fun(.x,p_change, weight)),
-#          delta_c = map(c_hat, ~c_hat_fun(.x,c_change, weight)),
-#          s_baseline = pmap(list(p_hat,c_hat),s_fun), #calculate s before investment to compare with s after investment
-#          s_invest = pmap(c(delta_p,delta_c),s_fun))
-
 ## calculate difference in investment to visualize
 new_stock <- new_stock %>% 
   group_by(population) %>% 
-  mutate(return_investment = s_invest-s_baseline)
+  mutate(return_investment = s_invest - s_baseline)
 
 
 new_stock2 <- pmap(new_stock, ~s_fun(..1, ..3, ..4, ..5))
@@ -118,31 +105,3 @@ ggplot(new_stock, aes(x=population, y=c_hat)) +
 ggplot(new_stock, aes(x=population, y=s_invest)) +
   geom_point() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) #not working
-
-
-
-
-
-###################################################################################################################################################################################
-## Don't think we need any of this 
-
-
-# # Official outputs for p hat and c hat
-# broom::tidy(run_nls)
-# 
-# nls_predict<-alsea_coho %>% 
-#   mutate(predict=predict(run_nls,newdata=.))
-# 
-# ggplot(data=nls_predict)+
-#   geom_point(aes(x=year,y=alsea))+
-#   geom_path(aes(x=year,y=predict),color='red')+
-#   theme_minimal()
-# 
-# ## tables of nls values for control and first run. The productivity and capacity are negative... shouldn't they be positive?
-# broom::tidy(control_nls) %>% 
-#   kable(caption = "Control NLS") %>% 
-#   kable_classic()
-# 
-# broom::tidy(run_nls) %>% 
-#   kable(caption = "Original NLS") %>% 
-#   kable_classic()
