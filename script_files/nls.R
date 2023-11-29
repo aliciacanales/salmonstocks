@@ -73,6 +73,13 @@ new_stock <- equilibrium_all %>%
          s_baseline = pmap(list(p_hat,c_hat),s_fun), #calculate s before investment to compare with s after investment
          s_invest = pmap(c(delta_p,delta_c),s_fun)) # calculate s after investment using new p and c
 
+## we want it to be proportional ?
+## p hat prime  = phat_nls (1 + p_change * weight /10) --> this is a scaling factor instead of adding onto it 
+## impacts per dollar and how much dollars we gave to a stream to paramertize it 
+
+## to nest is under purrr list()
+## start with a budget of 1 give it different weights
+
 ## calculate difference in investment to visualize
 new_stock <- new_stock %>% 
   group_by(population) %>% 
