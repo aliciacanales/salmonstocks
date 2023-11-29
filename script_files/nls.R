@@ -52,12 +52,12 @@ s_fun <- function(delta_p, delta_c){
 
 ## Calculate change in p_hat which will be put into "big equation" (This means: P is a function of Alpha(passage) * w(i) + p_hat (from nls))
 p_hat_fun <- function(p_hat,p_change, weight){ 
-  p <- ((weight/10) * p_change) + p_hat # should weight be "w/10" so that we multiply by the number of investments and not the dollar amount? - OS
+  p <- ((weight) * p_change) + p_hat # should weight be "w/10" so that we multiply by the number of investments and not the dollar amount? - OS
 }
 
 ## Calculate change in c_hat which will be put into "big equation" (This means: c is a function of Beta(passage) * w(i) + c_hat (from nls))
 c_hat_fun <- function(c_hat, c_change, weight){ 
-  c <- ((weight/10) * c_change) + c_hat
+  c <- ((weight) * c_change) + c_hat
 }
 
 ## bringing out the coefficients into separate columns and applying a $10 investment which will have a .01 increase
@@ -79,7 +79,7 @@ new_stock <- new_stock %>%
   mutate(return_investment = s_invest - s_baseline)
 
 
-new_stock2 <- pmap(new_stock, ~s_fun(..1, ..3, ..4, ..5))
+# new_stock2 <- pmap(new_stock, ~s_fun(..1, ..3, ..4, ..5))
 
 
 
