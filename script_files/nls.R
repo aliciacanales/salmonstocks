@@ -87,6 +87,7 @@ new_stock <- new_stock %>%
  w <- seq(10,1000, by=10)
 w
 
+wgt <- runif(n=)
 
 
 ## Need to come up with budgets for the entire ESU and randomly assign weights to populations for a given budget
