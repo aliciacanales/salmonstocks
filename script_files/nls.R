@@ -65,7 +65,7 @@ new_stock <- equilibrium_all %>%
   mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
   select(population, p_hat, c_hat) %>% 
-  mutate(weight = 10,
+  mutate(weight = ,
          p_change = .01,
          c_change = .01,
          delta_p = map(p_hat, ~p_hat_fun(.x,p_change, weight)),
@@ -81,7 +81,6 @@ new_stock <- new_stock %>%
 
 # new_stock2 <- pmap(new_stock, ~s_fun(..1, ..3, ..4, ..5))
 
-.
 
 ## Create a vector of weight allocation options
  w <- seq(10,1000, by=10)
