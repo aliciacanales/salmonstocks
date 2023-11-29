@@ -60,6 +60,7 @@ c_hat_fun <- function(c_hat, c_change, weight){
   c <- ((weight) * c_change) + c_hat
 }
 
+wgt <- data.frame(c(10,20,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
 ## bringing out the coefficients into separate columns and applying a $10 investment which will have a .01 increase
 new_stock <- equilibrium_all %>% 
   mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
