@@ -88,6 +88,7 @@ new_stock <- new_stock %>%
 w
 
 wgt <- runif(n=)
+#test
 
 
 ## Need to come up with budgets for the entire ESU and randomly assign weights to populations for a given budget
