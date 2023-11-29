@@ -84,7 +84,7 @@ new_stock2 <- pmap(new_stock, ~s_fun(..1, ..3, ..4, ..5))
 
 
 ## Create a vector of weight allocation options
-w <- seq(10,1000, by=10)
+ w <- seq(10,1000, by=10)
 w
 
 
