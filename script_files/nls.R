@@ -77,19 +77,14 @@ new_stock <- equilibrium_all %>%
 
 ## need to sum the individual population s before and after investment to get ESU stock abundance
 
-
 ## calculate difference in investment to visualize
 new_stock <- new_stock %>% 
   group_by(population) %>% 
   mutate(return_investment = s_invest - s_baseline)
 
 
-# new_stock2 <- pmap(new_stock, ~s_fun(..1, ..3, ..4, ..5))
-
-.
-
 ## Create a vector of weight allocation options
- w <- seq(10,1000, by=10)
+w <- seq(10,1000, by=10)
 w
 
 wgt <- runif(n=)
