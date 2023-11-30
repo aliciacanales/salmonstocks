@@ -50,15 +50,16 @@ s_fun <- function(delta_p, delta_c){
   return(s_invest)
 }
 
-## Calculate change in p_hat which will be put into "big equation" (This means: P is a function of Alpha(passage) * w(i) + p_hat (from nls))
+## Calculate change in p_hat which will be put into "big equation"
 p_hat_fun <- function(p_hat,p_change, weight){ 
-  p <- ((weight) * p_change) + p_hat # should weight be "w/10" so that we multiply by the number of investments and not the dollar amount? - OS
+  p <- p_hat * (1 + p_change * weight) # don't need to divide weight by 10 because we already accounted for it with p_change
 }
 
-## Calculate change in c_hat which will be put into "big equation" (This means: c is a function of Beta(passage) * w(i) + c_hat (from nls))
+## Calculate change in c_hat which will be put into "big equation"
 c_hat_fun <- function(c_hat, c_change, weight){ 
-  c <- ((weight) * c_change) + c_hat
+  c <- c_hat * (1 + c_change * weight)
 }
+
 
 wgt <- data.frame(c(10,20,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
 ## bringing out the coefficients into separate columns and applying a $10 investment which will have a .01 increase
@@ -67,12 +68,15 @@ new_stock <- equilibrium_all %>%
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
   select(population, p_hat, c_hat) %>% 
   mutate(weight = 10,
-         p_change = .01,
-         c_change = .01,
+         p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
+         c_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in c
          delta_p = map(p_hat, ~p_hat_fun(.x,p_change, weight)),
          delta_c = map(c_hat, ~c_hat_fun(.x,c_change, weight)),
-         s_baseline = pmap(list(p_hat,c_hat),s_fun), #calculate s before investment to compare with s after investment
-         s_invest = pmap(c(delta_p,delta_c),s_fun)) # calculate s after investment using new p and c
+         s_baseline = pmap(list(p_hat,c_hat),s_fun), #calculate s for each population before investment to compare with s after investment
+         s_invest = pmap(c(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
+
+## need to sum the individual population s before and after investment to get ESU stock abundance
+
 
 ## calculate difference in investment to visualize
 new_stock <- new_stock %>% 
