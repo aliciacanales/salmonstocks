@@ -83,26 +83,39 @@ new_stock <- new_stock %>%
   mutate(return_investment = s_invest - s_baseline)
 
 
-## Create a vector of weight allocation options
-w <- seq(10,1000, by=10)
-w
-
-wgt <- runif(n=)
-#test
-
+################
+# Adding budgets and weights
+################
 
 ## Need to come up with budgets for the entire ESU and randomly assign weights to populations for a given budget
-## Come up with all possible options.
-## Need to call in this dataframe for weight in p_hat_fun and c_hat_fun
+## Start with a budget of $10, and make 21 portfolios with weight options
+## Call in this dataframe for weight in p_hat_fun and c_hat_fun
+
+# weights allocations for a given portfolio budget
+# nest()
+# portfolio budgets
+
+
+## create a dataframe of all portfolio weight allocations for a budget of $10
+# weight <- diag(21)
+# colnames(weight) <- c('1':'21')
+
+# weight <- weight %>% 
+#   nest()
+
 
 ## Creating a dataframe of budgets and weights
-budget <- data.frame(matrix(10,ncol=21)) #will need to do this for many budgets, but starting with this. Will want to nest budgets.
+budget <- data.frame(matrix(10,ncol=21)) # will need to do this for many budgets, but starting with 10. Will want to nest budgets and portfolio weights.
 colnames(budget) <- c('1':'21')
 rownames(budget) <- "budget"
 
-# randomize weights, but need to fix this to a given budget
+
+## randomize portfolio weights, but need to fix this to a given budget
 weight_matrix <- as.data.frame(matrix(round(runif(n=21*21, min=0, max=1), 0), nrow=21))
 colnames(weight_matrix) <- c('1':'21') # Or add row and sum weight
+
+weight_matrix <- weight_matrix %>% 
+  nest()
 
 budget_weight <- rbind(budget,weight_matrix)
 
