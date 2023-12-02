@@ -60,27 +60,52 @@ c_hat_fun <- function(c_hat, c_change, weight){
   c <- c_hat * (1 + c_change * weight)
 }
 
+## create 5
+wgt <- data.frame(weight=c(10,20,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
 
-wgt <- data.frame(c(10,20,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
 ## bringing out the coefficients into separate columns and applying a $10 investment which will have a .01 increase
 new_stock <- equilibrium_all %>% 
   mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
-  select(population, p_hat, c_hat) %>% 
-  mutate(weight = 10,
-         p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
+  select(population, p_hat, c_hat) %>%
+  cbind(wgt) %>% 
+  mutate(p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
          c_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in c
-         delta_p = map(p_hat, ~p_hat_fun(.x,p_change, weight)),
-         delta_c = map(c_hat, ~c_hat_fun(.x,c_change, weight)),
-         s_baseline = pmap(list(p_hat,c_hat),s_fun), #calculate s for each population before investment to compare with s after investment
-         s_invest = pmap(c(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
+         delta_p = map_dbl(p_hat, ~p_hat_fun(.x,p_change, weight)),
+         delta_c = map_dbl(c_hat, ~c_hat_fun(.x,c_change, weight)),
+         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), #calculate s for each population before investment to compare with s after investment
+         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
 
 ## need to sum the individual population s before and after investment to get ESU stock abundance
 
-## calculate difference in investment to visualize
-new_stock <- new_stock %>% 
+pop_var <- sapply(coho[2:22], var) 
+
+clean_var <- data.frame(var=pop_var[-18])
+
+
+## Varaince
+temp <- new_stock %>% 
   group_by(population) %>% 
-  mutate(return_investment = s_invest - s_baseline)
+  mutate(return_investment = s_invest - s_baseline) %>%
+  cbind(clean_var) %>% 
+  mutate(base_var = var * (s_baseline^2)) %>% 
+  mutate(invest_var = var *(s_invest^2)) %>% 
+  mutate(var_difference = invest_var-base_var) %>% 
+  mutate(square = return_investment^2)
+  #mutate(port_var = var / s_baseline *(return_investment^2))
+
+## portfolio mean (y axis)
+portfolio_return <- sum(new_stock$s_invest)
+portfolio_return
+
+variance_return <- sum(temp$port_var)
+
+
+
+
+
+
+
 
 
 ################
@@ -104,6 +129,18 @@ new_stock <- new_stock %>%
 #   nest()
 
 
+
+n=1000
+nvar=20
+set.seed(1)
+rand<-matrix(0,nrow=n,ncol=nvar)
+for(i in 1:n){
+  pull=runif(nvar)
+  rand[i,1:nvar]<-pull/sum(pull)
+  
+}
+
+
 ## Creating a dataframe of budgets and weights
 budget <- data.frame(matrix(10,ncol=21)) # will need to do this for many budgets, but starting with 10. Will want to nest budgets and portfolio weights.
 colnames(budget) <- c('1':'21')
@@ -111,7 +148,7 @@ rownames(budget) <- "budget"
 
 
 ## randomize portfolio weights, but need to fix this to a given budget
-weight_matrix <- as.data.frame(matrix(round(runif(n=21*21, min=0, max=1), 0), nrow=21))
+weight_matrix <- as.data.frame(matrix(round(runif(n=21*21, min=0, max=10), 0), nrow=21))
 colnames(weight_matrix) <- c('1':'21') # Or add row and sum weight
 
 weight_matrix <- weight_matrix %>% 
