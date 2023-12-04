@@ -60,8 +60,19 @@ c_hat_fun <- function(c_hat, c_change, weight){
   c <- c_hat * (1 + c_change * weight)
 }
 
-## create 5
-wgt <- data.frame(weight=c(10,20,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0))
+## create 10 Portfolios with weights that sum to 100
+wgt_1 <- data.frame(weight=c(3,7,0,16,1,9,0,2,0,4,0,13,9,5,2,8,4,5,0,12))
+wgt_2 <- data.frame(weight=c(8,1,2,7,4,0,2,5,12,1,14,3,7,5,8,3,1,8,3,6))
+wgt_3 <- data.frame(weight=c(0,9,4,2,7,8,2,3,0,4,3,5,8,14,6,3,4,5,10,3))
+wgt_4 <- data.frame(weight=c(4,5,3,11,4,1,6,6,7,2,9,8,1,0,6,7,2,9,5,4))
+wgt_5 <- data.frame(weight=c(7,8,4,0,3,4,11,8,2,1,6,3,9,3,7,5,1,3,8,7))
+wgt_6 <- data.frame(weight=c(10,2,5,1,7,4,9,2,3,0,2,14,3,10,2,3,5,1,9,8))
+wgt_7 <- data.frame(weight=c(5,6,3,4,8,7,5,5,4,6,3,4,8,7,5,4,0,9,5,2))
+wgt_8 <- data.frame(weight=c(1,2,12,6,3,9,4,2,8,0,3,0,7,7,5,11,3,6,3,8))
+wgt_9 <- data.frame(weight=c(3,7,1,16,4,2,7,8,8,6,0,3,8,2,11,1,1,5,0,7))
+wgt_10 <- data.frame(weight=c(9,6,3,5,1,3,8,0,9,13,2,1,7,2,1,12,8,3,2,5))
+sum(wgt_10$weight)
+
 
 ## bringing out the coefficients into separate columns and applying a $10 investment which will have a .01 increase
 new_stock <- equilibrium_all %>% 
@@ -90,7 +101,7 @@ temp <- new_stock %>%
   cbind(clean_var) %>% 
   mutate(base_var = var * (s_baseline^2)) %>% 
   mutate(invest_var = var *(s_invest^2)) %>% 
-  mutate(var_difference = invest_var-base_var) %>% 
+  mutate(var_difference = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
   mutate(square = return_investment^2)
   #mutate(port_var = var / s_baseline *(return_investment^2))
 
