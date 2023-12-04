@@ -130,3 +130,4 @@ ggplot(new_stock, aes(x=population, y=c_hat)) +
 ggplot(new_stock, aes(x=population, y=s_invest)) +
   geom_point() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) #not working
+.
