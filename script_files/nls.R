@@ -395,10 +395,15 @@ var_and_invest_stock <- data.frame(total = colSums(portfolio_var[,-1])) %>%
 
 ## Combine the sum return and variance for the ESU and plot
 
+id <- c("Scenario 1", "Scenario 2", "Scenario 3", "Scenario 4", "Scenario 5", "Scenario 6", "Scenario 7", "Scenario 8", "Scenario 9","Scenario 10")
 
 ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
-  geom_point(colour = 'lightblue', size = 2) + theme_minimal() +
-  labs(x = 'Variance', y = 'Mean Abundance')
+  geom_point(colour = 'lightgreen', size = 2) + 
+  theme_minimal() +
+  labs(x = 'Variance', y = 'Mean Abundance') + 
+  ggrepel::geom_text_repel(aes(label = id,
+            size = 2)) +
+  theme(legend.position = "none")
 
 
 
