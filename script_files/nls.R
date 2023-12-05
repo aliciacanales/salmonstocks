@@ -397,7 +397,8 @@ var_and_invest_stock <- data.frame(total = colSums(portfolio_var[,-1])) %>%
 
 
 ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
-  geom_point()
+  geom_point(colour = 'lightblue', size = 2) + theme_minimal() +
+  labs(x = 'Variance', y = 'Mean Abundance')
 
 
 
