@@ -367,8 +367,13 @@ portfolio_invest_s <- invested_stock_wgt1 %>%
         s_invest_wgt_7=invested_stock_wgt7$s_invest,
         s_invest_wgt_8=invested_stock_wgt8$s_invest,
         s_invest_wgt_9=invested_stock_wgt9$s_invest,
-        s_invest_wgt_10=invested_stock_wgt10$s_invest) %>%
-  adorn_totals("row") # new row called "Total" is the portfolio mean return from investment
+        s_invest_wgt_10=invested_stock_wgt10$s_invest) %>% 
+adorn_totals("row") # new row called "Total" is the portfolio mean return from investment
+
+total_invest_stock <- data.frame(total = colSums(portfolio_invest_s[,-1]))
+
+
+
 
 portfolio_var <- variance_wgt1 %>% 
   select(population, invest_var) %>% 
@@ -384,12 +389,15 @@ portfolio_var <- variance_wgt1 %>%
         invest_var_wgt10 = variance_wgt10$invest_var) %>% 
   adorn_totals("row") # new row called "total" is the portfolio variance from investment
   
-  
+total_variance <- data.frame(total = colSums(portfolio_var[,-1])) %>% 
+  rename("total_var" = "total") %>% 
+  cbind("total_stock_invest" = total_invest_stock)
 
 ## Combine the sum return and variance for the ESU and plot
 
 
-
+ggplot(total_variance, aes(x = total_var, y = total)) +
+  geom_point()
 
 
 
