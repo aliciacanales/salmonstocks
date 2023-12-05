@@ -389,14 +389,14 @@ portfolio_var <- variance_wgt1 %>%
         invest_var_wgt10 = variance_wgt10$invest_var) %>% 
   adorn_totals("row") # new row called "total" is the portfolio variance from investment
   
-total_variance <- data.frame(total = colSums(portfolio_var[,-1])) %>% 
+var_and_invest_stock <- data.frame(total = colSums(portfolio_var[,-1])) %>% 
   rename("total_var" = "total") %>% 
-  cbind("total_stock_invest" = total_invest_stock)
+  cbind("total_stock_invest" = total_invest_stock$total)
 
 ## Combine the sum return and variance for the ESU and plot
 
 
-ggplot(total_variance, aes(x = total_var, y = total)) +
+ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
   geom_point()
 
 
