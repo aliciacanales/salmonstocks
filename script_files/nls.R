@@ -391,7 +391,7 @@ portfolio_var <- variance_wgt1 %>%
   
 var_and_invest_stock <- data.frame(total = colSums(portfolio_var[,-1])) %>% 
   rename("total_var" = "total") %>% 
-  cbind("total_stock_invest" = total_invest_stock$total)
+  cbind("total_stock_invest" = total_invest_stock$total) ## there must be a better way to do this without making another dataset
 
 ## Combine the sum return and variance for the ESU and plot
 
