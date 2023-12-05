@@ -121,9 +121,9 @@ temp_variance <- invested_stock %>%
 portfolio_return <- sum(invested_stock$s_invest)
 
 #variance_return <- sum(temp$port_var)
-variance_return <- sum(temp$invest_var)
-variance_return_parcent_change <- mean(temp$var_percent_change) #average of the percent change in variance across the ESU
-variance_return_sum <- sum(temp$var_percent_change)
+variance_return <- sum(temp_variance$invest_var)
+variance_return_parcent_change <- mean(temp_variance$var_percent_change) #average of the percent change in variance across the ESU
+variance_return_sum <- sum(temp_variance$var_percent_change)
 
 
 ################
