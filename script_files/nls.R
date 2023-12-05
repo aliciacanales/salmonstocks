@@ -74,16 +74,16 @@ wgt_10 <- data.frame(weight=c(9,6,3,5,1,3,8,0,9,13,2,1,7,2,1,12,8,3,2,5))
 sum(wgt_1$weight)
 
 ## sum to 1000
-wgt_1 <- data.frame(weight=c(30,70,0,160,10,90,0,20,0,40,0,130,90,50,20,80,40,50,0,120))
-wgt_2 <- data.frame(weight=c(8,1,2,7,4,0,2,5,12,1,14,3,7,5,8,3,1,8,3,6))
-wgt_3 <- data.frame(weight=c(0,9,4,2,7,8,2,3,0,4,3,5,8,14,6,3,4,5,10,3))
-wgt_4 <- data.frame(weight=c(4,5,3,11,4,1,6,6,7,2,9,8,1,0,6,7,2,9,5,4))
-wgt_5 <- data.frame(weight=c(7,8,4,0,3,4,11,8,2,1,6,3,9,3,7,5,1,3,8,7))
-wgt_6 <- data.frame(weight=c(10,2,5,1,7,4,9,2,3,0,2,14,3,10,2,3,5,1,9,8))
-wgt_7 <- data.frame(weight=c(5,6,3,4,8,7,5,5,4,6,3,4,8,7,5,4,0,9,5,2))
-wgt_8 <- data.frame(weight=c(1,2,12,6,3,9,4,2,8,0,3,0,7,7,5,11,3,6,3,8))
-wgt_9 <- data.frame(weight=c(3,7,1,16,4,2,7,8,8,6,0,3,8,2,11,1,1,5,0,7))
-wgt_10 <- data.frame(weight=c(9,6,3,5,1,3,8,0,9,13,2,1,7,2,1,12,8,3,2,5))
+wgt_1 <- data.frame(weight=c(30, 70, 0, 160, 10, 90, 0, 20, 0, 40, 0, 130, 90, 50, 20, 80, 40, 50, 0, 120))
+wgt_2 <- data.frame(weight=c(0, 0, 60 , 10, 40, 70 , 200, 120, 50, 40, 30, 10, 10, 90, 0, 140, 10, 20, 30, 70))
+wgt_3 <- data.frame(weight=c(100, 60, 70, 20, 20, 10, 50, 0, 0, 30, 0, 90, 70, 40, 60, 140, 120, 30, 80, 10))
+wgt_4 <- data.frame(weight=c(200, 130, 0, 10, 40, 30, 50, 0, 0, 30, 40, 70, 80, 20, 0, 180, 90, 10, 20, 0))
+wgt_5 <- data.frame(weight=c(70, 20, 30, 30, 20, 60, 70, 100, 50, 0, 130, 70, 60, 0, 10, 50, 110, 90, 30, 0))
+wgt_6 <- data.frame(weight=c(0, 30, 20, 70, 200, 10, 10, 40, 0, 60, 30, 10, 50, 70, 90, 140, 20, 20, 30, 100))
+wgt_7 <- data.frame(weight=c(40, 80, 100, 40, 30, 10, 140, 20, 20, 10, 60, 30, 40, 30, 10, 200, 80, 20, 10, 30))
+wgt_8 <- data.frame(weight=c(10, 40, 50, 0, 40, 210, 120, 10, 50, 100, 100, 30, 10, 10, 70, 70, 0, 50, 10, 20))
+wgt_9 <- data.frame(weight=c(190, 40, 70, 0, 60, 20, 70, 0, 30, 140, 40, 30, 40, 10, 20, 80, 120, 0, 40, 0))
+wgt_10 <- data.frame(weight=c(40, 150, 10, 80, 50, 0, 40, 150, 10, 90, 50, 20, 20, 30, 110, 60, 20, 10, 20, 40))
 sum(wgt_1$weight)
 
 
@@ -129,6 +129,8 @@ variance_return_sum <- sum(temp$var_percent_change)
 ################
 # Running our defined portfolio scenarios from above (will automate this)
 ################
+
+
 
 ## wgt_1
 invested_stock_wgt1 <- equilibrium_all %>% 
@@ -425,3 +427,4 @@ ggplot(new_stock, aes(x=population, y=c_hat)) +
 ggplot(new_stock, aes(x=population, y=s_invest)) +
   geom_point() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) #not working
+.
