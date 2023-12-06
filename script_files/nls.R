@@ -367,8 +367,7 @@ portfolio_invest_s <- invested_stock_wgt1 %>%
         s_invest_wgt_7=invested_stock_wgt7$s_invest,
         s_invest_wgt_8=invested_stock_wgt8$s_invest,
         s_invest_wgt_9=invested_stock_wgt9$s_invest,
-        s_invest_wgt_10=invested_stock_wgt10$s_invest) %>% 
-adorn_totals("row") # new row called "Total" is the portfolio mean return from investment
+        s_invest_wgt_10=invested_stock_wgt10$s_invest)
 
 total_invest_stock <- data.frame(total = colSums(portfolio_invest_s[,-1]))
 
@@ -386,12 +385,36 @@ portfolio_var <- variance_wgt1 %>%
         invest_var_wgt7 = variance_wgt7$invest_var,
         invest_var_wgt8 = variance_wgt8$invest_var,
         invest_var_wgt9 = variance_wgt9$invest_var,
-        invest_var_wgt10 = variance_wgt10$invest_var) %>% 
-  adorn_totals("row") # new row called "total" is the portfolio variance from investment
+        invest_var_wgt10 = variance_wgt10$invest_var)
+
   
 var_and_invest_stock <- data.frame(total = colSums(portfolio_var[,-1])) %>% 
   rename("total_var" = "total") %>% 
   cbind("total_stock_invest" = total_invest_stock$total) ## there must be a better way to do this without making another dataset
+
+
+## Variance percent change
+portfolio_var_percent_change <- variance_wgt1 %>% 
+  select(population, var_percent_change) %>% 
+  rename("var_percent_change_wgt1" = "var_percent_change") %>% 
+  cbind(var_percent_change_wgt2 = variance_wgt2$var_percent_change,
+        var_percent_change_wgt3 = variance_wgt3$var_percent_change,
+        var_percent_change_wgt4 = variance_wgt4$var_percent_change,
+        var_percent_change_wgt5 = variance_wgt5$var_percent_change,
+        var_percent_change_wgt6 = variance_wgt6$var_percent_change,
+        var_percent_change_wgt7 = variance_wgt7$var_percent_change,
+        var_percent_change_wgt8 = variance_wgt8$var_percent_change,
+        var_percent_change_wgt9 = variance_wgt9$var_percent_change,
+        var_percent_change_wgt10 = variance_wgt10$var_percent_change)
+
+var_percent_change_and_invest_stock <- data.frame(total = colMeans(portfolio_var_percent_change[,-1])) %>% 
+  rename("mean_percent_change_var" = "total") %>% 
+  cbind("total_stock_invest" = total_invest_stock$total)
+
+
+
+
+
 
 ## Combine the sum return and variance for the ESU and plot
 
@@ -403,6 +426,16 @@ ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
   labs(x = 'Variance', y = 'Mean Abundance') + 
   ggrepel::geom_text_repel(aes(label = id,
             size = 2)) +
+  theme(legend.position = "none")
+
+
+## Percent Change of Variance
+ggplot(var_percent_change_and_invest_stock, aes(x = mean_percent_change_var, y = total_stock_invest)) +
+  geom_point(colour = 'lightgreen', size = 2) + 
+  theme_minimal() +
+  labs(x = 'Percent Change of Variance with Investment', y = 'Mean Abundance') + 
+  ggrepel::geom_text_repel(aes(label = id,
+                               size = 2)) +
   theme(legend.position = "none")
 
 
