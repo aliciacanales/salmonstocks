@@ -418,10 +418,10 @@ var_percent_change_and_invest_stock <- data.frame(total = colMeans(portfolio_var
 
 ## Combine the sum return and variance for the ESU and plot
 
-id <- c("Scenario 1", "Scenario 2", "Scenario 3", "Scenario 4", "Scenario 5", "Scenario 6", "Scenario 7", "Scenario 8", "Scenario 9","Scenario 10")
+id <- c("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9","P10")
 
 ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
-  geom_point(colour = 'lightgreen', size = 2) + 
+  geom_point(colour = 'darkcyan', size = 2) + 
   theme_minimal() +
   labs(x = 'Variance', y = 'Mean Abundance') + 
   ggrepel::geom_text_repel(aes(label = id,
@@ -431,9 +431,9 @@ ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
 
 ## Percent Change of Variance
 ggplot(var_percent_change_and_invest_stock, aes(x = mean_percent_change_var, y = total_stock_invest)) +
-  geom_point(colour = 'lightgreen', size = 2) + 
+  geom_point(colour = 'darkcyan', size = 2) + 
   theme_minimal() +
-  labs(x = 'Percent Change of Variance with Investment', y = 'Mean Abundance') + 
+  labs(x = 'Percent Change of Variance from Baseline with Investment', y = 'Mean Abundance') + 
   ggrepel::geom_text_repel(aes(label = id,
                                size = 2)) +
   theme(legend.position = "none")
