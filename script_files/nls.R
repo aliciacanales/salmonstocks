@@ -426,7 +426,7 @@ ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
              xend = 3.892000e+17, yend = 211781.8,
              colour = 'red', curvature = -.3) +
   theme_minimal() +
-  labs(x = 'Variance', y = 'Mean Abundance') + 
+  labs(x = 'Variance', y = 'ESU Abundance') + 
   ggrepel::geom_text_repel(aes(label = id,
             size = 2)) +
   theme(legend.position = "none")
@@ -439,7 +439,7 @@ ggplot(var_percent_change_and_invest_stock, aes(x = mean_percent_change_var, y =
              xend = 31.44946, yend = 211477.7,
              colour = 'red', curvature = -.3) +
   theme_minimal() +
-  labs(x = 'Percent Change of Variance from Baseline with Investment', y = 'Mean Abundance') + 
+  labs(x = 'Percent Change of Variance from Baseline with Investment', y = 'ESU Abundance') + 
   ggrepel::geom_text_repel(aes(label = id,
                                size = 2)) +
   theme(legend.position = "none")
