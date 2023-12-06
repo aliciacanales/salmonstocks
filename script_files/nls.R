@@ -422,6 +422,9 @@ id <- c("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9","P10")
 
 ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
   geom_point(colour = 'darkcyan', size = 2) + 
+  geom_curve(x = 3.521570e+17, y = 205623.0,
+             xend = 3.892000e+17, yend = 211781.8,
+             colour = 'red', curvature = -.3) +
   theme_minimal() +
   labs(x = 'Variance', y = 'Mean Abundance') + 
   ggrepel::geom_text_repel(aes(label = id,
