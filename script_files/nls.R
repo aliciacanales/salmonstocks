@@ -434,7 +434,10 @@ ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
 
 ## Percent Change of Variance
 ggplot(var_percent_change_and_invest_stock, aes(x = mean_percent_change_var, y = total_stock_invest)) +
-  geom_point(colour = 'darkcyan', size = 2) + 
+  geom_point(colour = 'darkcyan', size = 2) +
+  geom_curve(x = 26.25655, y = 209264.2,
+             xend = 31.44946, yend = 211477.7,
+             colour = 'red', curvature = -.3) +
   theme_minimal() +
   labs(x = 'Percent Change of Variance from Baseline with Investment', y = 'Mean Abundance') + 
   ggrepel::geom_text_repel(aes(label = id,
