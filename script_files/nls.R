@@ -387,6 +387,10 @@ portfolio_var <- variance_wgt1 %>%
         invest_var_wgt9 = variance_wgt9$invest_var,
         invest_var_wgt10 = variance_wgt10$invest_var)
 
+## calculated population at baseline
+sum(invested_stock_wgt1$s_baseline)
+sum(variance_wgt1$base_var)
+
   
 var_and_invest_stock <- data.frame(total = colSums(portfolio_var[,-1])) %>% 
   rename("total_var" = "total") %>% 
@@ -426,10 +430,32 @@ ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
              xend = 3.892000e+17, yend = 211781.8,
              colour = 'red', curvature = -.3) +
   theme_minimal() +
-  labs(x = 'Variance', y = 'ESU Abundance') + 
+  labs(x = 'Variance', y = 'ESU Abundance') +
+  scale_y_continuous(labels = comma) +
   ggrepel::geom_text_repel(aes(label = id,
             size = 2)) +
   theme(legend.position = "none")
+
+
+## Tamma and Nathan: Suggested addin the baseline stock abundance and variance
+# Baseline stock abundance: 187118.2
+# Baseline variance: 3.141711e+17
+
+## same ggplot as above, but add baseline population and variance
+ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
+  geom_point(colour = 'darkcyan', size = 2) + 
+  geom_curve(x = 3.521570e+17, y = 205623.0,
+             xend = 3.892000e+17, yend = 211781.8,
+             colour = 'red', curvature = -.3) +
+  geom_hline(yintercept=187118, linetype="dashed", color = "gray") +
+  geom_vline(xintercept=3.141711e+17, linetype="dashed", color = "gray") +
+  theme_minimal() +
+  labs(x = 'Variance', y = 'ESU Abundance') +
+  scale_y_continuous(labels = comma) +
+  ggrepel::geom_text_repel(aes(label = id,
+                               size = 2)) +
+  theme(legend.position = "none")
+
 
 
 ## Percent Change of Variance
@@ -443,6 +469,22 @@ ggplot(var_percent_change_and_invest_stock, aes(x = mean_percent_change_var, y =
   ggrepel::geom_text_repel(aes(label = id,
                                size = 2)) +
   theme(legend.position = "none")
+
+
+## Create table to show weights for portfolio 5
+weights_p5 <- invested_stock_wgt5 %>% 
+  select(population, weight) %>% 
+  pivot_wider(names_from = population, values_from = weight) %>%  # pivot wider
+
+rownames(weights_p5) <- c("Portfolio_5")
+
+table_weights_p5 <- weights_p5 %>% 
+  round(3) %>% 
+  kable(align = "c") %>% 
+  kable_styling(bootstrap_options = "striped",
+                position = "center", full_width = FALSE)
+
+table_weights_p5
 
 
 
