@@ -28,22 +28,6 @@ equilibrium_all <- coho_recruits %>%
   mutate(nls_model = map(data, ~all_nls(.x))) %>% 
   mutate(coeff=map(nls_model, ~coefficients(.x)))
 
-
-#####################
-
-### Hypothetical scenario to create framework: $10 of investment leads to a 1% increase in p and c
-
-# calculate_return_investment <- function(p, c, alpha, beta, weight){
-#   y = (((p*alpha(weight))-1)*(c*beta(weight)))
-#   return(y)
-# }
-
-## Big Function - can we instead use the simpler function below (s_fun_new) to calculate s? - OS
-# s_fun <- function(population, weight, p_change, c_change){
-#   eq <- (p_hat(weight, p_change) - 1) * c_hat(weight,c_change)
-#   return(eq)
-# }
-
 # Calculate s for population after investment
 s_fun <- function(delta_p, delta_c){
   s_invest <- (delta_p-1)*delta_c
@@ -160,12 +144,12 @@ invested_stock_wgt2 <- equilibrium_all %>%
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
   select(population, p_hat, c_hat) %>%
   cbind(wgt_2) %>% 
-  mutate(p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
-         c_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in c
+  mutate(p_change = .001, 
+         c_change = .001, 
          delta_p = map_dbl(p_hat, ~p_hat_fun(.x,p_change, weight)),
          delta_c = map_dbl(c_hat, ~c_hat_fun(.x,c_change, weight)),
-         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), # calculate s for each population before investment
-         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
+         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), 
+         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) 
 
 variance_wgt2 <- invested_stock_wgt2 %>% 
   group_by(population) %>% 
@@ -173,7 +157,7 @@ variance_wgt2 <- invested_stock_wgt2 %>%
   cbind(clean_var) %>% 
   mutate(base_var = var * (s_baseline^2)) %>% 
   mutate(invest_var = var *(s_invest^2)) %>% 
-  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
+  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% 
   mutate(square = return_investment^2)
 
 ## wgt_3
@@ -182,12 +166,12 @@ invested_stock_wgt3 <- equilibrium_all %>%
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
   select(population, p_hat, c_hat) %>%
   cbind(wgt_3) %>% 
-  mutate(p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
-         c_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in c
+  mutate(p_change = .001, 
+         c_change = .001, 
          delta_p = map_dbl(p_hat, ~p_hat_fun(.x,p_change, weight)),
          delta_c = map_dbl(c_hat, ~c_hat_fun(.x,c_change, weight)),
-         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), # calculate s for each population before investment
-         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
+         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), 
+         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) 
 
 variance_wgt3 <- invested_stock_wgt3 %>% 
   group_by(population) %>% 
@@ -195,7 +179,7 @@ variance_wgt3 <- invested_stock_wgt3 %>%
   cbind(clean_var) %>% 
   mutate(base_var = var * (s_baseline^2)) %>% 
   mutate(invest_var = var *(s_invest^2)) %>% 
-  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
+  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% 
   mutate(square = return_investment^2)
 
 ## wgt_4
@@ -204,12 +188,12 @@ invested_stock_wgt4 <- equilibrium_all %>%
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
   select(population, p_hat, c_hat) %>%
   cbind(wgt_4) %>% 
-  mutate(p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
-         c_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in c
+  mutate(p_change = .001, 
+         c_change = .001, 
          delta_p = map_dbl(p_hat, ~p_hat_fun(.x,p_change, weight)),
          delta_c = map_dbl(c_hat, ~c_hat_fun(.x,c_change, weight)),
-         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), # calculate s for each population before investment
-         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
+         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), 
+         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) 
 
 variance_wgt4 <- invested_stock_wgt4 %>% 
   group_by(population) %>% 
@@ -217,7 +201,7 @@ variance_wgt4 <- invested_stock_wgt4 %>%
   cbind(clean_var) %>% 
   mutate(base_var = var * (s_baseline^2)) %>% 
   mutate(invest_var = var *(s_invest^2)) %>% 
-  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
+  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% 
   mutate(square = return_investment^2)
 
 ## wgt_5
@@ -226,12 +210,12 @@ invested_stock_wgt5 <- equilibrium_all %>%
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
   select(population, p_hat, c_hat) %>%
   cbind(wgt_5) %>% 
-  mutate(p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
-         c_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in c
+  mutate(p_change = .001, 
+         c_change = .001, 
          delta_p = map_dbl(p_hat, ~p_hat_fun(.x,p_change, weight)),
          delta_c = map_dbl(c_hat, ~c_hat_fun(.x,c_change, weight)),
-         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), # calculate s for each population before investment
-         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
+         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), 
+         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) 
 
 variance_wgt5 <- invested_stock_wgt5 %>% 
   group_by(population) %>% 
@@ -239,7 +223,7 @@ variance_wgt5 <- invested_stock_wgt5 %>%
   cbind(clean_var) %>% 
   mutate(base_var = var * (s_baseline^2)) %>% 
   mutate(invest_var = var *(s_invest^2)) %>% 
-  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
+  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% 
   mutate(square = return_investment^2)
 
 ## wgt_6
@@ -248,12 +232,12 @@ invested_stock_wgt6 <- equilibrium_all %>%
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
   select(population, p_hat, c_hat) %>%
   cbind(wgt_6) %>% 
-  mutate(p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
-         c_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in c
+  mutate(p_change = .001, 
+         c_change = .001, 
          delta_p = map_dbl(p_hat, ~p_hat_fun(.x,p_change, weight)),
          delta_c = map_dbl(c_hat, ~c_hat_fun(.x,c_change, weight)),
-         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), # calculate s for each population before investment
-         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
+         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), 
+         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) 
 
 variance_wgt6 <- invested_stock_wgt6 %>% 
   group_by(population) %>% 
@@ -261,7 +245,7 @@ variance_wgt6 <- invested_stock_wgt6 %>%
   cbind(clean_var) %>% 
   mutate(base_var = var * (s_baseline^2)) %>% 
   mutate(invest_var = var *(s_invest^2)) %>% 
-  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
+  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% 
   mutate(square = return_investment^2)
 
 ## wgt_7
@@ -270,12 +254,12 @@ invested_stock_wgt7 <- equilibrium_all %>%
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
   select(population, p_hat, c_hat) %>%
   cbind(wgt_7) %>% 
-  mutate(p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
-         c_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in c
+  mutate(p_change = .001, 
+         c_change = .001, 
          delta_p = map_dbl(p_hat, ~p_hat_fun(.x,p_change, weight)),
          delta_c = map_dbl(c_hat, ~c_hat_fun(.x,c_change, weight)),
-         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), # calculate s for each population before investment
-         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
+         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), 
+         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) 
 
 variance_wgt7 <- invested_stock_wgt7 %>% 
   group_by(population) %>% 
@@ -283,7 +267,7 @@ variance_wgt7 <- invested_stock_wgt7 %>%
   cbind(clean_var) %>% 
   mutate(base_var = var * (s_baseline^2)) %>% 
   mutate(invest_var = var *(s_invest^2)) %>% 
-  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
+  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% 
   mutate(square = return_investment^2)
 
 ## wgt_8
@@ -292,12 +276,12 @@ invested_stock_wgt8 <- equilibrium_all %>%
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
   select(population, p_hat, c_hat) %>%
   cbind(wgt_8) %>% 
-  mutate(p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
-         c_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in c
+  mutate(p_change = .001, 
+         c_change = .001, 
          delta_p = map_dbl(p_hat, ~p_hat_fun(.x,p_change, weight)),
          delta_c = map_dbl(c_hat, ~c_hat_fun(.x,c_change, weight)),
-         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), # calculate s for each population before investment
-         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
+         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), 
+         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) 
 
 variance_wgt8 <- invested_stock_wgt8 %>% 
   group_by(population) %>% 
@@ -305,7 +289,7 @@ variance_wgt8 <- invested_stock_wgt8 %>%
   cbind(clean_var) %>% 
   mutate(base_var = var * (s_baseline^2)) %>% 
   mutate(invest_var = var *(s_invest^2)) %>% 
-  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
+  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% 
   mutate(square = return_investment^2)
 
 ## wgt_9
@@ -314,12 +298,12 @@ invested_stock_wgt9 <- equilibrium_all %>%
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
   select(population, p_hat, c_hat) %>%
   cbind(wgt_9) %>% 
-  mutate(p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
-         c_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in c
+  mutate(p_change = .001, 
+         c_change = .001, 
          delta_p = map_dbl(p_hat, ~p_hat_fun(.x,p_change, weight)),
          delta_c = map_dbl(c_hat, ~c_hat_fun(.x,c_change, weight)),
-         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), # calculate s for each population before investment
-         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
+         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), 
+         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) 
 
 variance_wgt9 <- invested_stock_wgt9 %>% 
   group_by(population) %>% 
@@ -327,7 +311,7 @@ variance_wgt9 <- invested_stock_wgt9 %>%
   cbind(clean_var) %>% 
   mutate(base_var = var * (s_baseline^2)) %>% 
   mutate(invest_var = var *(s_invest^2)) %>% 
-  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
+  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% 
   mutate(square = return_investment^2)
 
 ## wgt_10
@@ -336,12 +320,12 @@ invested_stock_wgt10 <- equilibrium_all %>%
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
   select(population, p_hat, c_hat) %>%
   cbind(wgt_10) %>% 
-  mutate(p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
-         c_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in c
+  mutate(p_change = .001, 
+         c_change = .001, 
          delta_p = map_dbl(p_hat, ~p_hat_fun(.x,p_change, weight)),
          delta_c = map_dbl(c_hat, ~c_hat_fun(.x,c_change, weight)),
-         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), # calculate s for each population before investment
-         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
+         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), 
+         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) 
 
 variance_wgt10 <- invested_stock_wgt10 %>% 
   group_by(population) %>% 
@@ -349,7 +333,7 @@ variance_wgt10 <- invested_stock_wgt10 %>%
   cbind(clean_var) %>% 
   mutate(base_var = var * (s_baseline^2)) %>% 
   mutate(invest_var = var *(s_invest^2)) %>% 
-  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
+  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% 
   mutate(square = return_investment^2)
 
 #############
@@ -372,8 +356,6 @@ portfolio_invest_s <- invested_stock_wgt1 %>%
 total_invest_stock <- data.frame(total = colSums(portfolio_invest_s[,-1]))
 
 
-
-
 portfolio_var <- variance_wgt1 %>% 
   select(population, invest_var) %>% 
   rename("invest_var_wgt1" = "invest_var") %>% 
@@ -394,7 +376,7 @@ sum(variance_wgt1$base_var)
   
 var_and_invest_stock <- data.frame(total = colSums(portfolio_var[,-1])) %>% 
   rename("total_var" = "total") %>% 
-  cbind("total_stock_invest" = total_invest_stock$total) ## there must be a better way to do this without making another dataset
+  cbind("total_stock_invest" = total_invest_stock$total) 
 
 
 ## Variance percent change
@@ -416,10 +398,6 @@ var_percent_change_and_invest_stock <- data.frame(total = colMeans(portfolio_var
   cbind("total_stock_invest" = total_invest_stock$total)
 
 
-
-
-
-
 ## Combine the sum return and variance for the ESU and plot
 
 id <- c("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9","P10")
@@ -436,12 +414,10 @@ ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
             size = 2)) +
   theme(legend.position = "none")
 
-
-## Tamma and Nathan: Suggested addin the baseline stock abundance and variance
 # Baseline stock abundance: 187118.2
 # Baseline variance: 3.141711e+17
 
-## same ggplot as above, but add baseline population and variance
+## Add baseline population and baseline variance
 ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
   geom_point(colour = 'darkcyan', size = 2) + 
   geom_curve(x = 3.521570e+17, y = 205623.0,
@@ -455,7 +431,6 @@ ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
   ggrepel::geom_text_repel(aes(label = id,
                                size = 2)) +
   theme(legend.position = "none")
-
 
 
 ## Percent Change of Variance
@@ -487,8 +462,6 @@ table_weights_p5 <- weights_p5 %>%
 table_weights_p5
 
 
-
-
 ################
 
 n=1000
@@ -503,23 +476,17 @@ for(i in 1:n){
 
 
 #############
-# Solve allocation with MPT
-#############
-
-
-
-#############
 ## Visualizations
 #############
-ggplot(new_stock, aes(x=population, y=p_hat)) +
-  geom_point() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
-
-ggplot(new_stock, aes(x=population, y=c_hat)) +
-  geom_point() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
-
-ggplot(new_stock, aes(x=population, y=s_invest)) +
-  geom_point() +
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) #not working
+# ggplot(new_stock, aes(x=population, y=p_hat)) +
+#   geom_point() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+# 
+# ggplot(new_stock, aes(x=population, y=c_hat)) +
+#   geom_point() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
+# 
+# ggplot(new_stock, aes(x=population, y=s_invest)) +
+#   geom_point() +
+#   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) #not working
 .
