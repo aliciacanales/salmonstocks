@@ -5,7 +5,7 @@ calculate_equil_abund <- function(abundance, p_hat, c_hat){
 }
 
 
-## creating function that will run over the entire dataset
+## Population model before investment 
 all_nls<- function(coho_recruits){
   
 #  browser()
@@ -28,7 +28,7 @@ equilibrium_all <- coho_recruits %>%
   mutate(nls_model = map(data, ~all_nls(.x))) %>% 
   mutate(coeff=map(nls_model, ~coefficients(.x)))
 
-# Calculate s for population after investment
+## Calculate S for population after investment
 s_fun <- function(delta_p, delta_c){
   s_invest <- (delta_p-1)*delta_c
   return(s_invest)
@@ -36,7 +36,7 @@ s_fun <- function(delta_p, delta_c){
 
 ## Calculate change in p_hat after investment
 p_hat_fun <- function(p_hat,p_change, weight){ 
-  p <- p_hat * (1 + p_change * weight) # don't need to divide weight by 10 because we already accounted for it with p_change
+  p <- p_hat * (1 + p_change * weight) 
 }
 
 ## Calculate change in c_hat after investment
@@ -44,7 +44,7 @@ c_hat_fun <- function(c_hat, c_change, weight){
   c <- c_hat * (1 + c_change * weight)
 }
 
-## create 10 Portfolios with weights that sum to 100
+## create 10 portfolios with weights that sum to 100
 wgt_1 <- data.frame(weight=c(30,70,0,160,10,90,0,20,0,40,0,130,90,50,20,80,40,50,0,120))
 wgt_2 <- data.frame(weight=c(8,1,2,7,4,0,2,5,12,1,14,3,7,5,8,3,1,8,3,6))
 wgt_3 <- data.frame(weight=c(0,9,4,2,7,8,2,3,0,4,3,5,8,14,6,3,4,5,10,3))
@@ -55,9 +55,9 @@ wgt_7 <- data.frame(weight=c(5,6,3,4,8,7,5,5,4,6,3,4,8,7,5,4,0,9,5,2))
 wgt_8 <- data.frame(weight=c(1,2,12,6,3,9,4,2,8,0,3,0,7,7,5,11,3,6,3,8))
 wgt_9 <- data.frame(weight=c(3,7,1,16,4,2,7,8,8,6,0,3,8,2,11,1,1,5,0,7))
 wgt_10 <- data.frame(weight=c(9,6,3,5,1,3,8,0,9,13,2,1,7,2,1,12,8,3,2,5))
-sum(wgt_1$weight)
+# sum(wgt_1$weight)
 
-## sum to 1000
+## create 10 portfolios with weights that sum to 1000
 wgt_1 <- data.frame(weight=c(30, 70, 0, 160, 10, 90, 0, 20, 0, 40, 0, 130, 90, 50, 20, 80, 40, 50, 0, 120))
 wgt_2 <- data.frame(weight=c(0, 0, 60 , 10, 40, 70 , 200, 120, 50, 40, 30, 10, 10, 90, 0, 140, 10, 20, 30, 70))
 wgt_3 <- data.frame(weight=c(100, 60, 70, 20, 20, 10, 50, 0, 0, 30, 0, 90, 70, 40, 60, 140, 120, 30, 80, 10))
@@ -68,10 +68,10 @@ wgt_7 <- data.frame(weight=c(40, 80, 100, 40, 30, 10, 140, 20, 20, 10, 60, 30, 4
 wgt_8 <- data.frame(weight=c(10, 40, 50, 0, 40, 210, 120, 10, 50, 100, 100, 30, 10, 10, 70, 70, 0, 50, 10, 20))
 wgt_9 <- data.frame(weight=c(190, 40, 70, 0, 60, 20, 70, 0, 30, 140, 40, 30, 40, 10, 20, 80, 120, 0, 40, 0))
 wgt_10 <- data.frame(weight=c(40, 150, 10, 80, 50, 0, 40, 150, 10, 90, 50, 20, 20, 30, 110, 60, 20, 10, 20, 40))
-sum(wgt_1$weight)
+# sum(wgt_1$weight)
 
 
-
+## Calculating effects after investment
 invested_stock <- equilibrium_all %>% 
   mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
          c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
@@ -84,7 +84,6 @@ invested_stock <- equilibrium_all %>%
          s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), # calculate s for each population before investment
          s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
 
-## need to sum the individual population s before and after investment to get ESU stock abundance
 
 # variance data from population
 pop_var <- sapply(coho[2:22], var) 
@@ -106,15 +105,13 @@ portfolio_return <- sum(invested_stock$s_invest)
 
 #variance_return <- sum(temp$port_var)
 variance_return <- sum(temp_variance$invest_var)
-variance_return_parcent_change <- mean(temp_variance$var_percent_change) #average of the percent change in variance across the ESU
+variance_return_percent_change <- mean(temp_variance$var_percent_change) #average of the percent change in variance across the ESU
 variance_return_sum <- sum(temp_variance$var_percent_change)
 
 
 ################
 # Running our defined portfolio scenarios from above (will automate this)
 ################
-
-
 
 ## wgt_1
 invested_stock_wgt1 <- equilibrium_all %>% 
