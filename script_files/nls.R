@@ -70,43 +70,31 @@ wgt_9 <- data.frame(weight=c(190, 40, 70, 0, 60, 20, 70, 0, 30, 140, 40, 30, 40,
 wgt_10 <- data.frame(weight=c(40, 150, 10, 80, 50, 0, 40, 150, 10, 90, 50, 20, 20, 30, 110, 60, 20, 10, 20, 40))
 # sum(wgt_1$weight)
 
-
-## Calculating effects after investment
-invested_stock <- equilibrium_all %>% 
-  mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
-         c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
-  select(population, p_hat, c_hat) %>%
-  cbind(wgt_1) %>% 
-  mutate(p_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in p
-         c_change = .001, # $10 investment leads to a .01 increase, so a $1 investment leads to a .001 increase in c
-         delta_p = map_dbl(p_hat, ~p_hat_fun(.x,p_change, weight)),
-         delta_c = map_dbl(c_hat, ~c_hat_fun(.x,c_change, weight)),
-         s_baseline = pmap_dbl(list(p_hat,c_hat),s_fun), # calculate s for each population before investment
-         s_invest = pmap_dbl(list(delta_p,delta_c),s_fun)) # calculate s for each population after investment using new p and c
-
-
 # variance data from population
 pop_var <- sapply(coho[2:22], var) 
 clean_var <- data.frame(var=pop_var[-18]) # remove tahkenitch because removed from above
 
-## calculate variance after investment
-temp_variance <- invested_stock %>% 
-  group_by(population) %>% 
-  mutate(return_investment = s_invest - s_baseline) %>%
-  cbind(clean_var) %>% 
-  mutate(base_var = var * (s_baseline^2)) %>% #is variance already squared?
-  mutate(invest_var = var *(s_invest^2)) %>% 
-  mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
-  mutate(square = return_investment^2)
-  #mutate(port_var = var / s_baseline *(return_investment^2))
+## Can I delete this?? - Alicia
+## I think we can delete lines 79-89 for sure since we just used it to copy and paste what we needed for the potfolios. 
 
-## portfolio mean (y axis)
-portfolio_return <- sum(invested_stock$s_invest)
-
-#variance_return <- sum(temp$port_var)
-variance_return <- sum(temp_variance$invest_var)
-variance_return_percent_change <- mean(temp_variance$var_percent_change) #average of the percent change in variance across the ESU
-variance_return_sum <- sum(temp_variance$var_percent_change)
+# ## calculate variance after investment
+# temp_variance <- invested_stock %>% 
+#   group_by(population) %>% 
+#   mutate(return_investment = s_invest - s_baseline) %>%
+#   cbind(clean_var) %>% 
+#   mutate(base_var = var * (s_baseline^2)) %>% #is variance already squared?
+#   mutate(invest_var = var *(s_invest^2)) %>% 
+#   mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
+#   mutate(square = return_investment^2)
+#   #mutate(port_var = var / s_baseline *(return_investment^2))
+# 
+# ## portfolio mean (y axis)
+# portfolio_return <- sum(invested_stock$s_invest)
+# 
+# #variance_return <- sum(temp$port_var)
+# variance_return <- sum(temp_variance$invest_var)
+# variance_return_percent_change <- mean(temp_variance$var_percent_change) #average of the percent change in variance across the ESU
+# variance_return_sum <- sum(temp_variance$var_percent_change)
 
 
 ################
@@ -134,6 +122,7 @@ variance_wgt1 <- invested_stock_wgt1 %>%
   mutate(invest_var = var *(s_invest^2)) %>% 
   mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
   mutate(square = return_investment^2)
+# mutate(port_var = var / s_baseline *(return_investment^2))
 
 ## wgt_2
 invested_stock_wgt2 <- equilibrium_all %>% 
@@ -350,7 +339,7 @@ portfolio_invest_s <- invested_stock_wgt1 %>%
         s_invest_wgt_9=invested_stock_wgt9$s_invest,
         s_invest_wgt_10=invested_stock_wgt10$s_invest)
 
-total_invest_stock <- data.frame(total = colSums(portfolio_invest_s[,-1]))
+total_invest_s <- data.frame(total = colSums(portfolio_invest_s[,-1]))
 
 
 portfolio_var <- variance_wgt1 %>% 
@@ -371,9 +360,9 @@ sum(invested_stock_wgt1$s_baseline)
 sum(variance_wgt1$base_var)
 
   
-var_and_invest_stock <- data.frame(total = colSums(portfolio_var[,-1])) %>% 
+esu_stock_var <- data.frame(total = colSums(portfolio_var[,-1])) %>% 
   rename("total_var" = "total") %>% 
-  cbind("total_stock_invest" = total_invest_stock$total) 
+  cbind("total_stock_invest" = total_invest_stock$total)
 
 
 ## Variance percent change
