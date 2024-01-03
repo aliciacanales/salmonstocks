@@ -38,9 +38,10 @@ rounded<-round(raw,2)
 diff<-as.data.frame(raw-rounded) %>% 
   mutate(sum=rowSums(across(everything())))
 
-for(i in 1:nrow(c)){
+for(i in 1:nrow(abundance_data)){
   rounded[i,which.max(rounded[i,])]<-rounded[i,which.max(rounded[i,])]+diff$sum[i]
 }
+
 
 # Check to make sure weights still add up to 1 for rounded dataset
 check<-as.data.frame(rounded) %>% 
@@ -73,7 +74,7 @@ max_fcn<-function(x){
              lb=c(0,0,0),
              ub=c(1,1,1),
              opts=options,
-             mu=means, ##update to our means
+             mu=pop_mean, ##update to our means
              sigma=cov,
              var=var,
              gamma=0,
