@@ -362,7 +362,7 @@ sum(variance_wgt1$base_var)
   
 esu_stock_var <- data.frame(total = colSums(portfolio_var[,-1])) %>% 
   rename("total_var" = "total") %>% 
-  cbind("total_stock_invest" = total_invest_stock$total)
+  cbind("total_stock_invest" = total_invest_s$total)
 
 
 ## Variance percent change
@@ -381,21 +381,21 @@ portfolio_var_percent_change <- variance_wgt1 %>%
 
 var_percent_change_and_invest_stock <- data.frame(total = colMeans(portfolio_var_percent_change[,-1])) %>% 
   rename("mean_percent_change_var" = "total") %>% 
-  cbind("total_stock_invest" = total_invest_stock$total)
+  cbind("total_stock_invest" = total_invest_s$total)
 
 
 ## Combine the sum return and variance for the ESU and plot
 
 id <- c("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9","P10")
 
-ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
+ggplot(esu_stock_var, aes(x = total_var, y = total_stock_invest)) +
   geom_point(colour = 'darkcyan', size = 2) + 
   geom_curve(x = 3.521570e+17, y = 205623.0,
              xend = 3.892000e+17, yend = 211781.8,
              colour = 'red', curvature = -.3) +
   theme_minimal() +
   labs(x = 'Variance', y = 'ESU Abundance') +
-  scale_y_continuous(labels = comma) +
+  scale_y_continuous(labels = scales::comma) +
   ggrepel::geom_text_repel(aes(label = id,
             size = 2)) +
   theme(legend.position = "none")
@@ -404,7 +404,7 @@ ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
 # Baseline variance: 3.141711e+17
 
 ## Add baseline population and baseline variance
-ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
+ggplot(esu_stock_var, aes(x = total_var, y = total_stock_invest)) +
   geom_point(colour = 'darkcyan', size = 2) + 
   geom_curve(x = 3.521570e+17, y = 205623.0,
              xend = 3.892000e+17, yend = 211781.8,
@@ -413,7 +413,7 @@ ggplot(var_and_invest_stock, aes(x = total_var, y = total_stock_invest)) +
   geom_vline(xintercept=3.141711e+17, linetype="dashed", color = "gray") +
   theme_minimal() +
   labs(x = 'Variance', y = 'ESU Abundance') +
-  scale_y_continuous(labels = comma) +
+  scale_y_continuous(labels = scales::comma) +
   ggrepel::geom_text_repel(aes(label = id,
                                size = 2)) +
   theme(legend.position = "none")
@@ -435,7 +435,7 @@ ggplot(var_percent_change_and_invest_stock, aes(x = mean_percent_change_var, y =
 ## Create table to show weights for portfolio 5
 weights_p5 <- invested_stock_wgt5 %>% 
   select(population, weight) %>% 
-  pivot_wider(names_from = population, values_from = weight) %>%  # pivot wider
+  pivot_wider(names_from = population, values_from = weight) # pivot wider
 
 rownames(weights_p5) <- c("Portfolio_5")
 
