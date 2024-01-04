@@ -1,24 +1,7 @@
-## Use Nathan's overleaf as a guide for estimating variance
-
-
-## Utility function - people get utility from salmon returns u(s)
-
-## society's utility function:
-## u(s) = r(s) -y*v(s) ## utility = metapopulation mean - how much we tolerate risk * metapopulation variance
-
-
-# will be made up of three (maybe 4) equations
-# 1) output of s_fun (s_fun to get s(w), which is s_invest or s after investment)
-# 2) variance (diagonal from variance-covariance matrix)
-# 3) covariance equation (this may need to be broken up into two steps for i and j
-
-## One overall equation bringing together the 3 equations above and adding risk tolerance variable (y)
-
-
-#### Code Nathan shared via email Week 10
+#### Code Nathan shared via email Week 10 and during office hours Week 9
 
 library(tidyverse)
-library(LaplacesDemon) #You will need to install
+library(LaplacesDemon)
 library(nloptr)
 
 #Generate 1000 portfolio weights for all 20 streams
@@ -44,8 +27,7 @@ for(i in 1:nrow(c)){
 
 # Check to make sure weights still add up to 1 for rounded dataset
 check<-as.data.frame(rounded) %>% 
-  mutate(sum=rowSums(across(everything()))) ## Does not all add up to 1 -- need to fix
-
+  mutate(sum=rowSums(across(everything()))) ## Does not all add up to 1, need to fix
 
 # I think we should always run a few portfolios that are the same each time. Mainly, give the entire budget to each stream and see how it responds.
 
@@ -55,7 +37,6 @@ full<-diag(ncol(abundance_data))
 
 weights<-rbind(rounded,full)
 
-
 # From here you can make the "weights" a dataframe add the stream names in each column and anything else to make it ready to pass into purrr map
 
 colnames(weights) <- names(abundance_data) ## Assign column names from original dataframe
@@ -63,17 +44,22 @@ colnames(weights) <- names(abundance_data) ## Assign column names from original 
 grid_list<-split(weights,seq(nrow(weights))) ## need to make it a list to pass through
 
 
+## test, created an arbitrary function to get this to run
+objective_endo <- function(x) {
+  return(100 * x[2])
+}
+##
 
 max_fcn<-function(x){
   temp=x %>% unlist()
   
-  out=nloptr(x0=temp,
+  out=nloptr(x0=temp, #guess vectors
              eval_f=objective_endo,
-             eval_g_eq = constraints_endo,
+             #eval_g_eq = constraints_endo,
              lb=c(0,0,0),
              ub=c(1,1,1),
              opts=options,
-             mu=means, ##update to our means
+             mu=pop_mean, ##update to our means
              sigma=cov,
              var=var,
              gamma=0,
@@ -117,7 +103,7 @@ max_fcn<-function(x){
              lb=c(0,0,0),
              ub=c(1,1,1),
              opts=options,
-             #mu=means,
+             mu=means,
              sigma=cov,
              var=var,
              gamma=0,
