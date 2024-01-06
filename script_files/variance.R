@@ -61,6 +61,7 @@ weights<-rbind(rounded,full)
 
 colnames(weights) <- names(abundance_data) ## Assign column names from original dataframe
 
+
 grid_list<-split(weights,seq(nrow(weights))) ## need to make it a list to pass through
 
 
