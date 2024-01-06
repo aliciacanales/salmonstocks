@@ -41,19 +41,20 @@ weights<-rbind(rounded,full)
 
 colnames(weights) <- names(abundance_data) ## Assign column names from original dataframe
 
-grid_list<-split(weights,seq(nrow(weights))) ## need to make it a list to pass through
+grid_list<-split(weights,seq(nrow(weights))) ## need to make it a list to pass through. Include the guess vectors in this list?
 
 
 ## test, created an arbitrary function to get this to run
-objective_endo <- function(x) {
-  return(100 * x[2])
+objective_endo <- function(x){
+  y = 100 * x^2
+  return(y)
 }
 ##
 
 max_fcn<-function(x){
   temp=x %>% unlist()
   
-  out=nloptr(x0=temp, #guess vectors
+  out=nloptr(x0=temp, #guess vectors.
              eval_f=objective_endo,
              #eval_g_eq = constraints_endo,
              lb=c(0,0,0),
