@@ -29,7 +29,7 @@ for(i in 1:nrow(c)){
 check<-as.data.frame(rounded) %>% 
   mutate(sum=rowSums(across(everything()))) %>% ## Does not all add up to 1
   filter(sum==1.00) %>% ## filter for only portfolios that sum to 1
-  select(-sum)
+  select(-sum) ## remove sum column
 
 # I think we should always run a few portfolios that are the same each time. Mainly, give the entire budget to each stream and see how it responds.
 
@@ -46,21 +46,33 @@ colnames(weights) <- names(abundance_data) ## Assign column names from original 
 grid_list<-split(weights,seq(nrow(weights))) ## need to make it a list to pass through. Include the guess vectors in this list?
 
 
-## test, created an arbitrary function to get this to run
-objective_endo <- function(x){
-  y = 100 * x^2
-  return(y)
+## Define eval_f (What do we define s_fun, p_hat_fun, c_hat_fun as to pass through nloptr?)
+s_fun <- function(delta_p, delta_c){
+  s_invest <- (delta_p-1)*delta_c
+  return(s_invest)
 }
+
+## Calculate change in p_hat after investment
+p_hat_fun <- function(p_hat,p_change, weight){ 
+  p <- p_hat * (1 + p_change * weight) 
+}
+
+## Calculate change in c_hat after investment
+c_hat_fun <- function(c_hat, c_change, weight){ 
+  c <- c_hat * (1 + c_change * weight)
+}
+
 ##
 
 max_fcn<-function(x){
   temp=x %>% unlist()
   
   out=nloptr(x0=temp, #guess vectors.
-             eval_f=objective_endo,
-             #eval_g_eq = constraints_endo,
-             lb=c(0,0,0),
-             ub=c(1,1,1),
+             eval_f=s_fun, #objective function
+             #eval_g_eq = p_hat_fun,
+             #eval_f_eq = c_hat_fun, #made up this term (delete)
+             lb=c(0,0,0), #lower constraint 0 (becuase dealing with percentage)
+             ub=c(1,1,1), #upper constraint 1 
              opts=options,
              mu=pop_mean, ##update to our means
              sigma=cov,
