@@ -5,7 +5,7 @@ library(LaplacesDemon)
 library(nloptr)
 
 #Generate 1000 portfolio weights for all 20 streams
-n=1000
+n=10000
 #raw<-rdirichlet(n,rep(1,20)) #Replace 20 with relative reference e.g. ncol(abundance_data)
 
 abundance_data <- coho[2:22]
@@ -27,7 +27,9 @@ for(i in 1:nrow(c)){
 
 # Check to make sure weights still add up to 1 for rounded dataset
 check<-as.data.frame(rounded) %>% 
-  mutate(sum=rowSums(across(everything()))) ## Does not all add up to 1, need to fix
+  mutate(sum=rowSums(across(everything()))) %>% ## Does not all add up to 1
+  filter(sum==1.00) %>% ## filter for only portfolios that sum to 1
+  select(-sum)
 
 # I think we should always run a few portfolios that are the same each time. Mainly, give the entire budget to each stream and see how it responds.
 
@@ -35,7 +37,7 @@ check<-as.data.frame(rounded) %>%
 full<-diag(ncol(abundance_data))
 # add set simulations with random weights
 
-weights<-rbind(rounded,full)
+weights<-rbind(check,full)
 
 # From here you can make the "weights" a dataframe add the stream names in each column and anything else to make it ready to pass into purrr map
 
