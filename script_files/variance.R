@@ -67,6 +67,7 @@ c_hat_fun <- function(c_hat, c_change, weight){
 max_fcn<-function(x){
   temp=x %>% unlist()
   
+  browser()
   out=nloptr(x0=temp, #guess vectors.
              eval_f=s_fun, #objective function
              #eval_g_eq = p_hat_fun,
