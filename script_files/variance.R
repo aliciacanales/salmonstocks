@@ -47,10 +47,6 @@ grid_list<-split(weights,seq(nrow(weights))) ## need to make it a list to pass t
 
 
 ## Define eval_f (What do we define s_fun, p_hat_fun, c_hat_fun as to pass through nloptr?)
-s_fun <- function(delta_p, delta_c){
-  s_invest <- (delta_p-1)*delta_c
-  return(s_invest)
-}
 
 s_fun <- function(delta_p, delta_c){
   s_invest <- (delta_p-1)*delta_c
@@ -68,6 +64,27 @@ c_hat_fun <- function(c_hat, c_change, weight){
 }
 
 ##
+
+##### create new max function that incorporate p_hat_fun, c_hat_fun, s_fun, and variance
+
+## The starting dataframe should have the following columns population, p_hat, c_hat, p_change, c_change, var
+## Then insert weight matrix for multiple portfolios
+
+max_fcn <- function(weight){
+  weight=weight %>% unlist()
+  
+  delta_p <- p_hat * (1 + p_change * weight)
+  delta_c <- c_hat * (1 + c_change * weight)
+  s_invest <- ((delta_p - 1) * delta_c)
+  mutate(invest_var = var * (s_invest^2))
+}
+
+#####
+
+
+
+
+
 
 max_fcn<-function(x){
   temp=x %>% unlist()
