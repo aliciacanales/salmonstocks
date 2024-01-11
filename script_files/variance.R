@@ -52,6 +52,11 @@ s_fun <- function(delta_p, delta_c){
   return(s_invest)
 }
 
+s_fun <- function(delta_p, delta_c){
+  s_invest <- (delta_p-1)*delta_c
+  return(s_invest)
+}
+
 ## Calculate change in p_hat after investment
 p_hat_fun <- function(p_hat,p_change, weight){ 
   p <- p_hat * (1 + p_change * weight) 
@@ -69,7 +74,7 @@ max_fcn<-function(x){
   
   browser()
   out=nloptr(x0=temp, #guess vectors.
-             eval_f=s_fun, #objective function
+             eval_f=s_fun, #objective utility function
              #eval_g_eq = p_hat_fun,
              #eval_f_eq = c_hat_fun, #made up this term (delete)
              lb=c(0,0,0), #lower constraint 0 (becuase dealing with percentage)
@@ -78,7 +83,7 @@ max_fcn<-function(x){
              mu=pop_mean, ##update to our means
              sigma=cov,
              var=var,
-             gamma=0,
+             gamma=0, #risk aversion parameter (variance)
              budget=1,
              alpha=alpha)
   
