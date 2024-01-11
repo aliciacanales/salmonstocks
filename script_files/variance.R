@@ -77,7 +77,11 @@ max_fcn <- function(weight){
   delta_c <- c_hat * (1 + c_change * weight)
   s_invest <- ((delta_p - 1) * delta_c)
   mutate(invest_var = var * (s_invest^2))
+  
+  return(round(data.frame(delta_p=out$solution[1],delta_c=out$solution[2],s_invest=out$solution[3],var_invest=out$objective),5))
 }
+
+try=map_df(.x=grid_list,~max_fcn(.x))
 
 #####
 
