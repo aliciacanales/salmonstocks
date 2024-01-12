@@ -21,9 +21,10 @@ rounded<-round(raw,2)
 diff<-as.data.frame(raw-rounded) %>% 
   mutate(sum=rowSums(across(everything())))
 
-for(i in 1:nrow(c)){
+for(i in 1:nrow(abundance_data)){
   rounded[i,which.max(rounded[i,])]<-rounded[i,which.max(rounded[i,])]+diff$sum[i]
 }
+
 
 # Check to make sure weights still add up to 1 for rounded dataset
 check<-as.data.frame(rounded) %>% 
@@ -42,6 +43,7 @@ weights<-rbind(check,full)
 # From here you can make the "weights" a dataframe add the stream names in each column and anything else to make it ready to pass into purrr map
 
 colnames(weights) <- names(abundance_data) ## Assign column names from original dataframe
+
 
 grid_list<-split(weights,seq(nrow(weights))) ## need to make it a list to pass through. Include the guess vectors in this list?
 
@@ -84,6 +86,10 @@ max_fcn <- function(weight){
 try=map_df(.x=grid_list,~max_fcn(.x))
 
 #####
+
+
+
+
 
 
 
