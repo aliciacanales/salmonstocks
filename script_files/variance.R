@@ -38,7 +38,8 @@ check<-as.data.frame(rounded) %>%
 full<-diag(ncol(abundance_data))
 # add set simulations with random weights
 
-weights<-rbind(check,full)
+#weights<-rbind(check,full) ## commenting this out just for now to run it with fewer portfolios while we get function running
+weights <- check
 
 # From here you can make the "weights" a dataframe add the stream names in each column and anything else to make it ready to pass into purrr map
 
@@ -51,29 +52,13 @@ grid_list<-split(weights,seq(nrow(weights)))
   ## need to make it a list to pass through. Include the guess vectors in this list?
 
 
-## Define eval_f (What do we define s_fun, p_hat_fun, c_hat_fun as to pass through nloptr?)
-
-s_fun <- function(delta_p, delta_c){
-  s_invest <- (delta_p-1)*delta_c
-  return(s_invest)
-}
-
-## Calculate change in p_hat after investment
-p_hat_fun <- function(p_hat,p_change, weight){ 
-  p <- p_hat * (1 + p_change * weight) 
-}
-
-## Calculate change in c_hat after investment
-c_hat_fun <- function(c_hat, c_change, weight){ 
-  c <- c_hat * (1 + c_change * weight)
-}
-
 ##### create new max function that incorporate p_hat_fun, c_hat_fun, s_fun, and variance
 
-## The starting dataframe should have the following columns population, p_hat, c_hat, p_change, c_change, var
+## The starting dataframe should have the following columns: population, p_hat, c_hat, p_change, c_change, var
 ## Then insert weight matrix for multiple portfolios
 
 ## I was able to get some columns to work - Alicia
+## Yayyyy!!! :)
 
 max_fcn <- function(weight){
   weight=weights %>% unlist()
@@ -93,7 +78,7 @@ invest <- equilibrium_all %>%
   s_invest <- ((delta_p - 1) * delta_c)
   # var_invest <- var * (s_invest^2)
 
-  return(round(data.frame(delta_p, delta_c, s_invest)))
+  return(round(data.frame(delta_p, delta_c, s_invest),3))
                           # ,var_invest=out$objective),5))
 }
 
