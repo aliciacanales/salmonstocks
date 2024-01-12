@@ -73,7 +73,7 @@ c_hat_fun <- function(c_hat, c_change, weight){
 ## The starting dataframe should have the following columns population, p_hat, c_hat, p_change, c_change, var
 ## Then insert weight matrix for multiple portfolios
 
-## I was able to get some columns to work. I just realized I also didn't include the s function in this. - Alicia
+## I was able to get some columns to work - Alicia
 
 max_fcn <- function(weight){
   weight=weights %>% unlist()
