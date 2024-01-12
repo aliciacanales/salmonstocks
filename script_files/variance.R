@@ -5,7 +5,7 @@ library(LaplacesDemon)
 library(nloptr)
 
 #Generate 1000 portfolio weights for all 20 streams
-n=10000
+n=100
 #raw<-rdirichlet(n,rep(1,20)) #Replace 20 with relative reference e.g. ncol(abundance_data)
 
 abundance_data <- coho[2:22]
@@ -45,7 +45,10 @@ weights<-rbind(check,full)
 colnames(weights) <- names(abundance_data) ## Assign column names from original dataframe
 
 
-grid_list<-split(weights,seq(nrow(weights))) ## need to make it a list to pass through. Include the guess vectors in this list?
+
+
+grid_list<-split(weights,seq(nrow(weights)))
+  ## need to make it a list to pass through. Include the guess vectors in this list?
 
 
 ## Define eval_f (What do we define s_fun, p_hat_fun, c_hat_fun as to pass through nloptr?)
@@ -67,20 +70,35 @@ c_hat_fun <- function(c_hat, c_change, weight){
 
 ##
 
+invest <- equilibrium_all %>% 
+  mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
+         c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
+  select(population, p_hat, c_hat)
 ##### create new max function that incorporate p_hat_fun, c_hat_fun, s_fun, and variance
 
 ## The starting dataframe should have the following columns population, p_hat, c_hat, p_change, c_change, var
 ## Then insert weight matrix for multiple portfolios
 
 max_fcn <- function(weight){
-  weight=weight %>% unlist()
+  weight=weights %>% unlist()
+ 
+invest <- equilibrium_all %>% 
+    mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
+           c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
+    select(population, p_hat, c_hat) 
   
-  delta_p <- p_hat * (1 + p_change * weight)
-  delta_c <- c_hat * (1 + c_change * weight)
+  p_change = .001 
+  c_change = .001
+  var <- sapply(coho[2:22], var)
+  var[-18]
+           
+  delta_p <- invest$p_hat * (1 + p_change * weight)
+  delta_c <- invest$c_hat * (1 + c_change * weight)
   s_invest <- ((delta_p - 1) * delta_c)
-  mutate(invest_var = var * (s_invest^2))
-  
-  return(round(data.frame(delta_p=out$solution[1],delta_c=out$solution[2],s_invest=out$solution[3],var_invest=out$objective),5))
+  # var_invest <- var * (s_invest^2)
+
+  return(round(data.frame(delta_p, delta_c, s_invest)))
+                          # ,var_invest=out$objective),5))
 }
 
 try=map_df(.x=grid_list,~max_fcn(.x))
@@ -94,12 +112,10 @@ try=map_df(.x=grid_list,~max_fcn(.x))
 
 
 
-
-
 max_fcn<-function(x){
   temp=x %>% unlist()
   
-  browser()
+  # browser()
   out=nloptr(x0=temp, #guess vectors.
              eval_f=s_fun, #objective utility function
              #eval_g_eq = p_hat_fun,
