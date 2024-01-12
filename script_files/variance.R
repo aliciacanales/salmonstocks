@@ -68,16 +68,12 @@ c_hat_fun <- function(c_hat, c_change, weight){
   c <- c_hat * (1 + c_change * weight)
 }
 
-##
-
-invest <- equilibrium_all %>% 
-  mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
-         c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
-  select(population, p_hat, c_hat)
 ##### create new max function that incorporate p_hat_fun, c_hat_fun, s_fun, and variance
 
 ## The starting dataframe should have the following columns population, p_hat, c_hat, p_change, c_change, var
 ## Then insert weight matrix for multiple portfolios
+
+## I was able to get some columns to work. I just realized I also didn't include the s function in this. - Alicia
 
 max_fcn <- function(weight){
   weight=weights %>% unlist()
