@@ -76,9 +76,9 @@ invest <- equilibrium_all %>%
   delta_p <- invest$p_hat * (1 + p_change * weight)
   delta_c <- invest$c_hat * (1 + c_change * weight)
   s_invest <- ((delta_p - 1) * delta_c)
-  # var_invest <- var * (s_invest^2)
+  var_invest <- var * (s_invest^2)
 
-  return(round(data.frame(delta_p, delta_c, s_invest),3))
+  return(round(data.frame(delta_p, delta_c, s_invest, var_invest),3))
                           # ,var_invest=out$objective),5))
 }
 
