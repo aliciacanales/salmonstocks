@@ -44,11 +44,10 @@ weights <- check
 # From here you can make the "weights" a dataframe add the stream names in each column and anything else to make it ready to pass into purrr map
 
 colnames(weights) <- names(abundance_data) ## Assign column names from original dataframe
-
-
-
+weights_t <- t(weights) ## transforming data before unlist()
 
 grid_list<-split(weights,seq(nrow(weights)))
+grid_list_2<-split(weights_t,seq(ncol(weights_t))) ## grid_list column instead of row
   ## need to make it a list to pass through. Include the guess vectors in this list?
 
 
@@ -61,7 +60,7 @@ grid_list<-split(weights,seq(nrow(weights)))
 ## Yayyyy!!! :)
 
 max_fcn <- function(weight){
-  weight=weights %>% unlist()
+  weight=weights_t %>% unlist()
  
 invest <- equilibrium_all %>% 
     mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
@@ -82,7 +81,8 @@ invest <- equilibrium_all %>%
                           # ,var_invest=out$objective),5))
 }
 
-try=map_df(.x=grid_list,~max_fcn(.x))
+try=map_df(.x=grid_list_2,~max_fcn(.x))
+## Need to find a way to bind each of the rows by number (data is holding the portfolio number, which is good, but we will ultimately want to sum by portfolio to get total portfolio return and variance)
 
 #####
 
