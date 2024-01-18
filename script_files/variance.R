@@ -63,9 +63,11 @@ invest <- equilibrium_all %>%
   s_invest <- ((delta_p - 1) * delta_c)
   s_baseline <- ((invest$p_hat -1) * invest$c_hat)
   var_invest <- var_rm * (s_invest^2)
+  esu_returns <- sum(s_invest)
+  esu_var <- sum(var_invest)
 
 
-  return(round(data.frame(delta_p, delta_c, s_invest, s_baseline, var_invest),3))
+  return(round(data.frame(esu_returns, esu_var),3))
 }
 
 try=map_df(.x=grid_list,~max_fcn(.x))
