@@ -44,7 +44,9 @@ grid_list<-split(weights,seq(nrow(weights)))
 ## Create max function that incorporates p_hat_fun, c_hat_fun, s_fun, and var. Then run altogether using purrr
 
 max_fcn <- function(weight){
-  weight=weights %>% unlist()
+  
+
+  weight=weight %>% unlist()
  
 invest <- equilibrium_all %>% 
     mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
@@ -54,13 +56,14 @@ invest <- equilibrium_all %>%
   p_change = .001 
   c_change = .001
   var <- sapply(coho[2:22], var)
-  var[-18]
+  var_rm<-var[-18]
            
   delta_p <- invest$p_hat * (1 + p_change * weight)
   delta_c <- invest$c_hat * (1 + c_change * weight)
   s_invest <- ((delta_p - 1) * delta_c)
   s_baseline <- ((invest$p_hat -1) * invest$c_hat)
-  var_invest <- var * (s_invest^2)
+  var_invest <- var_rm * (s_invest^2)
+
 
   return(round(data.frame(delta_p, delta_c, s_invest, s_baseline, var_invest),3))
 }
