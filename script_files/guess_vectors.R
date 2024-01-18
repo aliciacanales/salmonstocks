@@ -1,7 +1,5 @@
 ## all 21 populations 
 
-## Should we move lines 5-15 to the nls script?
-
 ## cleaning data to generate reciprocal form of recruits and abundance
 coho_recruits <- coho %>% 
 pivot_longer(cols = 2:22,
