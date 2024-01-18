@@ -74,29 +74,6 @@ wgt_10 <- data.frame(weight=c(40, 150, 10, 80, 50, 0, 40, 150, 10, 90, 50, 20, 2
 pop_var <- sapply(coho[2:22], var) 
 clean_var <- data.frame(var=pop_var[-18]) # remove tahkenitch because removed from above
 
-## Can I delete this?? - Alicia
-## I think we can delete lines 79-89 for sure since we just used it to copy and paste what we needed for the potfolios. 
-
-# ## calculate variance after investment
-# temp_variance <- invested_stock %>% 
-#   group_by(population) %>% 
-#   mutate(return_investment = s_invest - s_baseline) %>%
-#   cbind(clean_var) %>% 
-#   mutate(base_var = var * (s_baseline^2)) %>% #is variance already squared?
-#   mutate(invest_var = var *(s_invest^2)) %>% 
-#   mutate(var_percent_change = ((invest_var-base_var)/base_var)*100) %>% #percent change in variance from baseline
-#   mutate(square = return_investment^2)
-#   #mutate(port_var = var / s_baseline *(return_investment^2))
-# 
-# ## portfolio mean (y axis)
-# portfolio_return <- sum(invested_stock$s_invest)
-# 
-# #variance_return <- sum(temp$port_var)
-# variance_return <- sum(temp_variance$invest_var)
-# variance_return_percent_change <- mean(temp_variance$var_percent_change) #average of the percent change in variance across the ESU
-# variance_return_sum <- sum(temp_variance$var_percent_change)
-
-
 ################
 # Running our defined portfolio scenarios from above (will automate this)
 ################
