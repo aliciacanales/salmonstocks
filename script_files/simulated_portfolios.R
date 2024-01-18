@@ -36,7 +36,7 @@ colnames(weights) <- names(abundance_data)
 grid_list<-split(weights,seq(nrow(weights)))
 
 p_change <- function(b_passage){
-  z <- 5.5
+  z <- 5.5 ## arbitrary number for the z constant 
   y = z * b_passage
   return(y)
 }
