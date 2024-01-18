@@ -35,6 +35,12 @@ full<-diag(ncol(abundance_data)) # create set portfolios
 colnames(weights) <- names(abundance_data) 
 grid_list<-split(weights,seq(nrow(weights)))
 
+p_change <- function(b_passage){
+  z <- 5.5
+  y = z * b_passage
+  return(y)
+}
+
 
 ## Simulating portfolios 
 max_fcn <- function(weight){
@@ -47,12 +53,12 @@ max_fcn <- function(weight){
            c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
     select(population, p_hat, c_hat) 
   
-  p_change = .001 
+  impact_p <- p_change(b_passage = .555) ## this function is working. if we have multiple b_passages how can we manually change the values. another list? another purrr??? yikes
   c_change = .001
   var <- sapply(coho[2:22], var)
   var_rm<-var[-18]
            
-  delta_p <- baseline$p_hat * (1 + p_change * weight)
+  delta_p <- baseline$p_hat * (1 + impact_p * weight)
   delta_c <- baseline$c_hat * (1 + c_change * weight)
   s_invest <- ((delta_p - 1) * delta_c)
   s_baseline <- ((baseline$p_hat -1) * baseline$c_hat)
