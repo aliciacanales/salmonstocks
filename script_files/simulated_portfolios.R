@@ -35,6 +35,23 @@ full<-diag(ncol(abundance_data)) # create set portfolios
 colnames(weights) <- names(abundance_data) 
 grid_list<-split(weights,seq(nrow(weights)))
 
+
+## Create function to calculate z using p_hat and beta_passage
+z_fcn <- function(p_hat, b_passage){
+  z = p_hat / b_passage
+  return(z)
+}
+
+z_b_dataframe <- b_passage_dataframe %>% 
+  cbind(p_hat) %>% 
+  select(population, p_hat, b_passage)
+  mutate(
+    z = pmap_dbl(list(p_hat,b_passage),z_fcn)
+  )
+
+
+
+
 p_change <- function(b_passage){
   z <- 5.5 ## arbitrary number for the z constant 
   y = z * b_passage
