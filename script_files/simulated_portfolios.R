@@ -28,35 +28,36 @@ full<-diag(ncol(abundance_data)) # create set portfolios
 
 # add set simulations with random weights
 #weights<-rbind(check,full) ## commenting this out just for now to run it with fewer portfolios while we get function running
-# weights <- check
+weights <- check
 
 
 ## Renaming column names and making df a list 
 colnames(weights) <- names(abundance_data) 
 grid_list<-split(weights,seq(nrow(weights)))
 
-p_change <- function(b_passage){
+
+
+df <- data.frame(z = c('4','2','3'),
+                 b_passage = c('1', '.5', '.75'))
+list_df <- split(df, seq(nrow(df)))
+
+p_change <- function(passage){
   y = z * b_passage
   return(y)
 }
 
-df <- data.frame(z = c('4','2','3'),
-                 b_passage = c('1', '.5', '.75'),
-                 population = c('alsea', 'beaver', 'coos'))
-list_df <- split(df,seq(nrow(df)))
-
 ## Simulating portfolios 
 max_fcn <- function(weight){
-  
 
-  weight=weight %>% unlist()
+  weight = weight %>% unlist()
+  list_df = list_df
  
   baseline <- equilibrium_all %>% 
     mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
            c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
     select(population, p_hat, c_hat) 
   
-  impact_p <- map_df(.x=list_df,~p_change(.x)) ## this function is working. if we have multiple b_passages how can we manually change the values. another list? another purrr??? yikes
+  impact_p <- map_df(.x = list_df, ~p_change(.x)) ## this function is working. if we have multiple b_passages how can we manually change the values. another list? another purrr??? yikes
   c_change = .001
   var <- sapply(coho[2:22], var)
   var_rm<-var[-18]
