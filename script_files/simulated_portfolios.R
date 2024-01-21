@@ -55,7 +55,7 @@ z_fcn <- function(p_hat, b_passage){
   return(z)
 }
 
-z_b_dataframe <- b_passage_temp %>% 
+z_b_df <- b_passage_temp %>% 
   cbind(p_hat_temp$p_hat) %>%
   rename(p_hat = 3) %>% 
   mutate(
@@ -64,11 +64,26 @@ z_b_dataframe <- b_passage_temp %>%
 ########### z calculation working and ready for b_passage input when data is ready
 
 
-p_change <- function(b_passage){
-  z <- 5.5 ## arbitrary number for the z constant 
-  y = z * b_passage
-  return(y)
+########### calculate b_invest (beta passage after investment with weight allocation). Actually the weight allocation should be down below, so nevermind. helpppp this is hard
+## we need to have an intermediate between these two steps where our weights come in to impact b_invest
+
+########## create function to see impact on productivity after investment
+p_invest_fcn <- function(z,b_invest){
+  p_invest = z * b_invest
+  return(p_invest)
 }
+
+########## create function to see impact on capacity after investment
+c_invest_fcn <- function(z,b_invest){
+  c_invest = z * b_invest
+  return(c_invest)
+}
+
+# test function outside to make sure it works
+p_temp <- z_b_df %>% # using fake data right now but its working, so cool!
+  mutate(
+    p_invest = pmap_dbl(list(z,b_passage),c_invest_fcn) # this b_passage should be b_invest (update when we have real data and weights added in)
+  )
 
 
 ## Simulating portfolios 
@@ -82,13 +97,15 @@ max_fcn <- function(weight){
            c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
     select(population, p_hat, c_hat) 
   
-  impact_p <- p_change(b_passage = .555) ## this function is working. if we have multiple b_passages how can we manually change the values. another list? another purrr??? yikes
-  c_change = .001
+  p_change <- pmap_dbl(list(z_b_df$z,z_b_df$b_passage),p_invest_fcn) ## this works! We should manually check this tho
+  c_change <- pmap_dbl(list(z_b_df$z,z_b_df$b_passage),c_invest_fcn)
+  #impact_p <- p_change(b_passage = .555) ## this function is working. if we have multiple b_passages how can we manually change the values. another list? another purrr??? yikes
+  #c_change = .001
   var <- sapply(coho[2:22], var)
   var_rm<-var[-18]
            
-  delta_p <- baseline$p_hat * (1 + impact_p * weight)
-  delta_c <- baseline$c_hat * (1 + c_change * weight)
+  delta_p <- baseline$p_hat * (1 + p_change * weight) #can we change delta_p to p_invest?
+  delta_c <- baseline$c_hat * (1 + c_change * weight) #can we change delta_c to c_invest?
   s_invest <- ((delta_p - 1) * delta_c)
   s_baseline <- ((baseline$p_hat -1) * baseline$c_hat)
   var_invest <- var_rm * (s_invest^2)
