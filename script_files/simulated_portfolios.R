@@ -36,20 +36,32 @@ colnames(weights) <- names(abundance_data)
 grid_list<-split(weights,seq(nrow(weights)))
 
 
+########### Calculate 'z' for each population
+## Isolate p_hat and population
+p_hat_temp = equilibrium_all %>% 
+  mutate(p_hat = map_dbl(coeff, ~.[['p_hat']])) %>% 
+  select(population, p_hat)
+
+## Import beta dataframe the dataframe should have the following columns: population, beta_passage
+### For now, create temp dataframe to get function running, replace when b_passage for each population is ready
+b_passage_temp <- cbind(p_hat_temp$population) %>% 
+  data.frame(b_passage=c(.125, .1, .005, .2, .10, .12, .015, .1, .04, .08, .095, .13, .1, .045, .05, .11, .2, .005, .125, .125)) %>%
+  rename(population = 1)
+
+
 ## Create function to calculate z using p_hat and beta_passage
 z_fcn <- function(p_hat, b_passage){
   z = p_hat / b_passage
   return(z)
 }
 
-z_b_dataframe <- b_passage_dataframe %>% 
-  cbind(p_hat) %>% 
-  select(population, p_hat, b_passage)
+z_b_dataframe <- b_passage_temp %>% 
+  cbind(p_hat_temp$p_hat) %>%
+  rename(p_hat = 3) %>% 
   mutate(
     z = pmap_dbl(list(p_hat,b_passage),z_fcn)
   )
-
-
+########### z calculation working and ready for b_passage input when data is ready
 
 
 p_change <- function(b_passage){
