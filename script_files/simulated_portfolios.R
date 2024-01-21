@@ -48,7 +48,6 @@ b_passage_temp <- cbind(p_hat_temp$population) %>%
   data.frame(b_passage=c(.125, .1, .005, .2, .10, .12, .015, .1, .04, .08, .095, .13, .1, .045, .05, .11, .2, .005, .125, .125)) %>%
   rename(population = 1)
 
-
 ## Create function to calculate z using p_hat and beta_passage
 z_fcn <- function(p_hat, b_passage){
   z = p_hat / b_passage
