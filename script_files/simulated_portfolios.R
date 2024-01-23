@@ -3,6 +3,7 @@ library(LaplacesDemon)
 library(nloptr)
 
 
+#..........................Create randomized weight allocations.........................
 n=100
 abundance_data <- coho[2:22] # raw population abundance data
 abundance_data <- data.frame(abundance_data[-18]) # remove Tahkenitch
@@ -36,41 +37,61 @@ colnames(weights) <- names(abundance_data)
 grid_list<-split(weights,seq(nrow(weights)))
 
 
-########### Calculate 'z' for each population
+#..........................Calculate 'z' constant for each population.........................
 # Isolate p_hat and population
 p_hat_temp = equilibrium_all %>% 
-  mutate(p_hat = map_dbl(coeff, ~.[['p_hat']])) %>% 
+  mutate(p_hat = map_dbl(coeff, ~.[['p_hat']])) %>% #Sixes has negative p_hat, should we remove?
   select(population, p_hat)
 
+# Isolate c_hat and population
+c_hat_temp = equilibrium_all %>% 
+  mutate(c_hat = map_dbl(coeff, ~.[['c_hat']])) %>% #Sixes has negative c_hat, should we remove?
+  select(population, c_hat)
+
 # Import b_passage dataframe (the dataframe should have the following columns: population, b_passage)
-### For now, create temp dataframe to get function running, replace when data-informed b_passage for each population is ready
+## For now, create temp dataframe to get function running, replace when data-informed b_passage for each population is ready
 b_passage_temp <- cbind(p_hat_temp$population) %>% 
   data.frame(b_passage=c(.000125, .0001, .000005, .0002, .00010, .00012, .000015, .0001, .00004, .00008, .000095, .00013, .0001, .000045, .00005, .00011, .0002, .000005, .000125, .000125)) %>%
   rename(population = 1)
 
-
 # Create function to calculate z using p_hat and beta_passage
-z_fcn <- function(p_hat, b_passage){
+z_p_fcn <- function(p_hat, b_passage){
   z = p_hat / b_passage
   return(z)
 }
 
-z_b_df <- b_passage_temp %>% # pull in b_passage dataframe
+# create a dataframe of results
+z_p_df <- b_passage_temp %>% # pull in b_passage dataframe
   cbind(p_hat_temp$p_hat) %>% # bind with p_hat
-  rename(p_hat = 3) %>% # rename column 3
+  rename(p_hat = 3) %>% # rename column 3 to p_hat
   mutate(
-    z = pmap_dbl(list(p_hat,b_passage),z_fcn) # use pmat_dbl to calculate z for each population
+    z = pmap_dbl(list(p_hat,b_passage),z_p_fcn) # use pmat_dbl to calculate z for each population
   )
-########### z calculation working and ready for b_passage input when data is ready
+
+# Create function to calculate z using c_hat and beta_passage
+z_c_fcn <- function(c_hat, b_passage){
+  z = c_hat / b_passage
+  return(z)
+}
+
+# create a separate dataframe with c results, so as to not get confused with p_df
+z_c_df <- b_passage_temp %>% # pull in b_passage dataframe
+  cbind(c_hat_temp$c_hat) %>% # bind with p_hat
+  rename(c_hat = 3) %>% # rename column 3 to p_hat
+  mutate(
+    z = pmap_dbl(list(c_hat,b_passage),z_c_fcn) # use pmat_dbl to calculate z for each population
+  )
+# z calculation working and ready for b_passage input when data is ready
 
 
-########### calculate b_invest (beta passage after investment with weight allocation). Actually the weight allocation should be down below, so nevermind. helpppp this is hard
-## we need to have an intermediate between these two steps where our weights come in to impact b_invest
+#..........................calculate 'p_invest' and 'c_invest' using 'b_passage' after investment.........................
+########### Actually the weight allocation should be down below (?)
+# we need to have an intermediate between these two steps where our weights come in to impact b_invest
+## Could the intermediate be cost per fraction of passability? i.e. it costs $5,000 to increase passability by 10%?
 
-########## create function to see impact on productivity after investment
+# create function to see impact on productivity after investment
 p_invest_fcn <- function(z,b_passage,weight){
-  p_invest = z * (b_passage * (weight * 1000000)) # Equation to calculate p is 'p=z*b_passage', but with investment, b_passage needs to be a function of the weight allocated and the weight needs to be a proportion of the budget.
-  #replace 1000000 with defined budget (doing manually first to check if function works)
+  p_invest = z * (b_passage * (weight * 1000000)) # Equation to calculate p is 'p=z*b_passage', but with investment, b_passage needs to be a function of the weight allocated and the weight needs to be a proportion of the budget. Replace 1000000 with defined budget (doing manually first to check if function works)
   return(p_invest) # this is wrong right now because we are multiplying 'invested dollars' by 'b_passage', but we need to multiply 'invested_dollars' by 'investment in increasing passage' so that it is multiplying 'money' into 'money' (I'm having trouble writing this out, so lets go over this in-person - OS)
 }
 
@@ -83,16 +104,15 @@ c_invest_fcn <- function(z,b_passage){ # this will look identical to P_invest_fc
 # test function outside to make sure it works
 p_temp <- z_b_df %>% # using made-up data right now, but its working, so cool!
   mutate(
-    p_invest = pmap_dbl(list(z,b_passage),c_invest_fcn)
+    p_invest = pmap_dbl(list(z,b_passage),p_invest_fcn) # need to add weight
   )
 
 
 ####### to link weight allocations to budget, we need to:
 # define budgets (make it a dataframe)
 # weight * budget
-# multiply this by b_baseline? or is there a better way to link it? Q for Nathan and Tamma
-
-####### how will we know which barriers we are improving with investment? Q for Nathan and Tamma
+# multiply this by b_passage (without investment)? or is there a better way to link it? Q for Nathan and Tamma
+## how will we know which barriers we are improving with investment? Q for Nathan and Tamma
 
 ## Simulating portfolios 
 max_fcn <- function(weight){
@@ -105,8 +125,8 @@ max_fcn <- function(weight){
            c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
     select(population, p_hat, c_hat) 
   
-  p_invest <- pmap_dbl(list(z_b_df$z,z_b_df$b_passage, weight),p_invest_fcn) # this works! We should manually check this tho
-  c_invest <- pmap_dbl(list(z_b_df$z,z_b_df$b_passage),c_invest_fcn) # renamed this, but feel free to change
+  p_invest <- pmap_dbl(list(z_p_df$z,z_p_df$b_passage, weight),p_invest_fcn) # this works! We should manually check this tho
+  c_invest <- pmap_dbl(list(z_c_df$z,z_c_df$b_passage),c_invest_fcn) # renamed this, but feel free to change
   #impact_p <- p_change(b_passage = .555) ## this function is working. if we have multiple b_passages how can we manually change the values. another list? another purrr??? yikes
   #c_change = .001
   var <- sapply(coho[2:22], var)
@@ -122,7 +142,7 @@ max_fcn <- function(weight){
   esu_var <- sum(var_invest)
 
 
-  return(round(data.frame(esu_returns,esu_baseline, esu_var),3))
+  return(round(data.frame(s_invest, s_baseline),3)) #esu_returns,esu_baseline, esu_var
 }
 
 portfolios = map_df(.x=grid_list,~max_fcn(.x))
