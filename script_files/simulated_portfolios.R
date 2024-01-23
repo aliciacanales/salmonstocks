@@ -114,6 +114,8 @@ p_temp <- z_b_df %>% # using made-up data right now, but its working, so cool!
 # multiply this by b_passage (without investment)? or is there a better way to link it? Q for Nathan and Tamma
 ## how will we know which barriers we are improving with investment? Q for Nathan and Tamma
 
+
+#..........................Create portfolios using max_fcn.........................
 ## Simulating portfolios 
 max_fcn <- function(weight){
   
