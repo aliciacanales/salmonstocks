@@ -95,6 +95,22 @@ p_invest_fcn <- function(z,b_passage,weight){
   return(p_invest) # this is wrong right now because we are multiplying 'invested dollars' by 'b_passage', but we need to multiply 'invested_dollars' by 'investment in increasing passage' so that it is multiplying 'money' into 'money' (I'm having trouble writing this out, so lets go over this in-person - OS)
 }
 
+
+## notes from nathan meeting ##
+## one cost for each beta passage, average cost of removal from jaden. Making aggregating assumptions.pass along foundation data. They need spatial data to pass through. 
+## spatially organize data.. take all culverts and dams on line. per watershed
+## sort them. effectiveness organization. multiple all bpassage. choosing the worst ones first. 
+# p_invest function to help link between the b_passage to 
+## you need to tell R in a function to take the total invested amount and use that amount to go done the line of barriers 
+## cost vector of 50,000 --> while loop
+## make zeros .1 --> something about multiplicative stuff will make it non-linear relationship
+
+
+
+
+
+
+
 ########## create function to see impact on capacity after investment
 c_invest_fcn <- function(z,b_passage){ # this will look identical to P_invest_fcn - update once it is ready
   c_invest = z * (b_passage)
