@@ -41,8 +41,11 @@ bpassage[1:index_choice, ] <- 1
 
 used_b = 0
 i = 1
-budget_df = data.frame(c(100000,150000)) %>% 
+#budget_df = data.frame(c(100000,150000)) %>% 
+  #rename(money=1)
+budget_df = data.frame(100000) %>% 
   rename(money=1)
+bpassage = data.frame(c(0,0,.5,1))
   
 ## budget_allocated <- budget * weight ## turn this into a function to run weights through it
 budget_allocated_fcn <- function(budget,weight){
@@ -83,9 +86,11 @@ budget_index_df = budget_df %>% # dummy budget dataframe from above ## this will
 #..........................run 4.........................
 ##### (purrr #3) Run the while function inside purrr
 ##### Each row within the column 'index_choice' in the 'budget_index_df' needs to be across columns
+##### output are the new passage dataframes (we will want to re-list these or maybe nest?)
+## not working becuase don't know how to allocate purrr properly
 
 bpassage = data.frame(c(0,0,.5,1)) %>%## clean bpassage dataframe. two columns
-  mutate(portfolio_2 = c(0,.5,.5,.5)) %>% 
+  #mutate(portfolio_2 = c(0,.5,.5,.5)) %>% 
   rename(portfolio_1=1)
 
 bpassage[1:index_choice, ] <- 1 ##need to do this by column
@@ -97,10 +102,15 @@ b_passage_index_fcn <- function(index_choice){
 }
 
 result_budget_df_df = bpassage %>% 
-  mutate(passage = map(.x=result_budget_df$index_choice,~b_passage_index_fcn(.x)))
+  mutate(passage = map_df(.x=budget_index_df$index_choice,~b_passage_index_fcn(.x))) ## its working ahhhh
 
 
+## list or nest dataframes (we will have 20 total dataframes of bpassage)
+## alternative and probably more efficient is to calculate bpassage_invest for each population and portfolio. Would look like original df that was inputted
 
+
+#..........................run 4.........................
+##### (purrr #4 $ hopefully final) calculate new bpassage for the population from the passability scores after investment
 
 
 
