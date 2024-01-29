@@ -1,0 +1,12 @@
+stream_ID,fpbFtrTy,fpbFPasSta,cost,pass_score,beta_pass
+166,Culvert,Partial,108847.2,0.5,0.021484375
+170,Culvert,Partial,108847.2,0.5,
+174,Culvert,Partial,108847.2,0.5,
+186,Culvert,Partial,108847.2,0.5,
+186,Culvert,Partial,108847.2,0.5,
+419,Culvert,Partial,108847.2,0.5,
+499,Culvert,Passable,108847.2,1,
+501,CascadeGradientVelocity,Partial,455041.93,0.5,
+789,CascadeGradientVelocity,Partial,455041.93,0.5,
+906,CascadeGradientVelocity,Partial,455041.93,0.5,
+995,Culvert,Passable,108847.2,1,
