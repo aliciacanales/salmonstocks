@@ -29,7 +29,7 @@ full<-diag(ncol(abundance_data)) # create set portfolios
 
 # add set simulations with random weights
 #weights<-rbind(check,full) ## commenting this out just for now to run it with fewer portfolios while we get function running
-# weights <- check
+weights <- check
 
 
 ## Renaming column names and making df a list 
@@ -54,7 +54,7 @@ b_passage_temp <- cbind(p_hat_temp$population) %>%
   data.frame(b_passage=c(.000125, .0001, .000005, .0002, .00010, .00012, .000015, .0001, .00004, .00008, .000095, .00013, .0001, .000045, .00005, .00011, .0002, .000005, .000125, .000125)) %>%
   rename(population = 1)
 
-main
+
 # Create function to calculate z using p_hat and beta_passage
 z_p_fcn <- function(p_hat, b_passage){
   z = p_hat / b_passage
@@ -137,6 +137,7 @@ p_temp <- z_b_df %>% # using made-up data right now, but its working, so cool!
 max_fcn <- function(weight){
   
 
+
   weight=weight %>% unlist()
  
   baseline <- equilibrium_all %>% 
@@ -150,6 +151,7 @@ max_fcn <- function(weight){
   #c_change = .001
   var <- sapply(coho[2:22], var)
   var_rm<-var[-18]
+
            
   #delta_p <- baseline$p_hat * (1 + p_change * weight) # I don't think we need this anymore? let's talk about this
   #delta_c <- baseline$c_hat * (1 + c_change * weight) # I don't think we need this anymore?
@@ -161,8 +163,12 @@ max_fcn <- function(weight){
   esu_var <- sum(var_invest)
 
 
+
+
   return(round(data.frame(s_invest, s_baseline),3)) #esu_returns,esu_baseline, esu_var
 }
 
 portfolios = map_df(.x=grid_list,~max_fcn(.x))
+
+
 
