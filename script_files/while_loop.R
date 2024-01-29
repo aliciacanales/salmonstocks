@@ -96,8 +96,8 @@ index_choice_fcn <- function(budget_allocated){
 }
 
 temp_fcn <- function(budget_allocated){
-  index_choice_2 <- (pmap_dbl(list(budget_allocated), while_fcn) - 1)
-  return(index_choice)
+  index_choice_2 <- pmap_dbl(list(budget_allocated), while_fcn) - 1
+  return(index_choice_2)
 }
 
 ## run the 'index_choice_fcn' through purrr using the 'budget_grid_list'. She runs!!!!!
@@ -129,7 +129,7 @@ b_passage_index_fcn <- function(index_choice){
 } 
 
 result_budget_df_df = bpassage %>% 
-  mutate(passage = map_df(.x=budget_index_df$index_choice,~b_passage_index_fcn(.x))) ## its working ahhhh
+  mutate(passage = map_df(.x=index_choice,~b_passage_index_fcn(.x))) ## its working ahhhh ## ask olivia about this bc idk what is going on
 
 
 ## list or nest dataframes (we will have 20 total dataframes of bpassage)
@@ -139,7 +139,10 @@ result_budget_df_df = bpassage %>%
 #..........................run 4.........................
 ##### (purrr #4 $ hopefully final) calculate new bpassage for the population from the passability scores after investment
 
-
+bpassage <- result_budget_df_df %>% 
+  mutate(passage_invest = prod(result_budget_df_df$passage)) 
+invest_passage <- bpassage$passage_invest[1]
+  
 
 
 
