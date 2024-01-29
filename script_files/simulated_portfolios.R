@@ -136,9 +136,10 @@ p_temp <- z_b_df %>% # using made-up data right now, but its working, so cool!
 ## Simulating portfolios 
 max_fcn <- function(weight){
   
-  
+
+
   weight=weight %>% unlist()
-  
+ 
   baseline <- equilibrium_all %>% 
     mutate(p_hat = map_dbl(coeff, ~.[['p_hat']]),
            c_hat = map_dbl(coeff, ~.[['c_hat']])) %>%
@@ -150,7 +151,8 @@ max_fcn <- function(weight){
   #c_change = .001
   var <- sapply(coho[2:22], var)
   var_rm<-var[-18]
-  
+
+           
   #delta_p <- baseline$p_hat * (1 + p_change * weight) # I don't think we need this anymore? let's talk about this
   #delta_c <- baseline$c_hat * (1 + c_change * weight) # I don't think we need this anymore?
   s_invest <- ((p_invest - 1) * c_invest)
@@ -159,11 +161,14 @@ max_fcn <- function(weight){
   esu_returns <- sum(s_invest)
   esu_baseline <- sum(s_baseline)
   esu_var <- sum(var_invest)
-  
-  
+
+
+
+
   return(round(data.frame(s_invest, s_baseline),3)) #esu_returns,esu_baseline, esu_var
 }
 
 portfolios = map_df(.x=grid_list,~max_fcn(.x))
+
 
 
