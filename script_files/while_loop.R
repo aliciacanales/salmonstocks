@@ -96,7 +96,8 @@ index_choice_fcn <- function(budget_allocated){
 }
 
 ## run the 'index_choice_fcn' through purrr using the 'budget_grid_list'. She runs!!!!!
-index_choice_df = map_df(.x=budget_allocated_list,~temp_fcn(.x)) ## confirm that the output matches what we would expect based on the money invested
+index_choice_df = map_df(.x=budget_allocated_list,~index_choice_fcn(.x)) ## confirm that the output matches what we would expect based on the money invested
+index_choice_list<-split(index_choice_df,seq(nrow(index_choice_df))) ## turn it into a list
 ## index choice is the number of barriers that can be improved for a given budget, we will use this to update the 'bpassage' for each population to get 'bpassage_invest'
 
 
@@ -111,11 +112,93 @@ index_choice_df = map_df(.x=budget_allocated_list,~temp_fcn(.x)) ## confirm that
 ##### output are the new passage dataframes (we will want to re-list these or maybe nest?)
 ## not working becuase don't know how to allocate purrr properly
 
-bpassage = data.frame(c(0,0,.5,1)) %>%## clean bpassage dataframe. two columns
-  #mutate(portfolio_2 = c(0,.5,.5,.5)) %>% 
-  rename(portfolio_1=1)
-
+## equation to improve passability
 bpassage[1:index_choice, ] <- 1 ##need to do this by column
+
+## create fake dataframe where each column is a population
+passability_values_df = data.frame(
+  port1 = c(0.5, 0.5, 0.5, 0.5),
+  port2 = c(0.5, 0.5, 0.5, 0.5),
+  port3 = c(0.5, 0.5, 0.5, 0.5),
+  port4 = c(0.5, 0.5, 0.5, 0.5),
+  port5 = c(0.5, 0.5, 0.5, 0.5),
+  port6 = c(0.5, 0.5, 0.5, 0.5),
+  port7 = c(0.5, 0.5, 0.5, 0.5),
+  port8 = c(0.5, 0.5, 0.5, 0.5),
+  port9 = c(0.5, 0.5, 0.5, 0.5),
+  port10 = c(0.5, 0.5, 0.5, 0.5),
+  port11 = c(0.5, 0.5, 0.5, 0.5),
+  port12 = c(0.5, 0.5, 0.5, 0.5),
+  port13 = c(0.5, 0.5, 0.5, 0.5),
+  port14 = c(0.5, 0.5, 0.5, 0.5),
+  port15 = c(0.5, 0.5, 0.5, 0.5),
+  port16 = c(0.5, 0.5, 0.5, 0.5),
+  port17 = c(0.5, 0.5, 0.5, 0.5),
+  port18 = c(0.5, 0.5, 0.5, 0.5),
+  port19 = c(0.5, 0.5, 0.5, 0.5),
+  port20 = c(0.5, 0.5, 0.5, 0.5)
+)
+colnames(passability_values_df) <- names(abundance_data) #rename columns
+
+
+
+#### test on one row of index_choice_df to test run first
+## select the first row of index_choice_df
+one_index_choice_df <- index_choice_df[1, ]
+
+## for loop to iterate across columns
+# my god it is working!!!!
+for (col_name in names(one_index_choice_df)) {
+  # Get the number of rows to change for the current column
+  rows_to_change <- one_index_choice_df[[col_name]]
+  
+  # Update the specified number of rows in test_passability_values
+  passability_values_df[0:rows_to_change, col_name] <- 1
+}
+
+# Print the updated dataframe
+print(passability_values_df)
+
+
+
+
+
+
+### test run on a small dataframe
+test_passability_values = data.frame(
+  pop1 = c(0.5, 0.5, 0.5, 0.5),
+  pop2 = c(0.5, 0.5, 0.5, 0.5),
+  pop3 = c(0.5, 0.5, 0.5, 0.5))
+
+test_index_choice = data.frame(
+  pop1 = 1,
+  pop2 = 2,
+  pop3 = 0)
+
+
+test_passability_values[1:test_index_choice, ] <- 1
+
+for (col_name in names(test_index_choice)) {
+  # Get the number of rows to change for the current column
+  rows_to_change <- test_index_choice[[col_name]]
+  
+  # Update the specified number of rows in test_passability_values
+  test_passability_values[0:rows_to_change, col_name] <- 1
+}
+
+# Print the updated dataframe
+print(test_passability_values)
+
+
+
+
+
+
+
+
+
+
+
 
 ## create function to run result_budget_df$index_choice
 b_passage_index_fcn <- function(index_choice){
