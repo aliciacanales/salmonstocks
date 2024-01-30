@@ -246,7 +246,12 @@ bpassage_base <- as.data.frame(cbind(alsea, beaver, coos, coquille,floras,lower_
                values_to = 'bpassage')
 
 
-
+## use only for 1 weight allocation from max func
+## maybe not use index_choice_df
+## prod function na remove
+## make the cost df should be same structure of pass_df
+## max fun summarize at the end
+## make them into steps 
 
 
 
