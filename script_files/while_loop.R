@@ -144,7 +144,7 @@ colnames(passability_values_df) <- names(abundance_data) #rename columns
 
 
 
-## automated below so commenting this out right now
+# # automated below so commenting this out right now
 # #### Run one row of index_choice_df through the for loop to test run it first #### this is working
 # ## select the first row of index_choice_df
 # one_index_choice_df <- index_choice_df[1, ]
@@ -153,7 +153,7 @@ colnames(passability_values_df) <- names(abundance_data) #rename columns
 # for (col_name in names(one_index_choice_df)) {
 #   # Get the number of rows to change for the current column
 #   rows_to_change <- one_index_choice_df[[col_name]]
-#   
+# 
 #   # Update the specified number of rows in test_passability_values
 #   passability_values_df[0:rows_to_change, col_name] <- 1
 # } # my god it is working!!!!
@@ -166,7 +166,7 @@ colnames(passability_values_df) <- names(abundance_data) #rename columns
 # bpassage_invest_df <- data.frame(bpassage_invest) ## Create a new dataframe with a single row
 
 
-
+one_index_choice_df <- index_choice_df[1, ]
 
 ### can we combine the two above and run to map? Heck yes
 bpassage_invest_fcn <- function(index_choice) {
@@ -182,20 +182,105 @@ bpassage_invest_fcn <- function(index_choice) {
   bpassage_invest <- apply(passability_values_df, 2, prod) ## create a new dataframe and take the product of each column
   bpassage_invest <- bpassage_invest * nrow(passability_values_df) ## multiply the product by the number of rows in the column (ie barriers)
   bpassage_invest_output <- data.frame(t(bpassage_invest))
-  
+
   return(bpassage_invest_output)
 } # output is new bpassage score for each population for this portfolio
 
-bpassage_invest_df <- bpassage_invest_fcn(bpassage_invest_output) # working
+bpassage_invest_df <- t(bpassage_invest_fcn(one_index_choice_df)) # working - bpassage_invest for each population for one portfolio
 
+### we need to run this for each row, becuase each row represents a dataframe
+## apply the next row in the list
+temp_fcn <- function(index_choice) {
+  bpassage_invest_output <- pmap_dbl(list(index_choice), bpassage_invest_fcn)
+  return(bpassage_invest_output)
+}
+
+temp_df <- map_df(index_choice_list, ~temp_fcn(.x))
+
+
+### re-list values
 
 ################################################ left off here
 #mutate a new column for each portfolio
+test_fcn <- function(index_choice){
+  bpassage_invest <- pmap_dbl(list(index_choice), bpassage_invest_fcn)
+  return(bpassage_invest)
+}
+test_fcn_df = map_df(.x=one_index_choice_df,~test_fcn(.x))
+
+
+
+temp_fcn <- function(index_choice) {
+  bpassage_invest_output <- pmap_dbl(list(index_choice), bpassage_invest_fcn)
+  return(bpassage_invest_output)
+}
+
+temp_df2 <- map_df(index_choice_list, ~temp_fcn(.x))
+
+
+
+
+
+bpassage_invest <- apply(passability_values_df, 2, prod) ## create a new dataframe and take the product of each column
+bpassage_invest <- bpassage_invest * nrow(passability_values_df) ## multiply the product by the number of rows in the column (ie barriers)
+bpassage_invest_df <- data.frame(bpassage_invest) ## Create a new dataframe with a single row
+
+
+
+
+
+
+
+
 output_bpassage_fcn <- function(index_choice){
   output <- pmap_dbl(list(index_choice),bpassage_invest_fcn)
   return(output)
 }
-temp2 = map_df(.x=index_choice_list,~output_bpassage_fcn(.x)) # not working
+
+temp_fcn <- function(index_choice){
+  temp_output <- pmap_dbl(list(index_choice), bpassage_invest_fcn)
+  return(temp_output)
+}
+
+temp_df = map_df(.x=index_choice_list,~temp_fcn(.x))
+
+
+
+
+temp2 = map_df(.x=index_choice_list,~bpassage_invest_fcn(.x)) # not working
+
+
+
+result <- index_choice_list %>%
+  pmap_df(~ bpassage_invest_fcn(.x))
+
+
+
+
+
+index_choice_df = map_df(.x=budget_allocated_list,~index_choice_fcn(.x))
+
+
+while_fcn <- function(budget_allocated) {
+  i = 1
+  
+  while(used_b < budget_allocated) { #stop running if used_b is greater than budget_allocated
+    used_b = cost[1] + used_b
+    i = i + 1
+    index_choice = i-1
+  }
+  
+  return(index_choice)
+}
+
+## Create 'index_choice_fcn' so that we can map the 'budget_grid_list' through it
+index_choice_fcn <- function(budget_allocated){
+  index_choice <- (pmap_dbl(list(budget_allocated),while_fcn) - 1)
+  return(index_choice)
+}
+
+## run the 'index_choice_fcn' through purrr using the 'budget_grid_list'. index choice is the number of barriers that can be improved for a given budget, we will use this to update the 'bpassage' for each population to get 'bpassage_invest'
+index_choice_df = map_df(.x=budget_allocated_list,~index_choice_fcn(.x))
 
 
 
@@ -204,6 +289,7 @@ temp2 = map_df(.x=index_choice_list,~output_bpassage_fcn(.x)) # not working
 
 
 
+## data viz: Gabrielle laMarr LeMee la times
 
 
 
