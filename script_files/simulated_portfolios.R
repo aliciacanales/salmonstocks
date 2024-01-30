@@ -119,7 +119,7 @@ c_invest_fcn <- function(z,b_passage){ # this will look identical to P_invest_fc
 }
 
 # test function outside to make sure it works
-p_temp <- z_b_df %>% # using made-up data right now, but its working, so cool!
+p_temp <- z_p_df %>% # using made-up data right now, but its working, so cool!
   mutate(
     p_invest = pmap_dbl(list(z,b_passage),p_invest_fcn) # need to add weight
   )

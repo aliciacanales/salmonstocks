@@ -4,6 +4,9 @@ library(purrr)
 #.......................... while loop process.........................
 
 
+# Now you have a list of data frames, each corresponding to a CSV file
+# You can access individual data frames using their names or indices in the list
+
 
 #.......................... prep the data.........................
 ## sort passability data for each dataframe from low to high
@@ -107,6 +110,7 @@ index_choice_list<-split(index_choice_df,seq(nrow(index_choice_df))) ## turn df 
 ### test first with a simple (fake) df first. Use this as a QC
 # budget_index_df = budget_df %>% # dummy budget dataframe from above ## this will need to be 'budget_allocated_df' but all in one column named 'money'
 #   mutate(index_choice = map_dbl(.x=money,~while_fcn(.x))) ###oh my god it's working. I'm crying.
+
 
 
 #..........................step 4: Improve bpassage dataframes using the index_choice_df created above.........................
