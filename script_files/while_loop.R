@@ -177,9 +177,9 @@ one_index_choice_df <- index_choice_df[1, ]
 ### can we combine the two above and run to map? Heck yes
 bpassage_invest_fcn <- function(index_choice) {
 
-  for (col_name in names(one_index_choice_df)) {
+  for (col_name in names(index_choice_df)) {
     # Get the number of rows to change for the current column
-    rows_to_change <- one_index_choice_df[[col_name]]
+    rows_to_change <- index_choice_df[[col_name]]
     
     # Update the specified number of rows in test_passability_values
     passability_values_df[0:rows_to_change, col_name] <- 1
@@ -192,7 +192,7 @@ bpassage_invest_fcn <- function(index_choice) {
   return(bpassage_invest_output)
 } # output is new bpassage score for each population for this portfolio
 
-bpassage_invest_df <- t(bpassage_invest_fcn(one_index_choice_df)) # working - bpassage_invest for each population for one portfolio
+bpassage_invest_df <- as.data.frame(t(bpassage_invest_fcn(one_index_choice_df))) # working - bpassage_invest for each population for one portfolio
 
 ### we need to run this for each row, because each row represents a dataframe
 ## apply the next row in the list
