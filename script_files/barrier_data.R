@@ -54,7 +54,7 @@ siletz <- read_csv(here('data', 'final_table_siletz.csv')) %>%
 
 siltcoos <- read_csv(here('data', 'final_table_siltcoos.csv')) %>% 
   clean_names() %>% 
-  rename('bpassage' = 'beta_pass')
+  rename('bpassage' = 'beta_pass') 
 
 siuslaw <- read_csv(here('data', 'final_table_siuslaw.csv')) %>% 
   clean_names() %>% 
@@ -79,3 +79,8 @@ tillamook <- read_csv(here('data', 'final_table_tillamook.csv')) %>%
 yaquina <- read_csv(here('data', 'final_table_yaquina.csv')) %>% 
   clean_names() %>% 
   rename('bpassage' = 'beta_pass')
+
+tillamook <- tillamook %>% 
+  arrange(pass_score)
+
+
