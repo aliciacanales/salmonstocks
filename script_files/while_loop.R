@@ -181,23 +181,19 @@ bpassage_invest_fcn <- function(index_choice) {
   for (col_name in names(index_choice_df)) {
     
     rows_to_change <- index_choice_df[[col_name]] # Get the number of rows to change for the current column
-    passability_values_df[0:rows_to_change, col_name] <- 1 # Update the specified number of rows in passability_values_df
+    passability_test[0:rows_to_change, col_name] <- 1 # Update the specified number of rows in passability_values_df
   }
   
-  bpassage_invest <- apply(passability_values_df, 2, prod) # create a new dataframe and take the product of each column
-  bpassage_invest <- bpassage_invest * nrow(passability_values_df)
-  updated_df <- rbind(existing_df, new_row)
-  mutate()# multiply the product by the number of rows in the column (ie barriers)
+  bpassage_invest <- apply(passability_test, 2, prod) # create a new dataframe and take the product of each column
+  bpassage_invest <- bpassage_invest * nrow(passability_test)
   bpassage_invest_output <- data.frame(t(bpassage_invest)) # transform
 
   return(bpassage_invest_output)
 } # output is new bpassage score for each population for this portfolio
 
 
-updated_df <- rbind(existing_df, new_row)
 
-
-# bpassage_invest_df <- as.data.frame(bpassage_invest_fcn(index_choice_list)) # working - bpassage_invest for each population for one portfolio
+bpassage_invest_df <- as.data.frame(bpassage_invest_fcn(one_index_choice_df)) # working - bpassage_invest for each population for one portfolio
 
 # ### we need to run this for each row, because each row represents a dataframe
 # ## apply the next row in the list
