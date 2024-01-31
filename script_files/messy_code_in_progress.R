@@ -2,6 +2,58 @@
 library(tidyverse)
 library(purrr)
 
+
+#.......................... combinging while_loop into one.........................
+
+budget = 1000000
+
+## functions being used:
+# budget_allocated_fcn()
+# while_fcn()
+# bpassage_invest_fcn()
+
+
+
+test_max_fcn <- function(weight){
+  # browser()
+  weight=weight %>% unlist()
+  output1 <- pmap_dbl(list(weight),budget_allocated_fcn) # working
+  output2 <- (pmap_dbl(list(output1),while_fcn)-1) # working
+  bpassage_invest <- pmap_dbl(list(output2),bpassage_invest_fcn) # not working, temp fix to get flow to work.
+  #c_invest <- c_invest_fcn(z_c_df$z, bpassage_invest)
+  #p_invest <- p_invest_fcn(z_p_df$z, bpassage_invest)
+  #s_invest <- ((p_invest - 1) * c_invest)
+  #s_baseline <- ((baseline$p_hat -1) * baseline$c_hat)
+  #var_invest <- var_rm * (s_invest^2)
+  #var_esu
+  return(bpassage_invest)
+}
+
+test = map_df(.x=grid_list,~test_max_fcn(.x))
+
+
+test = pmap_dbl(list(grid_list,test_max_fcn))
+
+
+
+
+combined_function <- function(input) {
+  result1 <- square(input)
+  result2 <- double(result1)
+  return(result2)
+}
+
+
+
+
+
+
+
+
+
+
+
+
 #.......................... while loop process.........................
 
 
