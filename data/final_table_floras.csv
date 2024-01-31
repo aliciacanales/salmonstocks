@@ -1,0 +1,8 @@
+stream_ID,fpbFtrTy,fpbFPasSta,cost,pass_score,beta_pass
+76,Falls,Blocked,455041.93,0.5,0.21875
+118,Dam,Partial,487195.2,0.5,
+123,Culvert,Passable,108847.2,1,
+291,Falls,Partial,455041.93,0.5,
+291,Falls,Partial,455041.93,0.5,
+476,Dam,Partial,487195.2,0.5,
+483,Bridge,Passable,370171,1,
