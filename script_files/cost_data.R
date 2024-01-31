@@ -16,7 +16,9 @@ coos <- read_csv(here('data', 'final_table_coos.csv')) %>%
 
 coquille <- read_csv(here('data', 'final_table_coquille.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(cost) %>% 
+  mutate(cost = ifelse(cost == 0.00, 190097.2, cost))
+
 
 floras <- read_csv(here('data', 'final_table_floras.csv')) %>% 
   clean_names() %>% 
@@ -32,7 +34,8 @@ middle_umpqua <- read_csv(here('data', 'final_table_midump.csv')) %>%
 
 necanicum <- read_csv(here('data', 'final_table_necanicum.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(cost) %>% 
+  mutate(cost = ifelse(cost == 0.00, 190097.2, cost))
 
 nehalem <- read_csv(here('data', 'final_table_nehalem.csv')) %>% 
   clean_names() %>% 
@@ -111,3 +114,4 @@ cost <- data.frame(alsea = c(alsea$cost, rep(NA, max_length - length(alsea$cost)
                                    tenmile = c(tenmile$cost, rep(NA, max_length - length(tenmile$cost))),
                                    tillamook = c(tillamook$cost, rep(NA, max_length - length(tillamook$cost))),
                                    yaquina = c(yaquina$cost, rep(NA, max_length - length(yaquina$cost))))
+
