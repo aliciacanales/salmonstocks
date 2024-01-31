@@ -90,6 +90,7 @@ index_choice_fcn <- function(budget_allocated){
   return(index_choice)
 }
 
+
 ## run the 'index_choice_fcn' through purrr using the 'budget_grid_list'. index choice is the number of barriers that can be improved for a given budget, we will use this to update the 'bpassage' for each population to get 'bpassage_invest'
 index_choice_df = map_df(.x=budget_allocated_list,~index_choice_fcn(.x)) ## QC output here
 index_choice_list<-split(index_choice_df,seq(nrow(index_choice_df))) ## turn df into a list
@@ -295,6 +296,7 @@ index_choice_df = map_df(.x=budget_allocated_list,~index_choice_fcn(.x))
 
 
 
+
 ## data viz: Gabrielle laMarr LeMee la times
 
 
@@ -339,10 +341,14 @@ index_choice_df = map_df(.x=budget_allocated_list,~index_choice_fcn(.x))
 
 
 
+
 #..........................run 4.........................
 ##### (purrr #4 $ hopefully final) calculate new bpassage for the population from the passability scores after investment
 
-
+bpassage <- result_budget_df_df %>% 
+  mutate(passage_invest = prod(result_budget_df_df$passage)) 
+invest_passage <- bpassage$passage_invest[1]
+  
 
 
 
