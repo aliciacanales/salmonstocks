@@ -177,7 +177,6 @@ one_index_choice_df <- index_choice_df[1, ] # select the first row to test
 
 # new function
 bpassage_invest_fcn <- function(index_choice) {
-
   index_choice = index_choice %>% unlist()
   
   passability_test <- passability_values_df
@@ -195,9 +194,9 @@ bpassage_invest_fcn <- function(index_choice) {
   #browser()
   bpassage_invest <- apply(passability_test, 2, prod) # create a new dataframe and take the product of each column
   bpassage_invest <- bpassage_invest * nrow(passability_test)
-  bpassage_invest_output <- data.frame(t(bpassage_invest)) # transform
+  #bpassage_invest_output <- data.frame(t(bpassage_invest)) # transform
 
-  return(bpassage_invest_output)
+  return(bpassage_invest)
 } # output is new bpassage score for each population for this portfolio
 
 

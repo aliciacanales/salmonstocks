@@ -8,7 +8,7 @@ library(purrr)
 ## 204045.3 <- mean
 ## 108847.2 <- median
 ## budget = 3500000 and 23 mil. or find something else
-budget = 23000000
+budget = 1300000
 
 ## functions being used:
 # budget_allocated_fcn()
@@ -32,7 +32,7 @@ test_max_fcn <- function(weight){
   c_invest <- c_invest_fcn(z_c_df$z, bpassage_invest)
   p_invest <- p_invest_fcn(z_p_df$z, bpassage_invest)
   s_invest <- ((p_invest - 1) * c_invest)
-  s_baseline <- ((z_p_df$p_hat -1) * z_c_df$c_hat)
+  s_baseline <- ((z_p_df$p_hat - 1) * z_c_df$c_hat)
   # var_invest <- var_rm * (s_invest^2)
   # var_esu <- sum(var_invest)
   return(s_invest)
