@@ -53,6 +53,7 @@ c_hat_temp = equilibrium_all %>%
 b_passage_temp <- cbind(p_hat_temp$population) %>% 
   data.frame(b_passage=c(.000125, .0001, .000005, .0002, .00010, .00012, .000015, .0001, .00004, .00008, .000095, .00013, .0001, .000045, .00005, .00011, .0002, .000005, .000125, .000125)) %>%
   rename(population = 1)
+view(bpassage_base)
 
 
 # Create function to calculate z using p_hat and beta_passage
@@ -62,11 +63,11 @@ z_p_fcn <- function(p_hat, b_passage){
 }
 
 # create a dataframe of results
-z_p_df <- b_passage_temp %>% # pull in b_passage dataframe
+z_p_df <- bpassage_base %>% # pull in b_passage dataframe
   cbind(p_hat_temp$p_hat) %>% # bind with p_hat
   rename(p_hat = 3) %>% # rename column 3 to p_hat
   mutate(
-    z = pmap_dbl(list(p_hat,b_passage),z_p_fcn) # use pmat_dbl to calculate z for each population
+    z = pmap_dbl(list(p_hat,bpassage),z_p_fcn) # use pmat_dbl to calculate z for each population
   )
 
 # Create function to calculate z using c_hat and beta_passage
@@ -76,11 +77,11 @@ z_c_fcn <- function(c_hat, b_passage){
 }
 
 # create a separate dataframe with c results, so as to not get confused with p_df
-z_c_df <- b_passage_temp %>% # pull in b_passage dataframe
+z_c_df <- bpassage_base %>% # pull in b_passage dataframe
   cbind(c_hat_temp$c_hat) %>% # bind with p_hat
   rename(c_hat = 3) %>% # rename column 3 to p_hat
   mutate(
-    z = pmap_dbl(list(c_hat,b_passage),z_c_fcn) # use pmat_dbl to calculate z for each population
+    z = pmap_dbl(list(c_hat,bpassage),z_c_fcn) # use pmat_dbl to calculate z for each population
   )
 # z calculation working and ready for b_passage input when data is ready
 
@@ -92,7 +93,7 @@ z_c_df <- b_passage_temp %>% # pull in b_passage dataframe
 
 # create function to see impact on productivity after investment
 p_invest_fcn <- function(z,b_passage,weight){
-  p_invest = z * (b_passage * (weight * 1000000)) # Equation to calculate p is 'p=z*b_passage', but with investment, b_passage needs to be a function of the weight allocated and the weight needs to be a proportion of the budget. Replace 1000000 with defined budget (doing manually first to check if function works)
+  p_invest = z * b_passage # Equation to calculate p is 'p=z*b_passage', but with investment, b_passage needs to be a function of the weight allocated and the weight needs to be a proportion of the budget. Replace 1000000 with defined budget (doing manually first to check if function works)
   return(p_invest) # this is wrong right now because we are multiplying 'invested dollars' by 'b_passage', but we need to multiply 'invested_dollars' by 'investment in increasing passage' so that it is multiplying 'money' into 'money' (I'm having trouble writing this out, so lets go over this in-person - OS)
 }
 
@@ -114,7 +115,7 @@ p_invest_fcn <- function(z,b_passage,weight){
 
 ########## create function to see impact on capacity after investment
 c_invest_fcn <- function(z,b_passage){ # this will look identical to P_invest_fcn - update once it is ready
-  c_invest = z * (b_passage)
+  c_invest = z * b_passage
   return(c_invest)
 }
 
