@@ -49,9 +49,9 @@ c_hat_temp = equilibrium_all %>%
   select(population, c_hat)
 
 # Import b_passage dataframe (the dataframe should have the following columns: population, b_passage)
-b_passage_temp <- cbind(p_hat_temp$population) %>% 
-  data.frame(b_passage=c(.000125, .0001, .000005, .0002, .00010, .00012, .000015, .0001, .00004, .00008, .000095, .00013, .0001, .000045, .00005, .00011, .0002, .000005, .000125, .000125)) %>%
-  rename(population = 1)
+# b_passage_temp <- cbind(p_hat_temp$population) %>% 
+#   data.frame(b_passage=c(.000125, .0001, .000005, .0002, .00010, .00012, .000015, .0001, .00004, .00008, .000095, .00013, .0001, .000045, .00005, .00011, .0002, .000005, .000125, .000125)) %>%
+#   rename(population = 1) # replace with real data: 'bpassage_base'
 view(bpassage_base)
 
 
@@ -88,7 +88,7 @@ z_c_df <- bpassage_base %>% # pull in b_passage dataframe
 #..........................calculate 'p_invest' and 'c_invest' using 'b_passage' after investment.........................
 
 # create function to see impact on productivity after investment
-p_invest_fcn <- function(z,b_passage,weight){
+p_invest_fcn <- function(z,b_passage){
   p_invest = z * b_passage # Equation to calculate p is 'p=z*b_passage', but with investment, b_passage needs to be a function of the weight allocated and the weight needs to be a proportion of the budget. Replace 1000000 with defined budget (doing manually first to check if function works)
   return(p_invest) # this is wrong right now because we are multiplying 'invested dollars' by 'b_passage', but we need to multiply 'invested_dollars' by 'investment in increasing passage' so that it is multiplying 'money' into 'money' (I'm having trouble writing this out, so lets go over this in-person - OS)
 }
