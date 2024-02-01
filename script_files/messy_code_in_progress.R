@@ -7,6 +7,7 @@ library(purrr)
 
 .
 # cost should be around 100000. mean/median of the barrier costs
+## budget = 3500000 and 23 mil. or find something else
 budget = 1000000
 
 ## functions being used:
