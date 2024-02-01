@@ -5,12 +5,10 @@ library(purrr)
 
 #.......................... combinging while_loop into one.........................
 
-.
-# cost should be around 100000. mean/median of the barrier costs
 ## 204045.3 <- mean
 ## 108847.2 <- median
 ## budget = 3500000 and 23 mil. or find something else
-budget = 1000000
+budget = 23000000
 
 ## functions being used:
 # budget_allocated_fcn()
