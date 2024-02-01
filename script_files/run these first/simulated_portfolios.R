@@ -52,7 +52,7 @@ c_hat_temp = equilibrium_all %>%
 # b_passage_temp <- cbind(p_hat_temp$population) %>% 
 #   data.frame(b_passage=c(.000125, .0001, .000005, .0002, .00010, .00012, .000015, .0001, .00004, .00008, .000095, .00013, .0001, .000045, .00005, .00011, .0002, .000005, .000125, .000125)) %>%
 #   rename(population = 1) # replace with real data: 'bpassage_base'
-view(bpassage_base)
+view(avg_passability)
 
 
 # Create function to calculate z using p_hat and beta_passage
@@ -62,9 +62,9 @@ z_p_fcn <- function(p_hat, b_passage){
 }
 
 # create a dataframe of results
-z_p_df <- bpassage_base %>% # pull in b_passage dataframe
+z_p_df <- avg_passability %>% # pull in b_passage dataframe
   cbind(p_hat_temp$p_hat) %>% # bind with p_hat
-  rename(p_hat = 3) %>% # rename column 3 to p_hat
+  # rename(p_hat = 2) %>% # rename column 3 to p_hat
   mutate(
     z = pmap_dbl(list(p_hat,bpassage),z_p_fcn) # use pmat_dbl to calculate z for each population
   )
@@ -78,7 +78,7 @@ z_c_fcn <- function(c_hat, b_passage){
 # create a separate dataframe with c results, so as to not get confused with p_df
 z_c_df <- bpassage_base %>% # pull in b_passage dataframe
   cbind(c_hat_temp$c_hat) %>% # bind with p_hat
-  rename(c_hat = 3) %>% # rename column 3 to p_hat
+  # rename(c_hat = 3) %>% # rename column 3 to p_hat
   mutate(
     z = pmap_dbl(list(c_hat,bpassage),z_c_fcn) # use pmat_dbl to calculate z for each population
   )
