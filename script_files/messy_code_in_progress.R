@@ -23,7 +23,7 @@ budget_allocated_fcn <- function(budget,weight){
 
 test_max_fcn <- function(weight){
   weight=weight %>% unlist()
-  output1 <- pmap_dbl(list(budget, weight),budget_allocated_fcn) # working
+  output1 <- pmap_dbl(list(budget, weight),budget_allocated_fcn) 
   output2 <- (pmap_dbl(list(output1),while_fcn)-1) # working
   bpassage_invest <- bpassage_invest_fcn(output2)  #map_dbl(list(output2),bpassage_invest_fcn) # not working
   # c_invest <- c_invest_fcn(z_c_df$z, bpassage_invest)
