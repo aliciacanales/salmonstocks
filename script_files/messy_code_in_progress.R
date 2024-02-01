@@ -5,9 +5,10 @@ library(purrr)
 
 #.......................... combinging while_loop into one.........................
 
-.
-
-budget = 1000000
+## 204045.3 <- mean
+## 108847.2 <- median
+## budget = 3500000 and 23 mil. or find something else
+budget = 23000000
 
 ## functions being used:
 # budget_allocated_fcn()
@@ -384,5 +385,5 @@ print(bpassage2)
 
 
 
-
+## 2016 assessment for coho <- volatilty was too high to delist 
 

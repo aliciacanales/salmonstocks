@@ -71,11 +71,11 @@ budget_allocated_list<-split(budget_allocated_df,seq(nrow(budget_allocated_df)))
 used_b = 0 # used budget
 i = 1 
 weight = .1 
-budget = 1000000 # total budget for all of esu
+budget = 23000000 # total budget for all of esu. I used the 23,000,000 scenario that tamma suggested
 budget_allocated <- budget * weight # budget allocated to this one population
 bpassage = data.frame(c(.5,.5,.5,.5)) # dummy df of passability to test functions on
 n = 5
-cost = array(50000, n) #barriers cost $50,000 to remove
+cost = array(108847, n) #barriers cost $50,000 to remove
 
 ## run the while loop within a function and call it 'while_fcn'. Doing this so we can run the function through purrr with many budget allocations.
 while_fcn <- function(budget_allocated) {
