@@ -17,7 +17,7 @@ budget = 1000000
 test_max_fcn <- function(weight){
   # browser()
   weight=weight %>% unlist()
-  output1 <- pmap_dbl(list(weight),budget_allocated_fcn) # working
+  output1 <- pmap_dbl(list(budget, weight),budget_allocated_fcn) # working
   output2 <- (pmap_dbl(list(output1),while_fcn)-1) # working
   bpassage_invest <- pmap_dbl(list(output2),bpassage_invest_fcn) # not working, temp fix to get flow to work.
   #c_invest <- c_invest_fcn(z_c_df$z, bpassage_invest)
