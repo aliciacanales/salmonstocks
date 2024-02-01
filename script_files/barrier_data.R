@@ -1,86 +1,106 @@
 ## ...............................Getting passability isolated..............................
 alsea <- read_csv(here('data', 'final_table_alsea.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score) %>% 
+  arrange(pass_score)
 
 
 beaver <- read_csv(here('data', 'final_table_beaver.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 
 coos <- read_csv(here('data', 'final_table_coos.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 coquille <- read_csv(here('data', 'final_table_coquille.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 floras <- read_csv(here('data', 'final_table_floras.csv')) %>% 
   clean_names()%>% 
-  select(pass_score) 
+  select(pass_score) %>% 
+  arrange(pass_score)
 
 lower_umpqua <- read_csv(here('data', 'final_table_lowerump.csv')) %>% 
   clean_names() %>% 
-  select(pass_score) 
+  select(pass_score) %>% 
+  arrange(pass_score)
 
 middle_umpqua <- read_csv(here('data', 'final_table_midump.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 necanicum <- read_csv(here('data', 'final_table_necanicum.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 nehalem <- read_csv(here('data', 'final_table_nehalem.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 nestucca <- read_csv(here('data', 'final_table_nestucca.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 north_umpqua <- read_csv(here('data', 'final_table_northump.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 salmon <- read_csv(here('data', 'final_table_salmon.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 siletz <- read_csv(here('data', 'final_table_siletz.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 siltcoos <- read_csv(here('data', 'final_table_siltcoos.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 siuslaw <- read_csv(here('data', 'final_table_siuslaw.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 sixes <- read_csv(here('data', 'final_table_sixes.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 south_umpqua <- read_csv(here('data', 'final_table_southumpqua.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 
 tenmile <- read_csv(here('data', 'final_table_tenmile.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 tillamook <- read_csv(here('data', 'final_table_tillamook.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 yaquina <- read_csv(here('data', 'final_table_yaquina.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)
+  select(pass_score)%>% 
+  arrange(pass_score)
 
 
 
@@ -96,7 +116,7 @@ max_length <- max(length(alsea$pass_score), length(beaver$pass_score), length(co
 ## Passability data frame with all the barriers from each population. NA values filled in the extra spaces. Not sure how the NAs will play out in out functions. 
 ## This was really quick. Just a bunch of copy and paste, so no biggie if we have to get rid of it bc of all the NAs I added. It was the only way to combine all the columns together. -AC
 
-passability_score_df <- data.frame(alsea = c(alsea$pass_score, rep(NA, max_length - length(alsea$pass_score))),
+passability_values_df <- data.frame(alsea = c(alsea$pass_score, rep(NA, max_length - length(alsea$pass_score))),
                           beaver = c(beaver$pass_score, rep(NA, max_length - length(beaver$pass_score))),
                           coos = c(coos$pass_score, rep(NA, max_length - length(coos$pass_score))),
                           coquille = c(coquille$pass_score, rep(NA, max_length - length(coquille$pass_score))),
@@ -244,8 +264,6 @@ bpassage_base <- as.data.frame(cbind(alsea, beaver, coos, coquille,floras,lower_
   pivot_longer(1:20,
                names_to = 'population',
                values_to = 'bpassage')
-
-
 
 
 
