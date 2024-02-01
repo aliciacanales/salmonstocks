@@ -39,6 +39,7 @@ test_max_fcn <- function(weight){
 
 test = map_df(.x=grid_list,~test_max_fcn(.x))
 
+##################################### We need to clean this up when we get the chance ############################################
 
 test_max_fcn <- function(weight){
   weight=weight %>% unlist()
