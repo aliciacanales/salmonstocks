@@ -6,7 +6,7 @@ library(purrr)
 #.......................... combinging while_loop into one.........................
 
 .
-
+# cost should be around 100000. mean/median of the barrier costs
 budget = 1000000
 
 ## functions being used:
