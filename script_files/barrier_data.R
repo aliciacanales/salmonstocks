@@ -138,6 +138,9 @@ passability_values_df <- data.frame(alsea = c(alsea$pass_score, rep(NA, max_leng
                           yaquina = c(yaquina$pass_score, rep(NA, max_length - length(yaquina$pass_score))))
 
 
+# replace any NA with 1
+passability_values_df[is.na(passability_values_df)] <- 1
+
 ## ................................Getting bpassage isolated................................
 alsea <- read_csv(here('data', 'final_table_alsea.csv')) %>% 
   clean_names() %>% 
