@@ -2,6 +2,77 @@
 library(tidyverse)
 library(purrr)
 
+
+#.......................... combinging while_loop into one.........................
+
+## 204045.3 <- mean
+## 108847.2 <- median
+## budget = 3500000 and 23 mil. or find something else
+budget = 23000000
+
+## functions being used:
+# budget_allocated_fcn()
+# while_fcn()
+# bpassage_invest_fcn()
+
+
+
+budget_allocated_fcn <- function(budget,weight){
+  weight=weight %>% unlist()
+  budget_allocated <- budget * weight
+  return(budget_allocated)
+}
+
+
+test_max_fcn <- function(weight){
+  weight=weight %>% unlist()
+  output1 <- pmap_dbl(list(budget, weight),budget_allocated_fcn) 
+  output2 <- (pmap_dbl(list(output1),while_fcn)-1) # check to see if this is being transformed
+  bpassage_invest <- bpassage_invest_fcn(output2)  #map_dbl(list(output2),bpassage_invest_fcn) # not working
+  c_invest <- c_invest_fcn(z_c_df$z, bpassage_invest)
+  p_invest <- p_invest_fcn(z_p_df$z, bpassage_invest)
+  s_invest <- ((p_invest - 1) * c_invest)
+  s_baseline <- ((z_p_df$p_hat -1) * z_c_df$c_hat)
+  # var_invest <- var_rm * (s_invest^2)
+  # var_esu <- sum(var_invest)
+  return(s_invest)
+}
+
+test = map_df(.x=grid_list,~test_max_fcn(.x))
+
+##################################### We need to clean this up when we get the chance ############################################
+
+test_max_fcn <- function(weight){
+  weight=weight %>% unlist()
+  output1 <- pmap_dbl(list(weight), budget_allocated_fcn)
+  return(output1)
+}
+
+test = map_df(.x=grid_list,~test_max_fcn(.x))
+
+
+test = pmap_dbl(list(grid_list,test_max_fcn))
+
+
+
+
+combined_function <- function(input) {
+  result1 <- square(input)
+  result2 <- double(result1)
+  return(result2)
+}
+
+
+
+
+
+
+
+
+
+
+
+
 #.......................... while loop process.........................
 
 
@@ -314,5 +385,5 @@ print(bpassage2)
 
 
 
-
+## 2016 assessment for coho <- volatilty was too high to delist 
 

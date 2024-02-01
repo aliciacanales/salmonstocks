@@ -49,10 +49,10 @@ c_hat_temp = equilibrium_all %>%
   select(population, c_hat)
 
 # Import b_passage dataframe (the dataframe should have the following columns: population, b_passage)
-## For now, create temp dataframe to get function running, replace when data-informed b_passage for each population is ready
-b_passage_temp <- cbind(p_hat_temp$population) %>% 
-  data.frame(b_passage=c(.000125, .0001, .000005, .0002, .00010, .00012, .000015, .0001, .00004, .00008, .000095, .00013, .0001, .000045, .00005, .00011, .0002, .000005, .000125, .000125)) %>%
-  rename(population = 1)
+# b_passage_temp <- cbind(p_hat_temp$population) %>% 
+#   data.frame(b_passage=c(.000125, .0001, .000005, .0002, .00010, .00012, .000015, .0001, .00004, .00008, .000095, .00013, .0001, .000045, .00005, .00011, .0002, .000005, .000125, .000125)) %>%
+#   rename(population = 1) # replace with real data: 'bpassage_base'
+view(bpassage_base)
 
 
 # Create function to calculate z using p_hat and beta_passage
@@ -62,11 +62,11 @@ z_p_fcn <- function(p_hat, b_passage){
 }
 
 # create a dataframe of results
-z_p_df <- b_passage_temp %>% # pull in b_passage dataframe
+z_p_df <- bpassage_base %>% # pull in b_passage dataframe
   cbind(p_hat_temp$p_hat) %>% # bind with p_hat
   rename(p_hat = 3) %>% # rename column 3 to p_hat
   mutate(
-    z = pmap_dbl(list(p_hat,b_passage),z_p_fcn) # use pmat_dbl to calculate z for each population
+    z = pmap_dbl(list(p_hat,bpassage),z_p_fcn) # use pmat_dbl to calculate z for each population
   )
 
 # Create function to calculate z using c_hat and beta_passage
@@ -76,45 +76,28 @@ z_c_fcn <- function(c_hat, b_passage){
 }
 
 # create a separate dataframe with c results, so as to not get confused with p_df
-z_c_df <- b_passage_temp %>% # pull in b_passage dataframe
+z_c_df <- bpassage_base %>% # pull in b_passage dataframe
   cbind(c_hat_temp$c_hat) %>% # bind with p_hat
   rename(c_hat = 3) %>% # rename column 3 to p_hat
   mutate(
-    z = pmap_dbl(list(c_hat,b_passage),z_c_fcn) # use pmat_dbl to calculate z for each population
+    z = pmap_dbl(list(c_hat,bpassage),z_c_fcn) # use pmat_dbl to calculate z for each population
   )
 # z calculation working and ready for b_passage input when data is ready
 
 
 #..........................calculate 'p_invest' and 'c_invest' using 'b_passage' after investment.........................
-########### Actually the weight allocation should be down below (?)
-# we need to have an intermediate between these two steps where our weights come in to impact b_invest
-## Could the intermediate be cost per fraction of passability? i.e. it costs $5,000 to increase passability by 10%?
 
 # create function to see impact on productivity after investment
-p_invest_fcn <- function(z,b_passage,weight){
-  p_invest = z * (b_passage * (weight * 1000000)) # Equation to calculate p is 'p=z*b_passage', but with investment, b_passage needs to be a function of the weight allocated and the weight needs to be a proportion of the budget. Replace 1000000 with defined budget (doing manually first to check if function works)
+p_invest_fcn <- function(z,b_passage){
+  p_invest = z * b_passage # Equation to calculate p is 'p=z*b_passage', but with investment, b_passage needs to be a function of the weight allocated and the weight needs to be a proportion of the budget. Replace 1000000 with defined budget (doing manually first to check if function works)
   return(p_invest) # this is wrong right now because we are multiplying 'invested dollars' by 'b_passage', but we need to multiply 'invested_dollars' by 'investment in increasing passage' so that it is multiplying 'money' into 'money' (I'm having trouble writing this out, so lets go over this in-person - OS)
 }
-
-
-## notes from nathan meeting ##
-## one cost for each beta passage, average cost of removal from jaden. Making aggregating assumptions.pass along foundation data. They need spatial data to pass through. 
-## spatially organize data.. take all culverts and dams on line. per watershed
-## sort them. effectiveness organization. multiple all bpassage. choosing the worst ones first. 
-# p_invest function to help link between the b_passage to 
-## you need to tell R in a function to take the total invested amount and use that amount to go done the line of barriers 
-## cost vector of 50,000 --> while loop
-## make zeros .1 --> something about multiplicative stuff will make it non-linear relationship
-
-
-
-
 
 
 
 ########## create function to see impact on capacity after investment
 c_invest_fcn <- function(z,b_passage){ # this will look identical to P_invest_fcn - update once it is ready
-  c_invest = z * (b_passage)
+  c_invest = z * b_passage
   return(c_invest)
 }
 
@@ -124,12 +107,6 @@ p_temp <- z_p_df %>% # using made-up data right now, but its working, so cool!
     p_invest = pmap_dbl(list(z,b_passage),p_invest_fcn) # need to add weight
   )
 
-
-####### to link weight allocations to budget, we need to:
-# define budgets (make it a dataframe)
-# weight * budget
-# multiply this by b_passage (without investment)? or is there a better way to link it? Q for Nathan and Tamma
-## how will we know which barriers we are improving with investment? Q for Nathan and Tamma
 
 
 #..........................Create portfolios using max_fcn.........................
