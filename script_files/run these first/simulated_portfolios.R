@@ -55,57 +55,56 @@ c_hat_temp = equilibrium_all %>%
 view(bpassage_base)
 
 
-# Create function to calculate z using p_hat and beta_passage
+# function to calculate z using p_hat and beta_passage
 z_p_fcn <- function(p_hat, b_passage){
   z = p_hat / b_passage
   return(z)
 }
 
-# create a dataframe of results
-z_p_df <- bpassage_base %>% # pull in b_passage dataframe
-  cbind(p_hat_temp$p_hat) %>% # bind with p_hat
-  rename(p_hat = 3) %>% # rename column 3 to p_hat
+# create a dataframe of p_hat, z, and bpassage
+z_p_df <- bpassage_base %>%
+  cbind(p_hat_temp$p_hat) %>% 
+  rename(p_hat = 3) %>% 
   mutate(
     z = pmap_dbl(list(p_hat,bpassage),z_p_fcn) # use pmat_dbl to calculate z for each population
   )
 
-# Create function to calculate z using c_hat and beta_passage
+# function to calculate z using c_hat and beta_passage
 z_c_fcn <- function(c_hat, b_passage){
   z = c_hat / b_passage
   return(z)
 }
 
-# create a separate dataframe with c results, so as to not get confused with p_df
-z_c_df <- bpassage_base %>% # pull in b_passage dataframe
-  cbind(c_hat_temp$c_hat) %>% # bind with p_hat
-  rename(c_hat = 3) %>% # rename column 3 to p_hat
+# create a dataframe with c_hat, z, and bpassage
+z_c_df <- bpassage_base %>%
+  cbind(c_hat_temp$c_hat) %>% 
+  rename(c_hat = 3) %>% 
   mutate(
     z = pmap_dbl(list(c_hat,bpassage),z_c_fcn) # use pmat_dbl to calculate z for each population
   )
-# z calculation working and ready for b_passage input when data is ready
+
 
 
 #..........................calculate 'p_invest' and 'c_invest' using 'b_passage' after investment.........................
 
-# create function to see impact on productivity after investment
-p_invest_fcn <- function(z,b_passage){
-  p_invest = z * b_passage # Equation to calculate p is 'p=z*b_passage', but with investment, b_passage needs to be a function of the weight allocated and the weight needs to be a proportion of the budget. Replace 1000000 with defined budget (doing manually first to check if function works)
-  return(p_invest) # this is wrong right now because we are multiplying 'invested dollars' by 'b_passage', but we need to multiply 'invested_dollars' by 'investment in increasing passage' so that it is multiplying 'money' into 'money' (I'm having trouble writing this out, so lets go over this in-person - OS)
+# function to calculate impact on productivity after investment
+p_invest_fcn <- function(z,bpassage){
+  p_invest = z * bpassage 
+  return(p_invest)
 }
 
 
-
-########## create function to see impact on capacity after investment
-c_invest_fcn <- function(z,b_passage){ # this will look identical to P_invest_fcn - update once it is ready
-  c_invest = z * b_passage
+# function to calculate impact on capacity after investment
+c_invest_fcn <- function(z,bpassage){
+  c_invest = z * bpassage
   return(c_invest)
 }
 
 # test function outside to make sure it works
-p_temp <- z_p_df %>% # using made-up data right now, but its working, so cool!
-  mutate(
-    p_invest = pmap_dbl(list(z,b_passage),p_invest_fcn) # need to add weight
-  )
+# p_temp <- z_p_df %>% # using made-up data right now, but its working, so cool!
+#   mutate(
+#     p_invest = pmap_dbl(list(z,b_passage),p_invest_fcn) # need to add weight
+#   )
 
 
 
