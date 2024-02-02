@@ -4,43 +4,35 @@ library(purrr)
 #.......................... while loop process.........................
 
 
-# Now you have a list of data frames, each corresponding to a CSV file
-# You can access individual data frames using their names or indices in the list
-
-
-#.......................... prep the data.........................
-## sort passability data for each dataframe from low to high
-
-
 
 # ..........................step 1: run 0 (one while loop running with one budget allocated).........................
 ###### working original -- while loop running with a single budget (most simplest form, establishing the basline to make sure it runs)
 ## once the iterative steps are running, we can comment this out - Working.
-used_b = 0 ## used budget
-i = 1
-weight = .1 ## weight allocated to the population
-budget = 1000000 ## total budget for all of esu
-budget_allocated <- budget * weight ## budget allocated to this one population
-pass_df = data.frame(c(0,0,0,0)) %>% 
-  rename(passability = 1)## dummy df of passability to test functions on
-n = 5
-cost = array(50000, n) #barriers cost $50,000 to remove
-
-## create while loop
-
-for (j in ncol(pass_df)) {
-  
-  while(used_b < budget_allocated | i <length(pass_df[j])) { #stop running if used_b is greater than budget_allocated
-    used_b = cost[1] + used_b
-    i = i + 1
-    print(i)
-  }
-  
-}
-
-index_choice = i-1 ## number of barriers to be improved for a given budget allocated to the population
-
-pass_df[1:index_choice, ] <- 1 ## in the bpassage df, update the passability to 1 for rows from 1:index_choice
+# used_b = 0 ## used budget
+# i = 1
+# weight = .1 ## weight allocated to the population
+# budget = 1000000 ## total budget for all of esu
+# budget_allocated <- budget * weight ## budget allocated to this one population
+# pass_df = data.frame(c(0,0,0,0)) %>% 
+#   rename(passability = 1)## dummy df of passability to test functions on
+# n = 5
+# cost = array(50000, n) #barriers cost $50,000 to remove
+# 
+# ## create while loop
+# 
+# for (j in ncol(pass_df)) {
+#   
+#   while(used_b < budget_allocated | i <length(pass_df[j])) { #stop running if used_b is greater than budget_allocated
+#     used_b = cost[1] + used_b
+#     i = i + 1
+#     print(i)
+#   }
+#   
+# }
+# 
+# index_choice = i-1 ## number of barriers to be improved for a given budget allocated to the population
+# 
+# pass_df[1:index_choice, ] <- 1 ## in the bpassage df, update the passability to 1 for rows from 1:index_choice
 ###### end above
 
 
@@ -49,7 +41,7 @@ pass_df[1:index_choice, ] <- 1 ## in the bpassage df, update the passability to 
 #..........................step 2: Create df of allocated budget to each pop.........................
 ## Create dataframe of the allocated budget by weight for each population. columns = populations, rows = portfolios.
 
-budget = 1000000
+ budget = 1300000
   
 ## function to determine the budget allocated using weights
 budget_allocated_fcn <- function(budget,weight){
@@ -71,11 +63,11 @@ budget_allocated_list<-split(budget_allocated_df,seq(nrow(budget_allocated_df)))
 used_b = 0 # used budget
 i = 1 
 weight = .1 
-budget = 23000000 # total budget for all of esu. I used the 23,000,000 scenario that tamma suggested
+budget = 2300000 # total budget for all of esu. I used the 23,000,000 scenario that tamma suggested
 budget_allocated <- budget * weight # budget allocated to this one population
 bpassage = data.frame(c(.5,.5,.5,.5)) # dummy df of passability to test functions on
 n = 5
-cost = array(108847, n) #barriers cost $50,000 to remove
+cost = array(108847, n) #barriers cost $108847 (median from data)
 
 ## run the while loop within a function and call it 'while_fcn'. Doing this so we can run the function through purrr with many budget allocations.
 while_fcn <- function(budget_allocated) {
@@ -84,11 +76,9 @@ while_fcn <- function(budget_allocated) {
     while(used_b <= budget_allocated) { #stop running if used_b is greater than budget_allocated
       used_b = cost[1] + used_b
       i = i + 1
-      #browser()
-      
     }
   index_choice=i-1
-  #browser()
+
 return(index_choice)
 }
   
@@ -101,8 +91,8 @@ index_choice_fcn <- function(budget_allocated){
 
 
 ## run the 'index_choice_fcn' through purrr using the 'budget_grid_list'. index choice is the number of barriers that can be improved for a given budget, we will use this to update the 'bpassage' for each population to get 'bpassage_invest'
-index_choice_df = map_df(.x=budget_allocated_list,~index_choice_fcn(.x)) ## QC output here
-index_choice_list<-split(index_choice_df,seq(nrow(index_choice_df))) ## turn df into a list
+index_choice_df = map_df(.x=budget_allocated_list,~index_choice_fcn(.x))
+index_choice_list<-split(index_choice_df,seq(nrow(index_choice_df)))
 
 
 ### test first with a simple (fake) df first. Use this as a QC
@@ -116,32 +106,32 @@ index_choice_list<-split(index_choice_df,seq(nrow(index_choice_df))) ## turn df 
 ## Output are the bpassage_invest dataframes
 
 ## equation to improve passability
-bpassage[0:index_choice, ] <- 1
+# bpassage[0:index_choice, ] <- 1
 
 ## create made-up dataframe where each column is a population
-passability_values_df = data.frame(
-  port1 = c(0.5, 0.5, 0.5, 0.5),
-  port2 = c(0.5, 0.5, 0.5, 0.5),
-  port3 = c(0.5, 0.5, 0.5, 0.5),
-  port4 = c(0.5, 0.5, 0.5, 0.5),
-  port5 = c(0.5, 0.5, 0.5, 0.5),
-  port6 = c(0.5, 0.5, 0.5, 0.5),
-  port7 = c(0.5, 0.5, 0.5, 0.5),
-  port8 = c(0.5, 0.5, 0.5, 0.5),
-  port9 = c(0.5, 0.5, 0.5, 0.5),
-  port10 = c(0.5, 0.5, 0.5, 0.5),
-  port11 = c(0.5, 0.5, 0.5, 0.5),
-  port12 = c(0.5, 0.5, 0.5, 0.5),
-  port13 = c(0.5, 0.5, 0.5, 0.5),
-  port14 = c(0.5, 0.5, 0.5, 0.5),
-  port15 = c(0.5, 0.5, 0.5, 0.5),
-  port16 = c(0.5, 0.5, 0.5, 0.5),
-  port17 = c(0.5, 0.5, 0.5, 0.5),
-  port18 = c(0.5, 0.5, 0.5, 0.5),
-  port19 = c(0.5, 0.5, 0.5, 0.5),
-  port20 = c(0.5, 0.5, 0.5, 0.5)
-)
-colnames(passability_values_df) <- names(abundance_data) #rename columns
+# passability_values_df = data.frame(
+#   port1 = c(0.5, 0.5, 0.5, 0.5),
+#   port2 = c(0.5, 0.5, 0.5, 0.5),
+#   port3 = c(0.5, 0.5, 0.5, 0.5),
+#   port4 = c(0.5, 0.5, 0.5, 0.5),
+#   port5 = c(0.5, 0.5, 0.5, 0.5),
+#   port6 = c(0.5, 0.5, 0.5, 0.5),
+#   port7 = c(0.5, 0.5, 0.5, 0.5),
+#   port8 = c(0.5, 0.5, 0.5, 0.5),
+#   port9 = c(0.5, 0.5, 0.5, 0.5),
+#   port10 = c(0.5, 0.5, 0.5, 0.5),
+#   port11 = c(0.5, 0.5, 0.5, 0.5),
+#   port12 = c(0.5, 0.5, 0.5, 0.5),
+#   port13 = c(0.5, 0.5, 0.5, 0.5),
+#   port14 = c(0.5, 0.5, 0.5, 0.5),
+#   port15 = c(0.5, 0.5, 0.5, 0.5),
+#   port16 = c(0.5, 0.5, 0.5, 0.5),
+#   port17 = c(0.5, 0.5, 0.5, 0.5),
+#   port18 = c(0.5, 0.5, 0.5, 0.5),
+#   port19 = c(0.5, 0.5, 0.5, 0.5),
+#   port20 = c(0.5, 0.5, 0.5, 0.5)
+# )
+# colnames(passability_values_df) <- names(abundance_data) #rename columns
 
 
 
@@ -170,10 +160,10 @@ colnames(passability_values_df) <- names(abundance_data) #rename columns
 # print(bpassage_invest_df)
 
 
-passability_test <- passability_values_df
-
-
-one_index_choice_df <- index_choice_df[1, ] # select the first row to test
+# passability_test <- passability_values_df
+# 
+# 
+# one_index_choice_df <- index_choice_df[1, ] # select the first row to test
 
 # new function
 bpassage_invest_fcn <- function(index_choice) {
@@ -201,7 +191,7 @@ bpassage_invest_fcn <- function(index_choice) {
 
 
 
-bpassage_invest_df <- as.data.frame(bpassage_invest_fcn(one_index_choice_df)) # working - bpassage_invest for each population for one portfolio
+# bpassage_invest_df <- as.data.frame(bpassage_invest_fcn(one_index_choice_df)) # working - bpassage_invest for each population for one portfolio
 
 # ### we need to run this for each row, because each row represents a dataframe
 # ## apply the next row in the list
@@ -210,7 +200,7 @@ bpassage_invest_df <- as.data.frame(bpassage_invest_fcn(one_index_choice_df)) # 
 #   return(bpassage_invest_output)
 # }
 
-temp_df <- map_df(index_choice_list, ~bpassage_invest_fcn(.x))
+# temp_df <- map_df(index_choice_list, ~bpassage_invest_fcn(.x))
 
 
 
