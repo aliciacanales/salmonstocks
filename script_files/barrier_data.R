@@ -137,6 +137,8 @@ passability_values_df <- data.frame(alsea = c(alsea$pass_score, rep(NA, max_leng
                           tillamook = c(tillamook$pass_score, rep(NA, max_length - length(tillamook$pass_score))),
                           yaquina = c(yaquina$pass_score, rep(NA, max_length - length(yaquina$pass_score))))
 
+pass_values_na <- passability_values_df
+
 
 # replace any NA with 1
 passability_values_df[is.na(passability_values_df)] <- 1

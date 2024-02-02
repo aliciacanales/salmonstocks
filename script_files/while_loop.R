@@ -63,7 +63,7 @@ budget_allocated_list<-split(budget_allocated_df,seq(nrow(budget_allocated_df)))
 used_b = 0 # used budget
 i = 1 
 weight = .1 
-budget = 2300000 # total budget for all of esu. I used the 23,000,000 scenario that tamma suggested
+#budget = 2300000 # total budget for all of esu. I used the 23,000,000 scenario that tamma suggested
 budget_allocated <- budget * weight # budget allocated to this one population
 bpassage = data.frame(c(.5,.5,.5,.5)) # dummy df of passability to test functions on
 n = 5
@@ -163,7 +163,7 @@ index_choice_list<-split(index_choice_df,seq(nrow(index_choice_df)))
 # passability_test <- passability_values_df
 # 
 # 
-# one_index_choice_df <- index_choice_df[1, ] # select the first row to test
+one_index_choice_df <- index_choice_df[1, ] # select the first row to test
 
 # new function
 bpassage_invest_fcn <- function(index_choice) {
@@ -178,20 +178,29 @@ bpassage_invest_fcn <- function(index_choice) {
     passability_test[0:rows_to_change, col_name] <- 1 
     
     k<-k+1# Update the specified number of rows in passability_values_df
-    #browser()
+  }
+  
+  k=1
+  bpassage_invest <- apply(passability_test, 2, prod) # product of passability values
+  
+  for (col_name in names(pass_values_na)) { #multiple by the number of barriers in that population
+    
+    nrow <- length(na.omit(pass_values_na[[col_name]]))
+    
+    if (k ==which(names(pass_values_na) == col_name)) {
+      bpassage_invest[k] <- bpassage_invest[k] * nrow
+    }
+    
+    k<-k+1
   }
 
-  #browser()
-  bpassage_invest <- apply(passability_test, 2, prod) # create a new dataframe and take the product of each column
-  bpassage_invest <- bpassage_invest * nrow(passability_test)
-  #bpassage_invest_output <- data.frame(t(bpassage_invest)) # transform
 
   return(bpassage_invest)
 } # output is new bpassage score for each population for this portfolio
 
 
 
-# bpassage_invest_df <- as.data.frame(bpassage_invest_fcn(one_index_choice_df)) # working - bpassage_invest for each population for one portfolio
+bpassage_invest_df <- as.data.frame(bpassage_invest_fcn(one_index_choice_df)) # working - bpassage_invest for each population for one portfolio
 
 # ### we need to run this for each row, because each row represents a dataframe
 # ## apply the next row in the list
