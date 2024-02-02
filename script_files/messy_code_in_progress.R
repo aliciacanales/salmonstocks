@@ -33,12 +33,72 @@ test_max_fcn <- function(weight){
   p_invest <- p_invest_fcn(z_p_df$z, bpassage_invest)
   s_invest <- ((p_invest - 1) * c_invest)
   s_baseline <- ((z_p_df$p_hat - 1) * z_c_df$c_hat)
-  # var_invest <- var_rm * (s_invest^2)
-  # var_esu <- sum(var_invest)
-  return(s_invest)
+  esu_returns_invest <- sum(s_invest)
+  esu_resturns_baseline <- sum(s_baseline)
+  
+  
+  var <- sapply(coho[2:22], var)
+  var_rm<-var[-18]
+  
+  var_invest <- var_rm * (s_invest^2)
+  esu_var_invest <- sum(var_invest)
+  
+  
+  #return(s_invest) # to look at single dataframe
+  return(round(data.frame(esu_returns_invest, esu_var_invest),3))
 }
 
 test = map_df(.x=grid_list,~test_max_fcn(.x))
+
+
+
+
+
+
+
+
+
+#...................................... plots ......................................
+library(ggalt)
+
+# portfolios and efficiency frontier
+ggplot(test, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  geom_point(colour = 'darkcyan', size = 2) + 
+  #geom_curve(x = 3.521570e+17, y = 205623.0,
+             #xend = 3.892000e+17, yend = 211781.8,
+             #colour = 'red', curvature = -.3) +
+  theme_minimal() +
+  labs(x = 'Variance', y = 'ESU Abundance') +
+  scale_y_continuous(labels = scales::comma) +
+  #ggrepel::geom_text_repel(aes(label = id,
+                               #size = 2)) +
+  theme(legend.position = "none")
+
+
+
+
+# wrangling
+optimal_portfolio_1 <- budget_allocated_df[1, ] %>% # this is random, just using for framework for now
+  pivot_longer(cols = 1:20,
+               names_to = 'population',
+               values_to = 'budget_allocated')
+
+# lollipop plot 1
+optimal_portfolio_1 %>% 
+  ggplot(aes(x = fct_reorder(population, budget_allocated), #fct_reorder lets us set the order of the first value, by the second value ($ invested)
+             y = budget_allocated)) +
+  ggalt::geom_lollipop() +
+  labs(x = "Population", y = "Budget Allocated (USD)") +
+  scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
+  # gghighlight::gghighlight(population == "tillamook") + # if we want to emphasize a single population
+  coord_flip() +
+  theme_minimal()
+
+
+
+
+
+
 
 ##################################### We need to clean this up when we get the chance ############################################
 
