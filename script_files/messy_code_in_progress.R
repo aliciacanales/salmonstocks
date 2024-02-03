@@ -70,8 +70,8 @@ ggplot(test, aes(x = esu_var_invest, y = esu_returns_invest)) +
   theme_minimal() +
   labs(x = 'Variance', y = 'ESU Abundance') +
   scale_y_continuous(labels = scales::comma) +
-  #ggrepel::geom_text_repel(aes(label = id,
-                               #size = 2)) +
+  # ggrepel::geom_text_repel(aes(label = id,
+  # size = 2)) +
   theme(legend.position = "none")
 
 
