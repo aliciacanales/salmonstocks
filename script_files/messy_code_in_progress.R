@@ -41,7 +41,9 @@ test_max_fcn <- function(weight){
   var_rm<-var[-18]
   
   var_invest <- var_rm * (s_invest^2)
-  esu_var_invest <- sum(var_invest)
+  cov_invest <- cov(s_invest) * var_invest
+  esu_var_invest <- sum(var_invest, cov_invest)
+
   
   
   #return(s_invest) # to look at single dataframe
@@ -50,7 +52,7 @@ test_max_fcn <- function(weight){
 
 test = map_df(.x=grid_list,~test_max_fcn(.x))
 
-
+round(data.frame(esu_returns_invest, esu_var_invest),3)
 
 
 
