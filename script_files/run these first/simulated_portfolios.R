@@ -52,7 +52,7 @@ c_hat_temp = equilibrium_all %>%
 # b_passage_temp <- cbind(p_hat_temp$population) %>% 
 #   data.frame(b_passage=c(.000125, .0001, .000005, .0002, .00010, .00012, .000015, .0001, .00004, .00008, .000095, .00013, .0001, .000045, .00005, .00011, .0002, .000005, .000125, .000125)) %>%
 #   rename(population = 1) # replace with real data: 'bpassage_base'
-view(bpassage_base)
+view(avg_passability)
 
 
 # function to calculate z using p_hat and beta_passage
@@ -60,6 +60,7 @@ z_p_fcn <- function(p_hat, b_passage){
   z = p_hat / b_passage
   return(z)
 }
+
 
 # create a dataframe of p_hat, z, and bpassage
 z_p_df <- bpassage_base %>%
@@ -74,6 +75,7 @@ z_c_fcn <- function(c_hat, b_passage){
   z = c_hat / b_passage
   return(z)
 }
+
 
 # create a dataframe with c_hat, z, and bpassage
 z_c_df <- bpassage_base %>%
