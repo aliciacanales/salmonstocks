@@ -274,7 +274,3 @@ bpassage_base <- as.data.frame(cbind(alsea, beaver, coos, coquille,floras,lower_
                values_to = 'bpassage')
 
 
-passabilities_avg = colMeans(passability_values_df)
-avg_passability <- as.data.frame(passabilities_avg)
-
-
