@@ -39,10 +39,12 @@ test_max_fcn <- function(weight){
   
   var <- sapply(coho[2:22], var)
   var_rm<-var[-18]
+  cov <- sapply(coho[2:22], cov)
+  cov_rm<-cov[-18]
   
   var_invest <- var_rm * (s_invest^2)
   var_baseline <- var_rm * (s_baseline^2)
-  esu_var_invest <- sum(var_invest)
+  esu_var_invest <- sum(var_invest,cov_rm)
   esu_var_baseline <- sum(var_baseline)
   
   
@@ -66,23 +68,26 @@ library(ggalt)
 # baseline esu returns = 187118.2
 # baseline esu variance = 3.141711e+17 (this will change with updated variance calculation)
 baseline_point <- data.frame(x = 3.141711e+17, y = 187118.2)
+id <- 'Baseline'
 
 # remove outliers to plot (is this okay to do?)
 temp <- test[-c(1398:1350), ]
 
 # portfolios and efficiency frontier
 ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
-  geom_point(colour = 'darkcyan', size = 2) + 
-  #geom_curve(x = 3.521570e+17, y = 205623.0,
-             #xend = 3.892000e+17, yend = 211781.8,
-             #colour = 'red', curvature = -.3) +
-  geom_point(data = baseline_point, aes(x, y), color = "red", size = 3)+
-  theme_minimal() +
+  geom_point(colour = 'gray', size = 2) + 
+  # geom_curve(x = 3.521570e+17, y = 205623.0,
+  # xend = 3.892000e+17, yend = 211781.8,
+  # colour = 'red', curvature = -.3) +
+  geom_smooth(method = "gam", se = FALSE, color = 'red2') +
+  geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
+  geom_text(x = 7.141711e+18, y = 187118.2, label = "<----- Baseline Portfolio", size = 5) +
+  # ggrepel::geom_text_repel(data = baseline_point, aes(label = id,
+  #                              size = 2)) +
   labs(x = 'Variance', y = 'ESU Abundance') +
   scale_y_continuous(labels = scales::comma) +
-  # ggrepel::geom_text_repel(aes(label = id,
-  # size = 2)) +
-  theme(legend.position = "none")
+  theme(legend.position = "none") + 
+  theme_minimal()
 
 
 
