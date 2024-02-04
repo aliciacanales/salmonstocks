@@ -92,20 +92,48 @@ optimal_portfolio_1 <- budget_allocated_df[1, ] %>% # this is random, just using
                names_to = 'population',
                values_to = 'budget_allocated')
 
+optimal_portfolio_2 <- budget_allocated_df[7, ] %>% # this is random, just using for framework for now
+  pivot_longer(cols = 1:20,
+               names_to = 'population',
+               values_to = 'budget_allocated')
+
+
 # lollipop plot 1
 optimal_portfolio_1 %>% 
   ggplot(aes(x = fct_reorder(population, budget_allocated), #fct_reorder lets us set the order of the first value, by the second value ($ invested)
              y = budget_allocated)) +
   ggalt::geom_lollipop() +
   labs(x = "Population", y = "Budget Allocated (USD)") +
+  ggtitle("Portfolio 1", subtitle = "Returns: 500,900\nVariance: 300,000,000") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
   scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
   # gghighlight::gghighlight(population == "tillamook") + # if we want to emphasize a single population
-  coord_flip() +
-  theme_minimal()
+  #coord_flip() +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.subtitle = element_text(hjust = 0.5)) +
+  coord_flip()
+ 
+               
+# lollipop plot 2       
+optimal_portfolio_2 %>% 
+  ggplot(aes(x = fct_reorder(population, budget_allocated), #fct_reorder lets us set the order of the first value, by the second value ($ invested)
+             y = budget_allocated)) +
+  ggalt::geom_lollipop() +
+  labs(x = "Population", y = "Budget Allocated (USD)") +
+  ggtitle("Portfolio 2", subtitle = "Returns: 405,000\nVariance: 400,070,000") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
+  scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
+  # gghighlight::gghighlight(population == "tillamook") + # if we want to emphasize a single population
+  #coord_flip() +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.subtitle = element_text(hjust = 0.5)) +
+  coord_flip()
 
-
-
-
+# facet wrap or patchwork plots side by side
 
 
 
