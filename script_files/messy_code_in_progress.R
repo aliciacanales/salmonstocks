@@ -68,7 +68,6 @@ library(ggalt)
 # baseline esu returns = 187118.2
 # baseline esu variance = 3.141711e+17 (this will change with updated variance calculation)
 baseline_point <- data.frame(x = 3.141711e+17, y = 187118.2)
-id <- 'Baseline'
 
 # remove outliers to plot (is this okay to do?)
 temp <- test[-c(1398:1350), ]
@@ -82,8 +81,6 @@ ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_smooth(method = "gam", se = FALSE, color = 'red2') +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
   geom_text(x = 7.541711e+18, y = 187118.2, label = "<----- Baseline Portfolio", size = 5) +
-  # ggrepel::geom_text_repel(data = baseline_point, aes(label = id,
-  #                              size = 2)) +
   labs(x = 'Variance', y = 'ESU Abundance') +
   scale_y_continuous(labels = scales::comma) +
   theme(legend.position = "none") + 
