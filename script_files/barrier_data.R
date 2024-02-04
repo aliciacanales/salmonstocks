@@ -143,6 +143,11 @@ pass_values_na <- passability_values_df
 # replace any NA with 1
 passability_values_df[is.na(passability_values_df)] <- 1
 
+## taking the avg passability 
+passabilities_avg = colMeans(passability_values_df)
+avg_passability <- as.data.frame(passabilities_avg)
+
+
 ## ................................Getting bpassage isolated................................
 alsea <- read_csv(here('data', 'final_table_alsea.csv')) %>% 
   clean_names() %>% 
@@ -269,7 +274,5 @@ bpassage_base <- as.data.frame(cbind(alsea, beaver, coos, coquille,floras,lower_
   pivot_longer(1:20,
                names_to = 'population',
                values_to = 'bpassage')
-
-
 
 
