@@ -34,22 +34,24 @@ test_max_fcn <- function(weight){
   s_invest <- ((p_invest - 1) * c_invest)
   s_baseline <- ((z_p_df$p_hat - 1) * z_c_df$c_hat)
   esu_returns_invest <- sum(s_invest)
-  esu_resturns_baseline <- sum(s_baseline)
+  esu_returns_baseline <- sum(s_baseline)
   
   
   var <- sapply(coho[2:22], var)
   var_rm<-var[-18]
   
   var_invest <- var_rm * (s_invest^2)
+  var_baseline <- var_rm * (s_baseline^2)
   esu_var_invest <- sum(var_invest)
+  esu_var_baseline <- sum(var_baseline)
   
   
   #return(s_invest) # to look at single dataframe
-  return(round(data.frame(esu_returns_invest, esu_var_invest),3))
+  return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
-test = map_df(.x=grid_list,~test_max_fcn(.x))
-
+test = map_df(.x=grid_list,~test_max_fcn(.x)) %>% 
+  arrange(esu_returns_invest) # order by returns from investment
 
 
 
@@ -61,12 +63,20 @@ test = map_df(.x=grid_list,~test_max_fcn(.x))
 #...................................... plots ......................................
 library(ggalt)
 
+# baseline esu returns = 187118.2
+# baseline esu variance = 3.141711e+17 (this will change with updated variance calculation)
+baseline_point <- data.frame(x = 3.141711e+17, y = 187118.2)
+
+# remove outliers to plot (is this okay to do?)
+temp <- test[-c(1398:1350), ]
+
 # portfolios and efficiency frontier
-ggplot(test, aes(x = esu_var_invest, y = esu_returns_invest)) +
+ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'darkcyan', size = 2) + 
   #geom_curve(x = 3.521570e+17, y = 205623.0,
              #xend = 3.892000e+17, yend = 211781.8,
              #colour = 'red', curvature = -.3) +
+  geom_point(data = baseline_point, aes(x, y), color = "red", size = 3)+
   theme_minimal() +
   labs(x = 'Variance', y = 'ESU Abundance') +
   scale_y_continuous(labels = scales::comma) +
