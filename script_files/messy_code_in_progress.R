@@ -10,18 +10,18 @@ library(purrr)
 ## budget = 3500000 and 23 mil. or find something else
 budget = 1300000
 
-## functions being used:
-# budget_allocated_fcn()
-# while_fcn()
-# bpassage_invest_fcn()
+## covariance (using covariance from 'coho' calulated in 'population.R')
+cov_temp <- coho[2:22]
+cov_rm <- cov_temp[-18] # remove tahkenitch
+cov_coho <- sum(cov(cov_rm[1:20])) # the sum of the cov of esu (without tahkenitch)
 
 
+# budget_allocated_fcn <- function(budget,weight){
+#   weight=weight %>% unlist()
+#   budget_allocated <- budget * weight
+#   return(budget_allocated)
+# }
 
-budget_allocated_fcn <- function(budget,weight){
-  weight=weight %>% unlist()
-  budget_allocated <- budget * weight
-  return(budget_allocated)
-}
 
 
 test_max_fcn <- function(weight){
@@ -39,24 +39,20 @@ test_max_fcn <- function(weight){
   
   var <- sapply(coho[2:22], var)
   var_rm<-var[-18]
-  cov <- sapply(coho[2:22], cov)
-  cov_rm<-cov[-18]
   
   var_invest <- var_rm * (s_invest^2)
   var_baseline <- var_rm * (s_baseline^2)
-  esu_var_invest <- sum(var_invest,cov_rm)
+  cov <- var_invest * cov_coho
+  esu_var_invest <- sum(var_invest)
   esu_var_baseline <- sum(var_baseline)
   
   
   #return(s_invest) # to look at single dataframe
-  return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
+  return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline, cov),3))
 }
 
 test = map_df(.x=grid_list,~test_max_fcn(.x)) %>% 
   arrange(esu_returns_invest) # order by returns from investment
-
-
-
 
 
 
