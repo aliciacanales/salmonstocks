@@ -81,13 +81,14 @@ ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
   # colour = 'red', curvature = -.3) +
   geom_smooth(method = "gam", se = FALSE, color = 'red2') +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
-  geom_text(x = 7.141711e+18, y = 187118.2, label = "<----- Baseline Portfolio", size = 5) +
+  geom_text(x = 7.541711e+18, y = 187118.2, label = "<----- Baseline Portfolio", size = 5) +
   # ggrepel::geom_text_repel(data = baseline_point, aes(label = id,
   #                              size = 2)) +
   labs(x = 'Variance', y = 'ESU Abundance') +
   scale_y_continuous(labels = scales::comma) +
   theme(legend.position = "none") + 
   theme_minimal()
+
 
 
 
