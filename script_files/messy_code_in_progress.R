@@ -65,8 +65,8 @@ test_max_fcn <- function(weight){
   sd_rm<-sd[-18]
   #cov_matrix <- cov(coho[2:22])
   
+  ## covariance of investment
   cov_2 <- 0
-
   # Loop over each i
   for (i in 1:20) {
     # Calculate the sum for each i
@@ -74,22 +74,32 @@ test_max_fcn <- function(weight){
     # Add this sum to the total sum
     cov_2 <- cov_2 + cov_1
   }
-
   cov_invest <- cov_2
   
+  ## covariance of baseline
+  cov_2_baseline <- 0
+  # Loop over each i
+  for (i in 1:20) {
+    # Calculate the sum for each i
+    cov_1_baseline <- sum(sd_rm[i] * s_baseline[i] * sd_rm[-i] * s_baseline[-i] * cov_matrix[i])
+    # Add this sum to the total sum
+    cov_2_baseline <- cov_2_baseline + cov_1_baseline
+  }
+  cov_baseline <- cov_2_baseline
+  
+  
   var_invest <- var_rm * (s_invest^2)
-
   var_baseline <- var_rm * (s_baseline^2)
   esu_var_invest <- sum(var_invest + cov_invest)
-  esu_var_baseline <- sum(var_baseline)
+  esu_var_baseline <- sum(var_baseline + cov_baseline)
 
   
   
-  #return(covariance) # to look at single dataframe
+  #return(cov_baseline) # to look at single dataframe
   return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
-Olivia
+
 test = map_df(.x=grid_list,~test_max_fcn(.x)) %>%
 
   arrange(esu_returns_invest) # order by returns from investment
@@ -110,7 +120,7 @@ baseline_point <- data.frame(x = 3.141711e+17, y = 187118.2)
 temp <- test[-c(656:686), ]
 
 # portfolios and efficiency frontier
-ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
+ggplot(test, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'gray', size = 2) + 
   # geom_curve(x = 3.521570e+17, y = 205623.0,
   # xend = 3.892000e+17, yend = 211781.8,
