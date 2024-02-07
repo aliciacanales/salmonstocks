@@ -765,9 +765,9 @@ var_2019 <-3.084847
 mean_2019 <- 0.7088897
 
 p_a<-ggplot(data=var_out,aes(y=port_mean,x=var_res))+
-  #geom_point(color="grey",alpha=0.5)+
-  #geom_point(aes(x=rand[hold,4],y=rand[hold,5]),size=3)+
-  #geom_line()+
+  # geom_point(color="grey",alpha=0.5)+
+  # geom_point(aes(x=rand[hold,4],y=rand[hold,5]),size=3)+
+  # geom_line()+
   geom_path() +
   geom_point(aes(x=var_2019, y=mean_2019), size=2) +
   labs(x="Variance", y="Mean Return")+
@@ -786,11 +786,16 @@ var_keep=which.min(abs(var_out$var_res-var_2019))
 mean_keep=which.min(abs(mean_list-mean_2019))
 
 
-p2 <- p_a + annotate("segment",x=var_2019,y=mean_2019,xend=var_out$var_res[var_keep],yend=mean_list[var_keep],color="red")+
-  annotate("pointrange",x=var_out$var_res[var_keep],y=mean_list[var_keep],ymin=mean_2019,ymax=mean_list[mean_keep],color="red")
+p2 <- p_a + annotate("segment",x=var_2019,y=mean_2019,xend=var_out$var_res[var_keep],yend=mean_list[var_keep],color="grey", linetype = 'dashed')
  
 
-p2
+p3 <- p2 + geom_segment(aes(x = var_2019, 
+                 y = mean_2019, 
+                 xend = var_out$var_res[var_keep], 
+                 yend = mean_list[var_keep]), 
+             color = "grey", 
+             linetype = "dashed", 
+             arrow = arrow(type = "closed", length = unit(0.3, "cm")))
 
 
 weights_2019 <-df_2019/tot_pop ## make this into a graph for 2019 
@@ -800,10 +805,17 @@ var_out$weights[var_keep] ## showing us the weights for 2019 round them
 
 
 ```{r}
-p3<-p2+ annotate("segment",x=var_2019,y=mean_2019,xend=var_out$var_res[mean_keep],yend=mean_list[mean_keep],color="purple")+
-  annotate("pointrange",x=var_out$var_res[mean_keep],y=mean_list[mean_keep],xmin=var_2019,xmax=var_out$var_res[mean_keep],color="purple")
+p4 <-p3+ annotate("segment",x=var_2019,y=mean_2019,xend=var_out$var_res[mean_keep],yend=mean_list[mean_keep],color="grey", linetype = 'dashed')
 
-p3
+p5 <- p4 + geom_point(aes(x=var_2019, y=mean_2019), size=3) +
+  geom_segment(aes(x = var_2019, 
+                 y = mean_2019, 
+                 xend = var_out$var_res[mean_keep], 
+                 yend = mean_list[mean_keep]), 
+             color = "grey", 
+             linetype = "dashed", 
+             arrow = arrow(type = "closed", length = unit(0.3, "cm")))
+p5
 
 ```
 ### Weights table

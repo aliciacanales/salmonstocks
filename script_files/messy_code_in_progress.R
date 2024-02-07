@@ -64,6 +64,7 @@ test = map_df(.x=grid_list,~test_max_fcn(.x)) %>%
 
 #...................................... plots ......................................
 library(ggalt)
+library(proj4)
 
 # baseline esu returns = 187118.2
 # baseline esu variance = 3.141711e+17 (this will change with updated variance calculation)
@@ -83,6 +84,8 @@ ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_text(x = 8.541711e+18, y = 187118.2, label = " <---- Baseline Portfolio", size = 5) +
   labs(x = 'Variance', y = 'ESU Abundance') +
   scale_y_continuous(labels = scales::comma) +
+  xlim(0, 3e+20) +
+  ylim(0, 4500000) +
   theme(legend.position = "none") + 
   theme_minimal()
 
@@ -147,7 +150,7 @@ optimal_portfolio_2 %>%
   labs(x = "Population", y = "Budget Allocated (USD)") +
   ggtitle("Portfolio 2", subtitle = "Returns: 405,000\nVariance: 400,070,000") +
   theme(plot.title = element_text(hjust = 0.5)) +
-  scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
+  # scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
   scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
   # gghighlight::gghighlight(population == "tillamook") + # if we want to emphasize a single population
   #coord_flip() +
