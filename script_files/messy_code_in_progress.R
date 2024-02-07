@@ -117,15 +117,15 @@ library(ggalt)
 baseline_point <- data.frame(x = 3.141711e+17, y = 187118.2)
 
 # remove outliers to plot (is this okay to do?)
-temp <- test[-c(656:686), ]
+temp <- test[-c(624:658), ]
+
 
 # portfolios and efficiency frontier
-ggplot(test, aes(x = esu_var_invest, y = esu_returns_invest)) +
+p <- ggplot(test, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'gray', size = 2) + 
   # geom_curve(x = 3.521570e+17, y = 205623.0,
   # xend = 3.892000e+17, yend = 211781.8,
   # colour = 'red', curvature = -.3) +
-  geom_smooth(method = "gam", se = FALSE, color = 'red2') +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
   annotate("segment",
            x = 0.661711e+29, xend = 6.141711e+27, ## this controls how long the arrow is
@@ -133,13 +133,16 @@ ggplot(test, aes(x = esu_var_invest, y = esu_returns_invest)) +
            arrow = arrow(), color="black") +
   geom_text(x = 1.141711e+29, y = 187118.2, label = "Baseline Portfolio", size = 4.75, check_overlap = T) +
   labs(x = 'Variance', y = 'ESU Abundance') +
-  # xlim(0, 1.5e+29) +
-  scale_y_continuous(labels = scales::comma) +
+  xlim(0, 1.0e+29) +
+  ylim(0, 1000000) +
   theme(legend.position = "none") + 
   theme_minimal()
 
+p2 <- p + scale_y_continuous(labels = scales::comma())
 
-
+p2
+## ggoptimal in ggplot
+## 
 
 
 # plot 1 wrangling
