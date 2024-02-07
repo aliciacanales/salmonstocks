@@ -2,7 +2,7 @@
 library(tidyverse)
 library(purrr)
 
-
+set.seed(123)
 #.......................... combinging while_loop into one.........................
 
 ## 204045.3 <- mean
@@ -90,7 +90,7 @@ test_max_fcn <- function(weight){
 }
 
 Olivia
-test = map_df(.x=grid_list,~test_max_fcn(.x)) #%>% 
+test = map_df(.x=grid_list,~test_max_fcn(.x)) %>%
 
   arrange(esu_returns_invest) # order by returns from investment
 
@@ -107,7 +107,7 @@ library(ggalt)
 baseline_point <- data.frame(x = 3.141711e+17, y = 187118.2)
 
 # remove outliers to plot (is this okay to do?)
-temp <- test[-c(161:154), ]
+temp <- test[-c(656:686), ]
 
 # portfolios and efficiency frontier
 ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
@@ -118,11 +118,12 @@ ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_smooth(method = "gam", se = FALSE, color = 'red2') +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
   annotate("segment",
-           x = 0.661711e+29, xend = 6.141711e+27,
-           y = 187118.2, yend = 187118.2,
+           x = 0.661711e+29, xend = 6.141711e+27, ## this controls how long the arrow is
+           y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
            arrow = arrow(), color="black") +
-  geom_text(x = 1.141711e+29, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T) +
+  geom_text(x = 1.141711e+29, y = 187118.2, label = "Baseline Portfolio", size = 4.75, check_overlap = T) +
   labs(x = 'Variance', y = 'ESU Abundance') +
+  # xlim(0, 1.5e+29) +
   scale_y_continuous(labels = scales::comma) +
   theme(legend.position = "none") + 
   theme_minimal()
