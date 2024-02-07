@@ -22,6 +22,29 @@ cov_coho <- sum(cov(cov_rm[1:20])) # the sum of the cov of esu (without tahkenit
 #   return(budget_allocated)
 # }
 
+cov <- sum(sigma %*% t(sigma) * weights %*% t(weights) * cov_matrix)
+#---
+temp <- 0
+
+# Loop over each i
+for (i in 1:n) {
+  # Calculate the sum for each i
+  cov_1 <- sum(sd_rm[i] * s_invest[i] * sd_rm[-i] * s_invest[-i] * cov_matrix[i, -i])
+  # Add this sum to the total sum
+  cov_2 <- temp + cov_1
+}
+
+# Finally, multiply by X_n and gamma
+covariance <- X_n * gamma * cov_2
+
+# Print the result
+print(expression2)
+#---
+
+cov_matrix <- coho[2:22] %>% 
+  select(-tahkenitch)
+
+cov_matrix <- cov(cov_matrix)
 
 
 test_max_fcn <- function(weight){
@@ -36,22 +59,35 @@ test_max_fcn <- function(weight){
   esu_returns_invest <- sum(s_invest)
   esu_returns_baseline <- sum(s_baseline)
   
-  
   var <- sapply(coho[2:22], var)
   var_rm<-var[-18]
+  sd <- sapply(coho[2:22], sd)
+  sd_rm<-sd[-18]
+  #cov_matrix <- cov(coho[2:22])
+  
+  cov_2 <- 0
+
+  # Loop over each i
+  for (i in 1:20) {
+    # Calculate the sum for each i
+    cov_1 <- sum(sd_rm[i] * s_invest[i] * sd_rm[-i] * s_invest[-i] * cov_matrix[i])
+    # Add this sum to the total sum
+    cov_2 <- cov_2 + cov_1
+  }
+
+  cov_invest <- cov_2
   
   var_invest <- var_rm * (s_invest^2)
   var_baseline <- var_rm * (s_baseline^2)
-  cov <- var_invest * cov_coho
-  esu_var_invest <- sum(var_invest)
+  esu_var_invest <- sum(var_invest + cov_invest)
   esu_var_baseline <- sum(var_baseline)
   
   
-  #return(s_invest) # to look at single dataframe
+  #return(covariance) # to look at single dataframe
   return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
-test = map_df(.x=grid_list,~test_max_fcn(.x)) %>% 
+test = map_df(.x=grid_list,~test_max_fcn(.x)) #%>% 
   arrange(esu_returns_invest) # order by returns from investment
 
 
