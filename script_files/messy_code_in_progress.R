@@ -41,18 +41,22 @@ test_max_fcn <- function(weight){
   var_rm<-var[-18]
   
   var_invest <- var_rm * (s_invest^2)
+
   var_baseline <- var_rm * (s_baseline^2)
   cov <- var_invest * cov_coho
   esu_var_invest <- sum(var_invest)
   esu_var_baseline <- sum(var_baseline)
+
   
   
   #return(s_invest) # to look at single dataframe
   return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
+
 test = map_df(.x=grid_list,~test_max_fcn(.x)) %>% 
   arrange(esu_returns_invest) # order by returns from investment
+
 
 
 
