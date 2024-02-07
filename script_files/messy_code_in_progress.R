@@ -117,7 +117,11 @@ ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
   # colour = 'red', curvature = -.3) +
   geom_smooth(method = "gam", se = FALSE, color = 'red2') +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
-  geom_text(x = 8.541711e+18, y = 187118.2, label = " <---- Baseline Portfolio", size = 5) +
+  annotate("segment",
+           x = 0.661711e+29, xend = 6.141711e+27,
+           y = 187118.2, yend = 187118.2,
+           arrow = arrow(), color="black") +
+  geom_text(x = 1.141711e+29, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T) +
   labs(x = 'Variance', y = 'ESU Abundance') +
   scale_y_continuous(labels = scales::comma) +
   theme(legend.position = "none") + 
