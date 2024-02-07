@@ -78,17 +78,22 @@ test_max_fcn <- function(weight){
   cov_invest <- cov_2
   
   var_invest <- var_rm * (s_invest^2)
+
   var_baseline <- var_rm * (s_baseline^2)
   esu_var_invest <- sum(var_invest + cov_invest)
   esu_var_baseline <- sum(var_baseline)
+
   
   
   #return(covariance) # to look at single dataframe
   return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
+Olivia
 test = map_df(.x=grid_list,~test_max_fcn(.x)) #%>% 
+
   arrange(esu_returns_invest) # order by returns from investment
+
 
 
 
