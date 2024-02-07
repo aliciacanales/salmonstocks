@@ -48,7 +48,7 @@ test_max_fcn <- function(weight){
   
   
   #return(s_invest) # to look at single dataframe
-  return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline, cov),3))
+  return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
 test = map_df(.x=grid_list,~test_max_fcn(.x)) %>% 
@@ -66,7 +66,7 @@ library(ggalt)
 baseline_point <- data.frame(x = 3.141711e+17, y = 187118.2)
 
 # remove outliers to plot (is this okay to do?)
-temp <- test[-c(1398:1350), ]
+temp <- test[-c(161:154), ]
 
 # portfolios and efficiency frontier
 ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
@@ -86,16 +86,35 @@ ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
 
 
 
-# wrangling
+# plot 1 wrangling
 optimal_portfolio_1 <- budget_allocated_df[1, ] %>% # this is random, just using for framework for now
+  rename_with(str_to_title)
+
+names(optimal_portfolio_1)[names(optimal_portfolio_1) == 'Lower_umpqua'] <- 'Lower Umpqua'
+names(optimal_portfolio_1)[names(optimal_portfolio_1) == 'Middle_umpqua'] <- 'Middle Umpqua'
+names(optimal_portfolio_1)[names(optimal_portfolio_1) == 'North_umpqua'] <- 'North Umpqua'
+names(optimal_portfolio_1)[names(optimal_portfolio_1) == 'South_umpqua'] <- 'South Umpqua'
+ 
+optimal_portfolio_1 <- optimal_portfolio_1 %>% 
+ pivot_longer(cols = 1:20,
+               names_to = 'population',
+               values_to = 'budget_allocated')
+
+
+# plot 1 wrangling
+optimal_portfolio_2 <- budget_allocated_df[7, ] %>% # this is random, just using for framework for now
+  rename_with(str_to_title)
+  
+names(optimal_portfolio_2)[names(optimal_portfolio_2) == 'Lower_umpqua'] <- 'Lower Umpqua'
+names(optimal_portfolio_2)[names(optimal_portfolio_2) == 'Middle_umpqua'] <- 'Middle Umpqua'
+names(optimal_portfolio_2)[names(optimal_portfolio_2) == 'North_umpqua'] <- 'North Umpqua'
+names(optimal_portfolio_2)[names(optimal_portfolio_2) == 'South_umpqua'] <- 'South Umpqua'
+  
+optimal_portfolio_2 <- optimal_portfolio_2 %>%  
   pivot_longer(cols = 1:20,
                names_to = 'population',
                values_to = 'budget_allocated')
 
-optimal_portfolio_2 <- budget_allocated_df[7, ] %>% # this is random, just using for framework for now
-  pivot_longer(cols = 1:20,
-               names_to = 'population',
-               values_to = 'budget_allocated')
 
 
 # lollipop plot 1
@@ -103,10 +122,10 @@ optimal_portfolio_1 %>%
   ggplot(aes(x = fct_reorder(population, budget_allocated), #fct_reorder lets us set the order of the first value, by the second value ($ invested)
              y = budget_allocated)) +
   ggalt::geom_lollipop() +
-  labs(x = "Population", y = "Budget Allocated (USD)") +
+  labs(x = " ", y = "Budget Allocated (USD)") +
   ggtitle("Portfolio 1", subtitle = "Returns: 500,900\nVariance: 300,000,000") +
   theme(plot.title = element_text(hjust = 0.5)) +
-  scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
+  #scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
   scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
   # gghighlight::gghighlight(population == "tillamook") + # if we want to emphasize a single population
   #coord_flip() +
