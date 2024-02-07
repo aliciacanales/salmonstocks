@@ -2,9 +2,8 @@ library(tidyverse)
 library(LaplacesDemon)
 library(nloptr)
 
-
 #..........................Create randomized weight allocations.........................
-n=100
+n= 2200
 abundance_data <- coho[2:22] # raw population abundance data
 abundance_data <- data.frame(abundance_data[-18]) # remove Tahkenitch
 raw<-rdirichlet(n,rep(1,ncol(abundance_data))) #Generate 100 portfolio weights for all 20 streams
