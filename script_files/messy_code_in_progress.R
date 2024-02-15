@@ -2,7 +2,7 @@
 library(tidyverse)
 library(purrr)
 
-
+set.seed(123)
 #.......................... combinging while_loop into one.........................
 
 ## 204045.3 <- mean
@@ -22,6 +22,29 @@ cov_coho <- sum(cov(cov_rm[1:20])) # the sum of the cov of esu (without tahkenit
 #   return(budget_allocated)
 # }
 
+cov <- sum(sigma %*% t(sigma) * weights %*% t(weights) * cov_matrix)
+#---
+temp <- 0
+
+# Loop over each i
+for (i in 1:n) {
+  # Calculate the sum for each i
+  cov_1 <- sum(sd_rm[i] * s_invest[i] * sd_rm[-i] * s_invest[-i] * cov_matrix[i, -i])
+  # Add this sum to the total sum
+  cov_2 <- temp + cov_1
+}
+
+# Finally, multiply by X_n and gamma
+covariance <- X_n * gamma * cov_2
+
+# Print the result
+print(expression2)
+#---
+
+cov_matrix <- coho[2:22] %>% 
+  select(-tahkenitch)
+
+cov_matrix <- cov(cov_matrix)
 
 
 test_max_fcn <- function(weight){
@@ -36,25 +59,49 @@ test_max_fcn <- function(weight){
   esu_returns_invest <- sum(s_invest)
   esu_returns_baseline <- sum(s_baseline)
   
-  
   var <- sapply(coho[2:22], var)
   var_rm<-var[-18]
+  sd <- sapply(coho[2:22], sd)
+  sd_rm<-sd[-18]
+  #cov_matrix <- cov(coho[2:22])
+  
+  ## covariance of investment
+  cov_2 <- 0
+  # Loop over each i
+  for (i in 1:20) {
+    # Calculate the sum for each i
+    cov_1 <- sum(sd_rm[i] * s_invest[i] * sd_rm[-i] * s_invest[-i] * cov_matrix[i])
+    # Add this sum to the total sum
+    cov_2 <- cov_2 + cov_1
+  }
+  cov_invest <- cov_2
+  
+  ## covariance of baseline
+  cov_2_baseline <- 0
+  # Loop over each i
+  for (i in 1:20) {
+    # Calculate the sum for each i
+    cov_1_baseline <- sum(sd_rm[i] * s_baseline[i] * sd_rm[-i] * s_baseline[-i] * cov_matrix[i])
+    # Add this sum to the total sum
+    cov_2_baseline <- cov_2_baseline + cov_1_baseline
+  }
+  cov_baseline <- cov_2_baseline
+  
   
   var_invest <- var_rm * (s_invest^2)
-
   var_baseline <- var_rm * (s_baseline^2)
-  cov <- var_invest * cov_coho
-  esu_var_invest <- sum(var_invest)
-  esu_var_baseline <- sum(var_baseline)
+  esu_var_invest <- sum(var_invest + cov_invest)
+  esu_var_baseline <- sum(var_baseline + cov_baseline)
 
   
   
-  #return(s_invest) # to look at single dataframe
+  #return(cov_baseline) # to look at single dataframe
   return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
 
-test = map_df(.x=grid_list,~test_max_fcn(.x)) %>% 
+test = map_df(.x=grid_list,~test_max_fcn(.x)) %>%
+
   arrange(esu_returns_invest) # order by returns from investment
 
 
@@ -64,37 +111,51 @@ test = map_df(.x=grid_list,~test_max_fcn(.x)) %>%
 
 #...................................... plots ......................................
 library(ggalt)
-library(proj4)
 
 # baseline esu returns = 187118.2
 # baseline esu variance = 3.141711e+17 (this will change with updated variance calculation)
-baseline_point <- data.frame(x = 3.141711e+17, y = 187118.2)
+baseline_point <- data.frame(x =3.141711e+27, y = 187118.2)
 
 # remove outliers to plot (is this okay to do?)
-temp <- test[-c(161:154), ]
+temp <- test[-c(646:673), ]
+x <- temp %>% 
+  arrange(esu_var_invest)
+
 
 # portfolios and efficiency frontier
-ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
+p5 <- ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'gray', size = 2) + 
   # geom_curve(x = 3.521570e+17, y = 205623.0,
   # xend = 3.892000e+17, yend = 211781.8,
   # colour = 'red', curvature = -.3) +
-  geom_smooth(method = "gam", se = FALSE, color = 'red2') +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
-  geom_text(x = 8.541711e+18, y = 187118.2, label = " <---- Baseline Portfolio", size = 5) +
-  labs(x = 'Variance', y = 'ESU Abundance') +
+  annotate("segment",
+           x = 1.5e+28, xend = 3.14e+27 , ## this controls how long the arrow is
+           y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
+           arrow = arrow(), color="black") +
+  geom_text(x = 2.6e+28, y = 187118.2, label = "Baseline Portfolio", size = 4.75, check_overlap = T) +
+  scale_x_continuous(breaks = c(seq(3e+27, 6e+28, by = 1e+28))) +
+  ylim(187118.2, 1000000) +
   scale_y_continuous(labels = scales::comma) +
-  xlim(0, 3e+20) +
-  ylim(0, 4500000) +
-  theme(legend.position = "none") + 
+  labs(x = 'ESU Variance', y = 'ESU Abundance') +
+
+  theme(legend.position = "none") +
   theme_minimal()
 
 
+p5 +theme(axis.title = element_text(size = 15),
+          axis.text.x = element_text(size = 10.5),
+          axis.text.y = element_text(size = 10.5))
 
+
+
+
+## ggoptimal in ggplot
+## 
 
 
 # plot 1 wrangling
-optimal_portfolio_1 <- budget_allocated_df[1, ] %>% # this is random, just using for framework for now
+optimal_portfolio_1 <- budget_allocated_df[643, ] %>% # this is random, just using for framework for now
   rename_with(str_to_title)
 
 names(optimal_portfolio_1)[names(optimal_portfolio_1) == 'Lower_umpqua'] <- 'Lower Umpqua'
@@ -109,7 +170,7 @@ optimal_portfolio_1 <- optimal_portfolio_1 %>%
 
 
 # plot 1 wrangling
-optimal_portfolio_2 <- budget_allocated_df[7, ] %>% # this is random, just using for framework for now
+optimal_portfolio_2 <- budget_allocated_df[645, ] %>% # this is random, just using for framework for now
   rename_with(str_to_title)
   
 names(optimal_portfolio_2)[names(optimal_portfolio_2) == 'Lower_umpqua'] <- 'Lower Umpqua'
@@ -125,30 +186,12 @@ optimal_portfolio_2 <- optimal_portfolio_2 %>%
 
 
 # lollipop plot 1
-optimal_portfolio_1 %>% 
+p1 <- optimal_portfolio_1 %>% 
   ggplot(aes(x = fct_reorder(population, budget_allocated), #fct_reorder lets us set the order of the first value, by the second value ($ invested)
              y = budget_allocated)) +
   ggalt::geom_lollipop() +
-  labs(x = " ", y = "Budget Allocated (USD)") +
-  ggtitle("Portfolio 1", subtitle = "Returns: 500,900\nVariance: 300,000,000") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  #scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
-  scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
-  # gghighlight::gghighlight(population == "tillamook") + # if we want to emphasize a single population
-  #coord_flip() +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  theme(plot.subtitle = element_text(hjust = 0.5)) +
-  coord_flip()
- 
-               
-# lollipop plot 2       
-optimal_portfolio_2 %>% 
-  ggplot(aes(x = fct_reorder(population, budget_allocated), #fct_reorder lets us set the order of the first value, by the second value ($ invested)
-             y = budget_allocated)) +
-  ggalt::geom_lollipop() +
-  labs(x = "Population", y = "Budget Allocated (USD)") +
-  ggtitle("Portfolio 2", subtitle = "Returns: 405,000\nVariance: 400,070,000") +
+  # labs(x = "Population", y = "Budget Allocated (USD)") +
+  ggtitle("Portfolio 1", subtitle = "Returns: 872,367\nVariance: 2.075620e+28") +
   theme(plot.title = element_text(hjust = 0.5)) +
   # scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
   scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
@@ -156,9 +199,44 @@ optimal_portfolio_2 %>%
   #coord_flip() +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5)) +
+  theme(axis.title = element_text(size = 15)) +
   theme(plot.subtitle = element_text(hjust = 0.5)) +
+  theme(axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12.5)) +
+  
   coord_flip()
 
+               
+# lollipop plot 2       
+p2 <- optimal_portfolio_2 %>% 
+  ggplot(aes(x = fct_reorder(population, budget_allocated), #fct_reorder lets us set the order of the first value, by the second value ($ invested)
+             y = budget_allocated)) +
+  ggalt::geom_lollipop() +
+  # labs(x = " ", y = "Budget Allocated (USD)") +
+  ggtitle("Portfolio 2", subtitle = "Returns: 929,908\nVariance: 3.354325e+28") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  # scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
+  scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
+  # gghighlight::gghighlight(population == "tillamook") + # if we want to emphasize a single population
+  #coord_flip() +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(axis.title = element_text(size = 15)) +
+  theme(plot.subtitle = element_text(hjust = 0.5)) +
+  theme(axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12.5)) +
+  coord_flip()
+
+
+
+p3 <- p1+p2 & xlab(NULL) & ylab(NULL)
+  
+wrap_elements(panel = p3) +
+  labs(tag = 'Budget Allocated (USD)') +
+  theme(plot.tag = element_text(size = 13),
+        plot.tag.position = "bottom")
+
+  
 # facet wrap or patchwork plots side by side
 
 
