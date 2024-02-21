@@ -771,9 +771,15 @@ p_a<-ggplot(data=var_out,aes(y=port_mean,x=var_res))+
   geom_path() +
   geom_point(aes(x=var_2019, y=mean_2019), size=2) +
   labs(x="Variance", y="Mean Return")+
+  scale_x_continuous(breaks = c(1, 25), labels = c("low", "high")) +
+  scale_y_continuous(breaks = c(.25, 2.3), labels = c("low", "high")) +
   #xlim(-0.5,1.5)+
   #ylim(0,3.5)+
-  theme_classic()
+  theme_classic() +
+  theme(axis.text.x = element_text(size = 17),
+        axis.text.y = element_text(size = 17),
+        axis.title = element_text(size = 20))
+
 
 p_a
 ```
@@ -801,6 +807,37 @@ p3 <- p2 + geom_segment(aes(x = var_2019,
 weights_2019 <-df_2019/tot_pop ## make this into a graph for 2019 
 
 var_out$weights[var_keep] ## showing us the weights for 2019 round them 
+```
+
+```{r}
+p3 <- p2 + geom_segment(aes(x = var_2019, 
+                 y = mean_2019, 
+                 xend = var_out$var_res[var_keep], 
+                 yend = mean_list[var_keep]), 
+             color = "grey", 
+             linetype = "dashed", 
+             arrow = arrow(type = "closed", length = unit(0.3, "cm")))
+
+p3
+
+p4 <-p3+ annotate("segment",x=var_2019,y=mean_2019,xend=var_out$var_res[mean_keep],yend=mean_list[mean_keep],color="grey", linetype = 'dashed')
+p5 <- p4 + geom_point(aes(x=var_2019, y=mean_2019), size=3) +
+  geom_segment(aes(x = var_2019, 
+                 y = mean_2019, 
+                 xend = var_out$var_res[mean_keep], 
+                 yend = mean_list[mean_keep]), 
+             color = "grey", 
+             linetype = "dashed", 
+             arrow = arrow(type = "closed", length = unit(0.3, "cm")))
+p5
+
+
+```
+
+```{r}
+p5
+
+ggsave("figures/mpt_spring23.png",bg="white")
 ```
 
 
