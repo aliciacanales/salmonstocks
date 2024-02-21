@@ -127,6 +127,7 @@ my_plot <- ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
   # xend = 3.892000e+17, yend = 211781.8,
   # colour = 'red', curvature = -.3) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
+<<<<<<< HEAD
   #annotate("segment",
            #x = 1.5e+28, xend = 3.14e+27 , ## this controls how long the arrow is
            #y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
@@ -155,6 +156,12 @@ ggsave("my_plot.png", plot = my_plot)
 
 
 
+p5 +theme(axis.title = element_text(size = 15),
+          axis.text.x = element_text(size = 10.5),
+          axis.text.y = element_text(size = 10.5))
+
+
+
 
 
 ## ggoptimal in ggplot
@@ -162,7 +169,7 @@ ggsave("my_plot.png", plot = my_plot)
 
 
 # plot 1 wrangling
-optimal_portfolio_1 <- budget_allocated_df[1, ] %>% # this is random, just using for framework for now
+optimal_portfolio_1 <- budget_allocated_df[643, ] %>% # this is random, just using for framework for now
   rename_with(str_to_title)
 
 names(optimal_portfolio_1)[names(optimal_portfolio_1) == 'Lower_umpqua'] <- 'Lower Umpqua'
@@ -177,7 +184,7 @@ optimal_portfolio_1 <- optimal_portfolio_1 %>%
 
 
 # plot 1 wrangling
-optimal_portfolio_2 <- budget_allocated_df[7, ] %>% # this is random, just using for framework for now
+optimal_portfolio_2 <- budget_allocated_df[645, ] %>% # this is random, just using for framework for now
   rename_with(str_to_title)
   
 names(optimal_portfolio_2)[names(optimal_portfolio_2) == 'Lower_umpqua'] <- 'Lower Umpqua'
@@ -193,40 +200,57 @@ optimal_portfolio_2 <- optimal_portfolio_2 %>%
 
 
 # lollipop plot 1
-optimal_portfolio_1 %>% 
+p1 <- optimal_portfolio_1 %>% 
   ggplot(aes(x = fct_reorder(population, budget_allocated), #fct_reorder lets us set the order of the first value, by the second value ($ invested)
              y = budget_allocated)) +
   ggalt::geom_lollipop() +
-  labs(x = " ", y = "Budget Allocated (USD)") +
-  ggtitle("Portfolio 1", subtitle = "Returns: 500,900\nVariance: 300,000,000") +
+  # labs(x = "Population", y = "Budget Allocated (USD)") +
+  ggtitle("Portfolio 1", subtitle = "Returns: 872,367\nVariance: 2.075620e+28") +
   theme(plot.title = element_text(hjust = 0.5)) +
-  #scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
+  # scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
   scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
   # gghighlight::gghighlight(population == "tillamook") + # if we want to emphasize a single population
   #coord_flip() +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5)) +
+  theme(axis.title = element_text(size = 15)) +
   theme(plot.subtitle = element_text(hjust = 0.5)) +
-  coord_flip()
- 
-               
-# lollipop plot 2       
-optimal_portfolio_2 %>% 
-  ggplot(aes(x = fct_reorder(population, budget_allocated), #fct_reorder lets us set the order of the first value, by the second value ($ invested)
-             y = budget_allocated)) +
-  ggalt::geom_lollipop() +
-  labs(x = "Population", y = "Budget Allocated (USD)") +
-  ggtitle("Portfolio 2", subtitle = "Returns: 405,000\nVariance: 400,070,000") +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
-  scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
-  # gghighlight::gghighlight(population == "tillamook") + # if we want to emphasize a single population
-  #coord_flip() +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  theme(plot.subtitle = element_text(hjust = 0.5)) +
+  theme(axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12.5)) +
+  
   coord_flip()
 
+               
+# lollipop plot 2       
+p2 <- optimal_portfolio_2 %>% 
+  ggplot(aes(x = fct_reorder(population, budget_allocated), #fct_reorder lets us set the order of the first value, by the second value ($ invested)
+             y = budget_allocated)) +
+  ggalt::geom_lollipop() +
+  # labs(x = " ", y = "Budget Allocated (USD)") +
+  ggtitle("Portfolio 2", subtitle = "Returns: 929,908\nVariance: 3.354325e+28") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  # scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
+  scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
+  # gghighlight::gghighlight(population == "tillamook") + # if we want to emphasize a single population
+  #coord_flip() +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(axis.title = element_text(size = 15)) +
+  theme(plot.subtitle = element_text(hjust = 0.5)) +
+  theme(axis.text.x = element_text(size = 12),
+        axis.text.y = element_text(size = 12.5)) +
+  coord_flip()
+
+
+
+p3 <- p1+p2 & xlab(NULL) & ylab(NULL)
+  
+wrap_elements(panel = p3) +
+  labs(tag = 'Budget Allocated (USD)') +
+  theme(plot.tag = element_text(size = 13),
+        plot.tag.position = "bottom")
+
+  
 # facet wrap or patchwork plots side by side
 
 
