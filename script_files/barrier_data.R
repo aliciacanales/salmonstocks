@@ -1,117 +1,134 @@
 ## ...............................Getting passability isolated..............................
-alsea <- read_csv(here('data', 'final_table_alsea.csv')) %>% 
+alsea <- read_csv(here('data', 'final_table_alsea_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score) %>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev)) %>% 
+  arrange(strm_lev,pass_score) #%>%
+  #as.character("strm_lev")
+  #group_by(strm_lev) %>% 
+  #mutate("strm_lev_pass"=prod(pass_score)) %>% 
+   # mutate("b_pass_base"=sum(strm_lev_pass))
+
+alsea$strm_lev<-as.character(alsea$strm_lev)
 
 
-beaver <- read_csv(here('data', 'final_table_beaver.csv')) %>% 
+beaver <- read_csv(here('data', 'final_table_beaver_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
 
-coos <- read_csv(here('data', 'final_table_coos.csv')) %>% 
+coos <- read_csv(here('data', 'final_table_coosbay_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-coquille <- read_csv(here('data', 'final_table_coquille.csv')) %>% 
+coquille <- read_csv(here('data', 'final_table_coquille_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-floras <- read_csv(here('data', 'final_table_floras.csv')) %>% 
+floras <- read_csv(here('data', 'final_table_floras_v3.csv')) %>% 
   clean_names()%>% 
-  select(pass_score) %>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev)) %>% 
+  arrange(strm_lev,pass_score)
 
-lower_umpqua <- read_csv(here('data', 'final_table_lowerump.csv')) %>% 
+lower_umpqua <- read_csv(here('data', 'final_table_lowerUmp_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score) %>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev)) %>% 
+  arrange(strm_lev,pass_score)
 
-middle_umpqua <- read_csv(here('data', 'final_table_midump.csv')) %>% 
+middle_umpqua <- read_csv(here('data', 'final_table_midUmp_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-necanicum <- read_csv(here('data', 'final_table_necanicum.csv')) %>% 
+necanicum <- read_csv(here('data', 'final_table_necanicum_v3.csv')) %>% 
+  clean_names() %>%
+  rename(pass_score=pass_scores) %>% 
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
+
+nehalem <- read_csv(here('data', 'final_table_nehalem_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-nehalem <- read_csv(here('data', 'final_table_nehalem.csv')) %>% 
+nestucca <- read_csv(here('data', 'final_table_nestucca_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-nestucca <- read_csv(here('data', 'final_table_nestucca.csv')) %>% 
+north_umpqua <- read_csv(here('data', 'final_table_northUmp_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-north_umpqua <- read_csv(here('data', 'final_table_northump.csv')) %>% 
+salmon <- read_csv(here('data', 'final_table_salmon_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-salmon <- read_csv(here('data', 'final_table_salmon.csv')) %>% 
+siletz <- read_csv(here('data', 'final_table_siletz_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-siletz <- read_csv(here('data', 'final_table_siletz.csv')) %>% 
+siltcoos <- read_csv(here('data', 'final_table_siltcoos_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-siltcoos <- read_csv(here('data', 'final_table_siltcoos.csv')) %>% 
+siuslaw <- read_csv(here('data', 'final_table_siuslaw_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-siuslaw <- read_csv(here('data', 'final_table_siuslaw.csv')) %>% 
+sixes <- read_csv(here('data', 'final_table_sixes_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-sixes <- read_csv(here('data', 'final_table_sixes.csv')) %>% 
+south_umpqua <- read_csv(here('data', 'final_table_southumpqua_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-south_umpqua <- read_csv(here('data', 'final_table_southumpqua.csv')) %>% 
+tenmile <- read_csv(here('data', 'final_table_tenmile_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-
-tenmile <- read_csv(here('data', 'final_table_tenmile.csv')) %>% 
+tillamook <- read_csv(here('data', 'final_table_tillamook_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
-tillamook <- read_csv(here('data', 'final_table_tillamook.csv')) %>% 
+yaquina <- read_csv(here('data', 'final_table_yaquina_v3.csv')) %>% 
   clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
-
-yaquina <- read_csv(here('data', 'final_table_yaquina.csv')) %>% 
-  clean_names() %>% 
-  select(pass_score)%>% 
-  arrange(pass_score)
+  select(c(pass_score, strm_lev))%>% 
+  arrange(strm_lev,pass_score)
 
 
+bpassage_base_fcn <- function(strm_lev,pass_score){
+  group_by(strm_lev) %>% 
+    strm_lev_pass<-prod(pass_score)
+    r=max(strm_lev)
+    for(i in 1:r) {
+      y<- sum(1/i)
+      weight<-1/(i*y)
+    }
+    return(weight)
+}
+bpassage_base_fcn(alsea$strm_lev,alsea$pass_score)
 
 ## creating this max length to find the max length the passability df should be. It should be as long as the population with the most barriers which is s_umpqua.
-max_length <- max(length(alsea$pass_score), length(beaver$pass_score), length(coos$pass_score),
-                  length(coquille$pass_score), length(floras$pass_score), length(lower_umpqua$pass_score),
-                  length(middle_umpqua$pass_score), length(necanicum$pass_score), length(nehalem$pass_score),
-                  length(nestucca$pass_score), length(north_umpqua$pass_score), length(salmon$pass_score),
-                  length(siletz$pass_score), length(siltcoos$pass_score), length(siuslaw$pass_score),
-                  length(sixes$pass_score), length(south_umpqua$pass_score), length(tenmile$pass_score),
-                  length(tillamook$pass_score), length(yaquina$pass_score))
+# max_length <- max(length(alsea$pass_score), length(beaver$pass_score), length(coos$pass_score),
+#                   length(coquille$pass_score), length(floras$pass_score), length(lower_umpqua$pass_score),
+#                   length(middle_umpqua$pass_score), length(necanicum$pass_score), length(nehalem$pass_score),
+#                   length(nestucca$pass_score), length(north_umpqua$pass_score), length(salmon$pass_score),
+#                   length(siletz$pass_score), length(siltcoos$pass_score), length(siuslaw$pass_score),
+#                   length(sixes$pass_score), length(south_umpqua$pass_score), length(tenmile$pass_score),
+#                   length(tillamook$pass_score), length(yaquina$pass_score))
 
 ## Passability data frame with all the barriers from each population. NA values filled in the extra spaces. Not sure how the NAs will play out in out functions. 
 ## This was really quick. Just a bunch of copy and paste, so no biggie if we have to get rid of it bc of all the NAs I added. It was the only way to combine all the columns together. -AC
