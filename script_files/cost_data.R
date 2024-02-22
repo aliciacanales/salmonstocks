@@ -1,3 +1,4 @@
+library(Dict)
 ##.....................Isolating cost data...............
 
 alsea <- read_csv(here('data', 'final_table_alsea.csv')) %>% 
@@ -115,3 +116,12 @@ cost <- data.frame(alsea = c(alsea$cost, rep(NA, max_length - length(alsea$cost)
                                    tillamook = c(tillamook$cost, rep(NA, max_length - length(tillamook$cost))),
                                    yaquina = c(yaquina$cost, rep(NA, max_length - length(yaquina$cost))))
 
+
+##................Starting dictionary..................
+ages <- Dict$new(
+  Charlie = 40L,
+  Alice = 30L,
+  Bob = 25L,
+  .class = "integer",
+  .overwrite = TRUE
+)
