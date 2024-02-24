@@ -2,13 +2,16 @@
 alsea <- read_csv(here('data', 'final_table_alsea_v3.csv')) %>% 
   clean_names() %>% 
   select(c(pass_score, strm_lev)) %>% 
-  arrange(strm_lev,pass_score) #%>%
+  arrange(strm_lev,pass_score) %>%
+  group_by(strm_lev) %>% 
+  summarise(product = prod(pass_score))
   #as.character("strm_lev")
   #group_by(strm_lev) %>% 
   #mutate("strm_lev_pass"=prod(pass_score)) %>% 
    # mutate("b_pass_base"=sum(strm_lev_pass))
 
-alsea$strm_lev<-as.character(alsea$strm_lev)
+
+#alsea$strm_lev<-as.character(alsea$strm_lev)
 
 
 beaver <- read_csv(here('data', 'final_table_beaver_v3.csv')) %>% 
@@ -109,17 +112,36 @@ yaquina <- read_csv(here('data', 'final_table_yaquina_v3.csv')) %>%
   arrange(strm_lev,pass_score)
 
 
-bpassage_base_fcn <- function(strm_lev,pass_score){
-  group_by(strm_lev) %>% 
-    strm_lev_pass<-prod(pass_score)
-    r=max(strm_lev)
-    for(i in 1:r) {
-      y<- sum(1/i)
-      weight<-1/(i*y)
-    }
-    return(weight)
+# .................................function to create weights..............................
+strm_wgt_fcn <- function(df) {
+  r <- max(df$strm_lev)
+  y <- 0
+  
+  # Calculate y
+  for (i in 1:r) {
+    temp_y <- sum(1/i)
+    y <- y + temp_y
+  }
+  
+  df$strm_wgt <- numeric(nrow(df))
+  
+  # Calculate strm_wgt and add it as a new column to df
+  for (i in 1:r) {
+    strm_wgt <- 1 / (i * y)
+    df$strm_wgt[i] <- strm_wgt
+  }
+  
+  df$lev_pass <- numeric(nrow(df))
+  
+  lev_pass <- df$produc * df$strm_wgt
+  
+  return(df)
 }
-bpassage_base_fcn(alsea$strm_lev,alsea$pass_score)
+
+# Call the function and store the result in temp_output
+temp_output <- strm_wgt_fcn(alsea)
+# ............
+
 
 ## creating this max length to find the max length the passability df should be. It should be as long as the population with the most barriers which is s_umpqua.
 # max_length <- max(length(alsea$pass_score), length(beaver$pass_score), length(coos$pass_score),
