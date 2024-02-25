@@ -102,58 +102,57 @@ yaquina <- read_csv(here('data', 'final_table_yaquina_v3.csv')) %>%
 
 
 # .................................function to calculate stream passability..............................
-strm_wgt_fcn <- function(df) {
-  
-  #prep data for calculation
-  df <- df %>%
-    select(c(pass_score, strm_lev)) %>% 
-    arrange(strm_lev, pass_score) %>%
-    group_by(strm_lev) %>% 
-    summarise(product_pass_lev = prod(pass_score)) %>%
-    ungroup()
-  
-  # Identify number of stream levels in population
-  r <- max(df$strm_lev)
-  
-  y <- 0
-  
-  # Calculate y
-  for (i in 1:r) {
-    temp_y <- sum(1/i)
-    y <- y + temp_y
-  }
-  
-  df$strm_wgt <- numeric(nrow(df))
-  
-  # Calculate strm_wgt and add it as a new column to df
-  for (i in 1:r) {
-    strm_wgt <- 1 / (i * y)
-    df$strm_wgt[i] <- strm_wgt
-  }
-  
-  df$lev_pass <- df$product_pass_lev * df$strm_wgt
-  #df$passability <- sum(df$lev_pass)
-  
-  return(df)
-}
-
-# Call the function and store the result in temp_output
-temp_output_alsea <- strm_wgt_fcn(alsea)
-temp_output_beaver <- strm_wgt_fcn(beaver)
+# strm_wgt_fcn <- function(df) {
+# 
+#   #prep data for calculation
+#   df <- df %>%
+#     select(c(pass_score, strm_lev)) %>%
+#     arrange(strm_lev, pass_score) %>%
+#     group_by(strm_lev) %>%
+#     summarise(product_pass_lev = prod(pass_score)) %>%
+#     ungroup()
+# 
+#   # Identify number of stream levels in population
+#   r <- max(df$strm_lev) + 1 - min(df$strm_lev) # i think this fixes the error from the pops with no stream order of 1 (lower umpqua and north umpqua)
+# 
+#   y <- 0
+# 
+#   # Calculate y
+#   for (i in 1:r) {
+#     temp_y <- sum(1/i)
+#     y <- y + temp_y
+#   }
+# 
+#   df$strm_wgt <- numeric(nrow(df))
+# 
+#   # Calculate strm_wgt and add it as a new column to df
+#   for (i in 1:r) {
+#     strm_wgt <- 1 / (i * y)
+#     df$strm_wgt[i] <- strm_wgt
+#   }
+# 
+#   df$lev_pass <- df$product_pass_lev * df$strm_wgt
+#   #df$passability <- sum(df$lev_pass)
+# 
+#   return(df)
+# }
+# 
+# # Call the function and store the result in temp_output
+# temp_output_alsea <- strm_wgt_fcn(alsea)
+# temp_output_beaver <- strm_wgt_fcn(beaver)
+# temp_output_lower_umpqua <- strm_wgt_fcn(lower_umpqua)
 
 
 # .................................calculate passability for many dataframes..............................
 strm_wgt_fcn <- function(df, name) {
   #prep data for calculation
   df <- df %>%
-    # select(c(pass_score, strm_lev)) %>% 
-    # arrange(strm_lev, pass_score) %>%
     group_by(strm_lev) %>% 
     summarise(product_pass_lev = prod(pass_score)) %>%
     ungroup()
   
   # Identify number of stream levels in population
-  r <- max(df$strm_lev)
+  r <- max(df$strm_lev) + 1 - min(df$strm_lev)
   
   y <- 0
   
@@ -185,12 +184,12 @@ dfs <- list(alsea = alsea,
             coos = coos,
             coquille = coquille,
             floras = floras,
-            # lower_umpqua = lower_umpqua, # has no pass score of 1 so isn't running
+            lower_umpqua = lower_umpqua, # has no pass score of 1 so isn't running
             middle_umpqua = middle_umpqua,
             necanicum = necanicum,
             nehalem = nehalem,
             nestucca = nestucca,
-            # north_umpqua = north_umpqua, # has no pass score of 1 so isn't running
+            north_umpqua = north_umpqua, # has no pass score of 1 so isn't running
             salmon = salmon,
             siletz = siletz,
             siltcoos = siltcoos,
