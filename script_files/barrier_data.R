@@ -2,36 +2,25 @@
 alsea <- read_csv(here('data', 'final_table_alsea_v3.csv')) %>% 
   clean_names() %>% 
   select(c(pass_score, strm_lev)) %>% 
-  arrange(strm_lev,pass_score) %>%
-  group_by(strm_lev) %>% 
-  summarise(product = prod(pass_score))
-  #as.character("strm_lev")
-  #group_by(strm_lev) %>% 
-  #mutate("strm_lev_pass"=prod(pass_score)) %>% 
-   # mutate("b_pass_base"=sum(strm_lev_pass))
-
-
-#alsea$strm_lev<-as.character(alsea$strm_lev)
-
+  arrange(strm_lev,pass_score)
 
 beaver <- read_csv(here('data', 'final_table_beaver_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
-
 
 coos <- read_csv(here('data', 'final_table_coosbay_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 coquille <- read_csv(here('data', 'final_table_coquille_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 floras <- read_csv(here('data', 'final_table_floras_v3.csv')) %>% 
-  clean_names()%>% 
+  clean_names() %>% 
   select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
@@ -42,79 +31,90 @@ lower_umpqua <- read_csv(here('data', 'final_table_lowerUmp_v3.csv')) %>%
 
 middle_umpqua <- read_csv(here('data', 'final_table_midUmp_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 necanicum <- read_csv(here('data', 'final_table_necanicum_v3.csv')) %>% 
-  clean_names() %>%
+  clean_names() %>% 
   rename(pass_score=pass_scores) %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 nehalem <- read_csv(here('data', 'final_table_nehalem_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 nestucca <- read_csv(here('data', 'final_table_nestucca_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 north_umpqua <- read_csv(here('data', 'final_table_northUmp_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 salmon <- read_csv(here('data', 'final_table_salmon_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 siletz <- read_csv(here('data', 'final_table_siletz_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 siltcoos <- read_csv(here('data', 'final_table_siltcoos_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 siuslaw <- read_csv(here('data', 'final_table_siuslaw_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 sixes <- read_csv(here('data', 'final_table_sixes_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 south_umpqua <- read_csv(here('data', 'final_table_southumpqua_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 tenmile <- read_csv(here('data', 'final_table_tenmile_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 tillamook <- read_csv(here('data', 'final_table_tillamook_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 yaquina <- read_csv(here('data', 'final_table_yaquina_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev))%>% 
+  select(c(pass_score, strm_lev)) %>% 
   arrange(strm_lev,pass_score)
 
 
-# .................................function to create weights..............................
+# .................................function to calculate stream passability..............................
 strm_wgt_fcn <- function(df) {
+  
+  #prep data for calculation
+  df <- df %>%
+    select(c(pass_score, strm_lev)) %>% 
+    arrange(strm_lev, pass_score) %>%
+    group_by(strm_lev) %>% 
+    summarise(product_pass_lev = prod(pass_score)) %>%
+    ungroup()
+  
+  # Identify number of stream levels in population
   r <- max(df$strm_lev)
+  
   y <- 0
   
   # Calculate y
@@ -131,15 +131,79 @@ strm_wgt_fcn <- function(df) {
     df$strm_wgt[i] <- strm_wgt
   }
   
-  df$lev_pass <- numeric(nrow(df))
-  
-  lev_pass <- df$produc * df$strm_wgt
+  df$lev_pass <- df$product_pass_lev * df$strm_wgt
+  #df$passability <- sum(df$lev_pass)
   
   return(df)
 }
 
 # Call the function and store the result in temp_output
-temp_output <- strm_wgt_fcn(alsea)
+temp_output_alsea <- strm_wgt_fcn(alsea)
+temp_output_beaver <- strm_wgt_fcn(beaver)
+
+
+# .................................calculate passability for many dataframes..............................
+strm_wgt_fcn <- function(df, name) {
+  #prep data for calculation
+  df <- df %>%
+    # select(c(pass_score, strm_lev)) %>% 
+    # arrange(strm_lev, pass_score) %>%
+    group_by(strm_lev) %>% 
+    summarise(product_pass_lev = prod(pass_score)) %>%
+    ungroup()
+  
+  # Identify number of stream levels in population
+  r <- max(df$strm_lev)
+  
+  y <- 0
+  
+  # Calculate y
+  for (i in 1:r) {
+    temp_y <- sum(1/i)
+    y <- y + temp_y
+  }
+  
+  df$strm_wgt <- numeric(nrow(df))
+  
+  # Calculate strm_wgt and add it as a new column to df
+  for (i in 1:r) {
+    strm_wgt <- 1 / (i * y)
+    df$strm_wgt[i] <- strm_wgt
+  }
+  
+  df$lev_pass <- df$product_pass_lev * df$strm_wgt
+  bpassage_base <- sum(df$lev_pass)
+  
+  result <- data.frame(population = name, bpassge_base = bpassage_base)
+  
+  return(result)
+}
+
+# create a list of individual population dataframes and name each of them
+dfs <- list(alsea = alsea,
+            beaver = beaver,
+            coos = coos,
+            coquille = coquille,
+            floras = floras,
+            # lower_umpqua = lower_umpqua, # has no pass score of 1 so isn't running
+            middle_umpqua = middle_umpqua,
+            necanicum = necanicum,
+            nehalem = nehalem,
+            nestucca = nestucca,
+            # north_umpqua = north_umpqua, # has no pass score of 1 so isn't running
+            salmon = salmon,
+            siletz = siletz,
+            siltcoos = siltcoos,
+            siuslaw = siuslaw,
+            sixes = sixes,
+            south_umpqua = south_umpqua,
+            tenmile = tenmile,
+            tillamook = tillamook,
+            yaquina = yaquina)
+
+# Apply function to each data frame in the list and combine the results into one dataframe
+result_df <- bind_rows(lapply(names(dfs), function(name) strm_wgt_fcn(dfs[[name]], name)))
+
 # ............
 
 
