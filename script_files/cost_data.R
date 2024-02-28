@@ -1,93 +1,130 @@
 library(Dict)
 ##.....................Isolating cost data...............
 
-alsea <- read_csv(here('data', 'final_table_alsea_v3.csv')) %>% 
+alsea_barriers <- read_csv(here('data', 'final_table_alsea_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-
-beaver <- read_csv(here('data', 'final_table_beaver_v3.csv')) %>% 
+beaver_barriers <- read_csv(here('data', 'final_table_beaver_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-
-coos <- read_csv(here('data', 'final_table_coosbay_v3.csv')) %>% 
+coos_barriers <- read_csv(here('data', 'final_table_coosbay_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-coquille <- read_csv(here('data', 'final_table_coquille_v3.csv')) %>% 
+coquille_barriers <- read_csv(here('data', 'final_table_coquille_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost) %>% 
-  mutate(cost = ifelse(cost == 0.00, 190097.2, cost))
+  select(c(pass_score, strm_lev, cost)) %>% 
+  mutate(cost = ifelse(cost == 0.00, 19097.2, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-
-floras <- read_csv(here('data', 'final_table_floras_v3.csv')) %>% 
+floras_barriers <- read_csv(here('data', 'final_table_floras_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost) 
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-lower_umpqua <- read_csv(here('data', 'final_table_lowerUmp_v3.csv')) %>% 
+lower_umpqua_barriers <- read_csv(here('data', 'final_table_lowerUmp_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost) 
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-middle_umpqua <- read_csv(here('data', 'final_table_midUmp_v3.csv')) %>% 
+middle_umpqua_barriers <- read_csv(here('data', 'final_table_midUmp_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost) %>% 
-  mutate(cost = ifelse(cost == 0.00, 190097.2, cost))
+  select(c(pass_score, strm_lev, cost)) %>% 
+  mutate(cost = ifelse(cost == 0.00, 19097.2, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-necanicum <- read_csv(here('data', 'final_table_necanicum_v3.csv')) %>% 
+necanicum_barriers <- read_csv(here('data', 'final_table_necanicum_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost) %>% 
-  mutate(cost = ifelse(cost == 0.00, 190097.2, cost))
+  rename(pass_score=pass_scores) %>% 
+  select(c(pass_score, strm_lev, cost)) %>% 
+  mutate(cost = ifelse(cost == 0.00, 19097.2, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-nehalem <- read_csv(here('data', 'final_table_nehalem_v3.csv')) %>% 
+nehalem_barriers <- read_csv(here('data', 'final_table_nehalem_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-nestucca <- read_csv(here('data', 'final_table_nestucca_v3.csv')) %>% 
+nestucca_barriers <- read_csv(here('data', 'final_table_nestucca_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost) %>% 
-  mutate(cost = ifelse(cost == 0.00, 190097.2, cost))
+  select(c(pass_score, strm_lev, cost)) %>% 
+  mutate(cost = ifelse(cost == 0.00, 19097.2, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-north_umpqua <- read_csv(here('data', 'final_table_northUmp_v3.csv')) %>% 
+north_umpqua_barriers <- read_csv(here('data', 'final_table_northUmp_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-salmon <- read_csv(here('data', 'final_table_salmon_v3.csv')) %>% 
+salmon_barriers <- read_csv(here('data', 'final_table_salmon_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-siletz <- read_csv(here('data', 'final_table_siletz_v3.csv')) %>% 
+siletz_barriers <- read_csv(here('data', 'final_table_siletz_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-siltcoos <- read_csv(here('data', 'final_table_siltcoos_v3.csv')) %>% 
+siltcoos_barriers <- read_csv(here('data', 'final_table_siltcoos_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-siuslaw <- read_csv(here('data', 'final_table_siuslaw_v3.csv')) %>% 
+siuslaw_barriers <- read_csv(here('data', 'final_table_siuslaw_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-sixes <- read_csv(here('data', 'final_table_sixes_v3.csv')) %>% 
+sixes_barriers <- read_csv(here('data', 'final_table_sixes_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-south_umpqua <- read_csv(here('data', 'final_table_southumpqua_v3.csv')) %>% 
+south_umpqua_barriers <- read_csv(here('data', 'final_table_southumpqua_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-
-tenmile <- read_csv(here('data', 'final_table_tenmile_v3.csv')) %>% 
+tenmile_barriers <- read_csv(here('data', 'final_table_tenmile_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-tillamook <- read_csv(here('data', 'final_table_tillamook_v3.csv')) %>% 
+tillamook_barriers <- read_csv(here('data', 'final_table_tillamook_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
-yaquina <- read_csv(here('data', 'final_table_yaquina_v3.csv')) %>% 
+yaquina_barriers <- read_csv(here('data', 'final_table_yaquina_v3.csv')) %>% 
   clean_names() %>% 
-  select(cost)
+  select(c(pass_score, strm_lev, cost)) %>% 
+  arrange(cost)
+# arrange(strm_lev,pass_score)
 
 max_length <- max(length(alsea$cost), length(beaver$cost), length(coos$cost),
                   length(coquille$cost), length(floras$cost), length(lower_umpqua$cost),

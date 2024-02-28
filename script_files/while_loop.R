@@ -10,7 +10,7 @@ library(purrr)
 #..........................step 2: Create df of allocated budget to each pop.........................
 ## Create dataframe of the allocated budget by weight for each population. columns = populations, rows = portfolios.
 
- budget = 1300000
+ budget = 3500000
   
 ## function to determine the budget allocated using weights
 budget_allocated_fcn <- function(budget,weight){
@@ -39,17 +39,18 @@ n = 5
 cost = array(108847, n) #barriers cost $108847 (median from data)
 
 ## run the while loop within a function and call it 'while_fcn'. Doing this so we can run the function through purrr with many budget allocations.
-while_fcn <- function(budget_allocated) {
+while_fcn <- function(budget_allocated,barrier_list) {
   i = 1
   used_b=0
     while(used_b <= budget_allocated) { #stop running if used_b is greater than budget_allocated
-      used_b = cost[1] + used_b
+      used_b = barrier_list$cost[[i]] + used_b
       i = i + 1
     }
   index_choice=i-1
 
 return(index_choice)
 }
+
   
 
 ## Create 'index_choice_fcn' to map the 'budget_grid_list' through it
@@ -57,6 +58,7 @@ index_choice_fcn <- function(budget_allocated){
   index_choice <- (pmap_dbl(list(budget_allocated),while_fcn) - 1)
   return(index_choice)
 }
+
 
 
 ## run the 'index_choice_fcn' through purrr using the 'budget_grid_list'. index choice is the number of barriers that can be improved for a given budget, we will use this to update the 'bpassage' for each population to get 'bpassage_invest'
