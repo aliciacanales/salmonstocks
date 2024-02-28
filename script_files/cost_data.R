@@ -1,89 +1,91 @@
 library(Dict)
 ##.....................Isolating cost data...............
 
-alsea <- read_csv(here('data', 'final_table_alsea.csv')) %>% 
+alsea <- read_csv(here('data', 'final_table_alsea_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
 
-beaver <- read_csv(here('data', 'final_table_beaver.csv')) %>% 
+beaver <- read_csv(here('data', 'final_table_beaver_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
 
-coos <- read_csv(here('data', 'final_table_coos.csv')) %>% 
+coos <- read_csv(here('data', 'final_table_coosbay_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
-coquille <- read_csv(here('data', 'final_table_coquille.csv')) %>% 
+coquille <- read_csv(here('data', 'final_table_coquille_v3.csv')) %>% 
   clean_names() %>% 
   select(cost) %>% 
   mutate(cost = ifelse(cost == 0.00, 190097.2, cost))
 
 
-floras <- read_csv(here('data', 'final_table_floras.csv')) %>% 
+floras <- read_csv(here('data', 'final_table_floras_v3.csv')) %>% 
   clean_names() %>% 
   select(cost) 
 
-lower_umpqua <- read_csv(here('data', 'final_table_lowerump.csv')) %>% 
+lower_umpqua <- read_csv(here('data', 'final_table_lowerUmp_v3.csv')) %>% 
   clean_names() %>% 
   select(cost) 
 
-middle_umpqua <- read_csv(here('data', 'final_table_midump.csv')) %>% 
-  clean_names() %>% 
-  select(cost)
-
-necanicum <- read_csv(here('data', 'final_table_necanicum.csv')) %>% 
+middle_umpqua <- read_csv(here('data', 'final_table_midUmp_v3.csv')) %>% 
   clean_names() %>% 
   select(cost) %>% 
   mutate(cost = ifelse(cost == 0.00, 190097.2, cost))
 
-nehalem <- read_csv(here('data', 'final_table_nehalem.csv')) %>% 
+necanicum <- read_csv(here('data', 'final_table_necanicum_v3.csv')) %>% 
+  clean_names() %>% 
+  select(cost) %>% 
+  mutate(cost = ifelse(cost == 0.00, 190097.2, cost))
+
+nehalem <- read_csv(here('data', 'final_table_nehalem_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
-nestucca <- read_csv(here('data', 'final_table_nestucca.csv')) %>% 
+nestucca <- read_csv(here('data', 'final_table_nestucca_v3.csv')) %>% 
+  clean_names() %>% 
+  select(cost) %>% 
+  mutate(cost = ifelse(cost == 0.00, 190097.2, cost))
+
+north_umpqua <- read_csv(here('data', 'final_table_northUmp_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
-north_umpqua <- read_csv(here('data', 'final_table_northump.csv')) %>% 
+salmon <- read_csv(here('data', 'final_table_salmon_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
-salmon <- read_csv(here('data', 'final_table_salmon.csv')) %>% 
+siletz <- read_csv(here('data', 'final_table_siletz_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
-siletz <- read_csv(here('data', 'final_table_siletz.csv')) %>% 
+siltcoos <- read_csv(here('data', 'final_table_siltcoos_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
-siltcoos <- read_csv(here('data', 'final_table_siltcoos.csv')) %>% 
+siuslaw <- read_csv(here('data', 'final_table_siuslaw_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
-siuslaw <- read_csv(here('data', 'final_table_siuslaw.csv')) %>% 
+sixes <- read_csv(here('data', 'final_table_sixes_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
-sixes <- read_csv(here('data', 'final_table_sixes.csv')) %>% 
-  clean_names() %>% 
-  select(cost)
-
-south_umpqua <- read_csv(here('data', 'final_table_southumpqua.csv')) %>% 
+south_umpqua <- read_csv(here('data', 'final_table_southumpqua_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
 
-tenmile <- read_csv(here('data', 'final_table_tenmile.csv')) %>% 
+tenmile <- read_csv(here('data', 'final_table_tenmile_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
-tillamook <- read_csv(here('data', 'final_table_tillamook.csv')) %>% 
+tillamook <- read_csv(here('data', 'final_table_tillamook_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 
-yaquina <- read_csv(here('data', 'final_table_yaquina.csv')) %>% 
+yaquina <- read_csv(here('data', 'final_table_yaquina_v3.csv')) %>% 
   clean_names() %>% 
   select(cost)
 

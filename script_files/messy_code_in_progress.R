@@ -47,10 +47,11 @@ cov_matrix <- coho[2:22] %>%
 cov_matrix <- cov(cov_matrix)
 
 
-test_max_fcn <- function(weight){
+optimize_fcn <- function(weight){
+  browser()
   weight=weight %>% unlist()
   output1 <- pmap_dbl(list(budget, weight),budget_allocated_fcn) 
-  output2 <- (pmap_dbl(list(output1),while_fcn)-1) # check to see if this is being transformed
+  output2 <- (pmap_dbl(list(output1,barrier_list),while_fcn)-1) # check to see if this is being transformed
   bpassage_invest <- bpassage_invest_fcn(output2)  #map_dbl(list(output2),bpassage_invest_fcn) # not working
   c_invest <- c_invest_fcn(z_c_df$z, bpassage_invest)
   p_invest <- p_invest_fcn(z_p_df$z, bpassage_invest)
@@ -100,7 +101,7 @@ test_max_fcn <- function(weight){
 }
 
 
-test = map_df(.x=grid_list,~test_max_fcn(.x)) %>%
+portfolios = map_df(.x=grid_list,~optimize_fcn(.x)) %>%
 
   arrange(esu_returns_invest) # order by returns from investment
 
@@ -117,35 +118,48 @@ library(ggalt)
 baseline_point <- data.frame(x =3.141711e+27, y = 187118.2)
 
 # remove outliers to plot (is this okay to do?)
-temp <- test[-c(646:673), ]
-x <- temp %>% 
-  arrange(esu_var_invest)
+temp <- test[-c(277:289), ]
 
 
 # portfolios and efficiency frontier
-p5 <- ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
-  geom_point(colour = 'gray', size = 2) + 
+my_plot <- ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  geom_point(colour = 'gray', size = 2, alpha = .5) + 
   # geom_curve(x = 3.521570e+17, y = 205623.0,
   # xend = 3.892000e+17, yend = 211781.8,
   # colour = 'red', curvature = -.3) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
-  annotate("segment",
-           x = 1.5e+28, xend = 3.14e+27 , ## this controls how long the arrow is
-           y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
-           arrow = arrow(), color="black") +
-  geom_text(x = 2.6e+28, y = 187118.2, label = "Baseline Portfolio", size = 4.75, check_overlap = T) +
-  scale_x_continuous(breaks = c(seq(3e+27, 6e+28, by = 1e+28))) +
-  ylim(187118.2, 1000000) +
-  scale_y_continuous(labels = scales::comma) +
+  #annotate("segment",
+           #x = 1.5e+28, xend = 3.14e+27 , ## this controls how long the arrow is
+           #y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
+           #arrow = arrow(), color="black") +
+  geom_segment(aes(x = 0.7e+28,
+                   y = 187118.2,
+                   xend = 3.64e+27,
+                   yend = 187118.2),
+                   color = "black",
+                   linetype = "solid",
+                   arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_text(x = 1.2e+28, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T) +
   labs(x = 'ESU Variance', y = 'ESU Abundance') +
+  xlim(0, 7.7e+28) +
+  ylim(0, 1000000) +
+  scale_y_continuous(labels = scales::comma) +
+  theme(legend.position = "none") + 
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14),
+        axis.title = element_text(size = 17))
 
-  theme(legend.position = "none") +
-  theme_minimal()
+my_plot
+
+ggsave("my_plot.png", plot = my_plot)
+
 
 
 p5 +theme(axis.title = element_text(size = 15),
           axis.text.x = element_text(size = 10.5),
           axis.text.y = element_text(size = 10.5))
+
 
 
 
