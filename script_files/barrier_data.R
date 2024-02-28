@@ -144,7 +144,7 @@ yaquina <- read_csv(here('data', 'final_table_yaquina_v3.csv')) %>%
 
 
 # .................................calculate passability for many dataframes..............................
-strm_wgt_fcn <- function(df, name) {
+strm_wgt_fcn <- function(df) {
   #prep data for calculation
   df <- df %>%
     group_by(strm_lev) %>% 
@@ -152,44 +152,47 @@ strm_wgt_fcn <- function(df, name) {
     ungroup()
   
   # Identify number of stream levels in population
-  r <- max(df$strm_lev) + 1 - min(df$strm_lev)
+  r <- max(df$strm_lev) + 1 - min(df$strm_lev) # this corrects for populations with no stream level of 1
   
   y <- 0
   
-  # Calculate y
+  # Calculate y (summation)
   for (i in 1:r) {
     temp_y <- sum(1/i)
     y <- y + temp_y
   }
   
+  # Create new column in dataframe called strm_wgt
   df$strm_wgt <- numeric(nrow(df))
   
-  # Calculate strm_wgt and add it as a new column to df
+  # Compute strm_wgt in the column strm_wgt
   for (i in 1:r) {
     strm_wgt <- 1 / (i * y)
     df$strm_wgt[i] <- strm_wgt
   }
-  
+  # Compute passability by stream level
   df$lev_pass <- df$product_pass_lev * df$strm_wgt
-  bpassage_base <- sum(df$lev_pass)
   
-  result <- data.frame(population = name, bpassge_base = bpassage_base)
+  # Sum to get bpassage for each population
+  bpassage <- sum(df$lev_pass)
   
-  return(result)
+  #bpassage_base <- data.frame(population = name, bpassge_base = bpassage_base)
+  
+  return(bpassage)
 }
 
-# create a list of individual population dataframes and name each of them
-dfs <- list(alsea = alsea,
+# create a list combining the individual population dataframes and name each of them
+df_base_pass_list <- list(alsea = alsea,
             beaver = beaver,
             coos = coos,
             coquille = coquille,
             floras = floras,
-            lower_umpqua = lower_umpqua, # has no pass score of 1, but I think I fixed it by updated line 155
+            lower_umpqua = lower_umpqua, # has no pass score of 1
             middle_umpqua = middle_umpqua,
             necanicum = necanicum,
             nehalem = nehalem,
             nestucca = nestucca,
-            north_umpqua = north_umpqua, # has no pass score of 1, but I think I fixed it by updated line 155
+            north_umpqua = north_umpqua, # has no pass score of 1
             salmon = salmon,
             siletz = siletz,
             siltcoos = siltcoos,
@@ -201,19 +204,28 @@ dfs <- list(alsea = alsea,
             yaquina = yaquina)
 
 # Apply function to each data frame in the list and combine the results into one dataframe
-result_df <- bind_rows(lapply(names(dfs), function(name) strm_wgt_fcn(dfs[[name]], name)))
+bpassage_base = map_df(.x=df_base_pass_list,~strm_wgt_fcn(.x))
+
+# Pivot longer
+bpassage_base <- bpassage_base %>% 
+  pivot_longer(
+    cols = c(1:20),
+    names_to = "population",
+    values_to = "bpassage"
+  )
+
 
 # ............
 
 
 ## creating this max length to find the max length the passability df should be. It should be as long as the population with the most barriers which is s_umpqua.
-# max_length <- max(length(alsea$pass_score), length(beaver$pass_score), length(coos$pass_score),
-#                   length(coquille$pass_score), length(floras$pass_score), length(lower_umpqua$pass_score),
-#                   length(middle_umpqua$pass_score), length(necanicum$pass_score), length(nehalem$pass_score),
-#                   length(nestucca$pass_score), length(north_umpqua$pass_score), length(salmon$pass_score),
-#                   length(siletz$pass_score), length(siltcoos$pass_score), length(siuslaw$pass_score),
-#                   length(sixes$pass_score), length(south_umpqua$pass_score), length(tenmile$pass_score),
-#                   length(tillamook$pass_score), length(yaquina$pass_score))
+max_length <- max(length(alsea$pass_score), length(beaver$pass_score), length(coos$pass_score),
+                  length(coquille$pass_score), length(floras$pass_score), length(lower_umpqua$pass_score),
+                  length(middle_umpqua$pass_score), length(necanicum$pass_score), length(nehalem$pass_score),
+                  length(nestucca$pass_score), length(north_umpqua$pass_score), length(salmon$pass_score),
+                  length(siletz$pass_score), length(siltcoos$pass_score), length(siuslaw$pass_score),
+                  length(sixes$pass_score), length(south_umpqua$pass_score), length(tenmile$pass_score),
+                  length(tillamook$pass_score), length(yaquina$pass_score))
 
 ## Passability data frame with all the barriers from each population. NA values filled in the extra spaces. Not sure how the NAs will play out in out functions. 
 ## This was really quick. Just a bunch of copy and paste, so no biggie if we have to get rid of it bc of all the NAs I added. It was the only way to combine all the columns together. -AC
