@@ -48,6 +48,7 @@ cov_matrix <- cov(cov_matrix)
 
 
 optimize_fcn <- function(weight){
+  browser()
   weight=weight %>% unlist()
   output1 <- pmap_dbl(list(budget, weight),budget_allocated_fcn) 
   output2 <- (pmap_dbl(list(output1,barrier_list),while_fcn)-1) # check to see if this is being transformed
@@ -102,7 +103,7 @@ optimize_fcn <- function(weight){
 
 portfolios = map_df(.x=grid_list,~optimize_fcn(.x)) %>%
 
-  arrange(esu_returns_invest) # order by returns from investment
+  arrange(esu_returns_invest)# order by returns from investment
 
 
 

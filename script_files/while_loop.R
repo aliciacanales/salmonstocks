@@ -40,6 +40,7 @@ cost = array(108847, n) #barriers cost $108847 (median from data)
 
 ## run the while loop within a function and call it 'while_fcn'. Doing this so we can run the function through purrr with many budget allocations.
 while_fcn <- function(budget_allocated,barrier_list) {
+  browser()
   i = 1
   used_b=0
     while(used_b <= budget_allocated) { #stop running if used_b is greater than budget_allocated
