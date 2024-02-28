@@ -144,7 +144,7 @@ yaquina <- read_csv(here('data', 'final_table_yaquina_v3.csv')) %>%
 
 
 # .................................calculate passability for many dataframes..............................
-strm_wgt_fcn <- function(df) {
+bpassage_compute_fcn <- function(df) {
   #prep data for calculation
   df <- df %>%
     group_by(strm_lev) %>% 
@@ -204,7 +204,7 @@ df_base_pass_list <- list(alsea = alsea,
             yaquina = yaquina)
 
 # Apply function to each data frame in the list and combine the results into one dataframe
-bpassage_base = map_df(.x=df_base_pass_list,~strm_wgt_fcn(.x))
+bpassage_base = map_df(.x=df_base_pass_list,~bpassage_compute_fcn(.x))
 
 # Pivot longer
 bpassage_base <- bpassage_base %>% 
