@@ -10,7 +10,7 @@ library(purrr)
 #..........................step 2: Create df of allocated budget to each pop.........................
 ## Create dataframe of the allocated budget by weight for each population. columns = populations, rows = portfolios.
 
- budget = 1300000
+budget = 1300000
   
 ## function to determine the budget allocated using weights
 budget_allocated_fcn <- function(budget,weight){
