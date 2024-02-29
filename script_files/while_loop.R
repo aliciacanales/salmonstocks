@@ -10,7 +10,8 @@ library(purrr)
 #..........................step 2: Create df of allocated budget to each pop.........................
 ## Create dataframe of the allocated budget by weight for each population. columns = populations, rows = portfolios.
 
- budget = 3500000
+
+budget = 1300000
   
 ## function to determine the budget allocated using weights
 budget_allocated_fcn <- function(budget,weight){
@@ -75,6 +76,7 @@ index_choice_list<-split(index_choice_df,seq(nrow(index_choice_df)))
 
 #..........................step 4: Improve bpassage dataframes using the index_choice_df created above.........................
 ## Run 'while_fcn' inside purrr. Each row within the column 'index_choice' in the 'budget_index_df' needs to be across columns
+#### old code, this has been updated with the improved passability calculation - see below (didn't delete yet, want to make sure it all workds before doing so)
 
 # #### Within this portfolio, take the product of the new passability values for each population and multiply by number of barriers in that population
 # bpassage_invest <- apply(passability_values_df, 2, prod) ## create a new dataframe and take the product of each column
@@ -87,44 +89,44 @@ index_choice_list<-split(index_choice_df,seq(nrow(index_choice_df)))
 # passability_test <- passability_values_df
 # 
 # 
-one_index_choice_df <- index_choice_df[1, ] # select the first row to test
-
-# new function
-bpassage_invest_fcn <- function(index_choice) {
-  index_choice = index_choice %>% unlist()
-  
-  passability_test <- passability_values_df
-  k=1
-
-  for (col_name in names(index_choice_df)) {
-    
-    rows_to_change <- index_choice[k] # Get the number of rows to change for the current column
-    passability_test[0:rows_to_change, col_name] <- 1 
-    
-    k<-k+1# Update the specified number of rows in passability_values_df
-  }
-  
-  k=1
-  bpassage_invest <- apply(passability_test, 2, prod) # product of passability values
-  
-  for (col_name in names(pass_values_na)) { #multiple by the number of barriers in that population
-    
-    nrow <- length(na.omit(pass_values_na[[col_name]]))
-    
-    if (k ==which(names(pass_values_na) == col_name)) {
-      bpassage_invest[k] <- bpassage_invest[k] * nrow
-    }
-    
-    k<-k+1
-  }
-
-
-  return(bpassage_invest)
-} # output is new bpassage score for each population for this portfolio
-
-
-
-bpassage_invest_df <- as.data.frame(bpassage_invest_fcn(one_index_choice_df)) # working - bpassage_invest for each population for one portfolio
+# one_index_choice_df <- index_choice_df[1, ] # select the first row to test
+# 
+# # new function
+# bpassage_invest_fcn <- function(index_choice) {
+#   index_choice = index_choice %>% unlist()
+#   
+#   passability_test <- passability_values_df
+#   k=1
+# 
+#   for (col_name in names(index_choice_df)) {
+#     
+#     rows_to_change <- index_choice[k] # Get the number of rows to change for the current column
+#     passability_test[0:rows_to_change, col_name] <- 1 
+#     
+#     k<-k+1# Update the specified number of rows in passability_values_df
+#   }
+#   
+#   k=1
+#   bpassage_invest <- apply(passability_test, 2, prod) # product of passability values
+#   
+#   for (col_name in names(pass_values_na)) { #multiple by the number of barriers in that population
+#     
+#     nrow <- length(na.omit(pass_values_na[[col_name]]))
+#     
+#     if (k ==which(names(pass_values_na) == col_name)) {
+#       bpassage_invest[k] <- bpassage_invest[k] * nrow
+#     }
+#     
+#     k<-k+1
+#   }
+# 
+# 
+#   return(bpassage_invest)
+# } # output is new bpassage score for each population for this portfolio
+# 
+# 
+# 
+# bpassage_invest_df <- as.data.frame(bpassage_invest_fcn(one_index_choice_df)) # working - bpassage_invest for each population for one portfolio
 
 # ### we need to run this for each row, because each row represents a dataframe
 # ## apply the next row in the list
@@ -134,3 +136,29 @@ bpassage_invest_df <- as.data.frame(bpassage_invest_fcn(one_index_choice_df)) # 
 # }
 
 # temp_df <- map_df(index_choice_list, ~bpassage_invest_fcn(.x))
+
+
+#..........................step 4: Calculate bpassage_invest using output of previous step .........................
+
+# we can use the previously created function to compute bpassage_invest:
+bpassage_compute_fcn()
+
+# the input must be a list of dataframes, where each population is a separate dataframe. Each dataframe must contain 'strm_lev' and 'pass_score' after investment
+bpassage_invest = map_df(.x=df_invest_pass_list,~bpassage_compute_fcn(.x))
+
+# Pivot longer
+bpassage_invest <- bpassage_invest %>% 
+  pivot_longer(
+    cols = c(1:20),
+    names_to = "population",
+    values_to = "bpassage"
+  )
+
+# Output will be: 1 dataframe, with 2 columns: 'population' and 'bpassage'
+
+# This output will be the input for for 'c_invest_fcn' and 'p_invest_fcn'
+
+
+
+
+
