@@ -47,12 +47,13 @@ cov_matrix <- coho[2:22] %>%
 cov_matrix <- cov(cov_matrix)
 
 
+
 optimize_fcn <- function(weight){
   browser()
   weight=weight %>% unlist()
   output1 <- pmap_dbl(list(budget, weight),budget_allocated_fcn) 
   output2 <- (pmap_dbl(list(output1,barrier_list),while_fcn)-1) # check to see if this is being transformed
-  bpassage_invest <- bpassage_invest_fcn(output2)  #map_dbl(list(output2),bpassage_invest_fcn) # not working
+  bpassage_invest <- bpassage_compute_fcn(output2)
   c_invest <- c_invest_fcn(z_c_df$z, bpassage_invest)
   p_invest <- p_invest_fcn(z_p_df$z, bpassage_invest)
   s_invest <- ((p_invest - 1) * c_invest)
