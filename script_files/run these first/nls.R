@@ -34,7 +34,7 @@ all_nls<- function(coho_recruits){
   nls(recruits~calculate_equil_abund(abundance, p_hat, c_hat),
       data = coho_recruits,
       start = list(p_hat=guess_p,c_hat=guess_c),
-      control=nls.control(minFactor=1/8000,maxiter = 500,tol = 1e-03))
+      control=nls.control(minFactor=1/8000,maxiter = 500,tol = 1e-03)) ## 5 
 }
 
 equilibrium_all <- coho_recruits %>% 
