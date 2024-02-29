@@ -47,11 +47,12 @@ cov_matrix <- coho[2:22] %>%
 cov_matrix <- cov(cov_matrix)
 
 
-test_max_fcn <- function(weight){
-  # browser()
+
+optimize_fcn <- function(weight){
+  browser()
   weight=weight %>% unlist()
   output1 <- pmap_dbl(list(budget, weight),budget_allocated_fcn) 
-  output2 <- (pmap_dbl(list(output1),while_fcn)-1) # check to see if this is being transformed
+  output2 <- (pmap_dbl(list(output1,barrier_list),while_fcn)-1) # check to see if this is being transformed
   bpassage_invest <- bpassage_compute_fcn(output2)
   c_invest <- c_invest_fcn(z_c_df$z, bpassage_invest)
   p_invest <- p_invest_fcn(z_p_df$z, bpassage_invest)
@@ -101,7 +102,7 @@ test_max_fcn <- function(weight){
 }
 
 
-test = map_df(.x=grid_list,~test_max_fcn(.x)) %>%
+portfolios = map_df(.x=grid_list,~optimize_fcn(.x)) %>%
 
   arrange(esu_returns_invest) # order by returns from investment
 
@@ -128,7 +129,6 @@ my_plot <- ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
   # xend = 3.892000e+17, yend = 211781.8,
   # colour = 'red', curvature = -.3) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
-<<<<<<< HEAD
   #annotate("segment",
            #x = 1.5e+28, xend = 3.14e+27 , ## this controls how long the arrow is
            #y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
