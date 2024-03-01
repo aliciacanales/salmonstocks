@@ -250,8 +250,11 @@ barrier_weight_compute_fcn <- function(df) {
   return(bpassage)
 }
 
+r <- length(unique(alsea$strm_lev))
+strm_lev_vector <- numeric(r)
+
 # .................................calculate passability with updated equation 2/28/24..............................
-bpassage_compute_fcn <- function(df) {
+bpassage_compute_fcn <- function(df, ) {
   browser()
   
   #prep data for calculation
@@ -262,7 +265,11 @@ bpassage_compute_fcn <- function(df) {
   r <- length(unique(df$strm_lev))
   
   # Vector of levels
-  lev_rank <- seq(1:r)
+  # lev_rank <- seq(1:r) # we can probably delete this
+  
+  # create a vector for level and level_weight (wr) that is the length of r (will fill in with data below)
+  strm_lev_vector <- numeric(r) # seq(1:r)
+  wr_vector <- numeric(r) # seq(1:r)
   
   # initialize
   bpassage <- 0
@@ -270,17 +277,50 @@ bpassage_compute_fcn <- function(df) {
   # iterate over stream level
   for (i in 1:r) {
     
-    # define the value for the true stream level for i
-    true_lev <- unique(df$strm_lev)[i]
+    # identify the value for the true stream level for i
+    true_lev <- unique(df$strm_lev[i])
     
-    # identify number of barriers within the stream level
+    # filter for just the level we want
+    lev_df <- df %>% 
+      filter(strm_lev == true_lev)
+    
+    # count the number of barriers within stream level i
+    n_barrier_strm_lev <- lev_df %>% 
+      summarise(count = n())
+    
+    # identify number of ids within the stream level
     sr <- length(unique(df$strm_id[i]))
+    
+    # create a vector for stream_id and stream_id_weight (wsr) that is the length of sr (will fill in with data below)
+    strm_id_vector <- numeric(sr) # seq(1:sr)
+    wrs_vector <- numeric(sr) # seq(1:sr)
     
     # initialize
     passability_strm_lev <- 0
  
     # iterate over stream id within stream level
     for (j in 1:sr) {
+      
+      # identify the value for the true stream id for j
+      true_id <- unique(df$strm_id)[j]
+      
+      # filter for just the data we want
+      temp_id_df <- df %>% 
+        filter(strm_level == true_lev & strm_id == true_id)
+      
+      n_barrier_strm_id <- temp_id_df %>% 
+        summarise(count = n())
+      
+      # compute the product of all pass scores within the same id
+      prod_pass_strm_id <- prod(temp_id_df$pass_score)
+      
+      # compute weight for stream id
+      w_strm_id <- n_barrier_strm_id / n_barrier_strm_lev # this should fill in the vector for stream id
+      
+      # compute passability for stream id
+      bpass_strm_id <- prod_pass_strm_id * w_strm_id # i think this output needs to fill in the vector for stream id (each iteration fills the vector)
+      
+      
       
       passability_strm_id <- 0  # initialize
       
