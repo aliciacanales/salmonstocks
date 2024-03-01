@@ -1,8 +1,9 @@
 ## ...............................Getting passability isolated..............................
 alsea <- read_csv(here('data', 'final_table_alsea_v3.csv')) %>% 
   clean_names() %>% 
-  select(c(pass_score, strm_lev, stream_id)) %>% 
-  arrange(strm_lev, stream_id, -pass_score)
+  rename(strm_id=stream_id) %>%
+  select(c(strm_lev, strm_id, pass_score)) %>% 
+  arrange(strm_lev, strm_id, pass_score)
 
 beaver <- read_csv(here('data', 'final_table_beaver_v3.csv')) %>% 
   clean_names() %>% 
@@ -142,62 +143,130 @@ yaquina <- read_csv(here('data', 'final_table_yaquina_v3.csv')) %>%
 # temp_output_beaver <- strm_wgt_fcn(beaver)
 # temp_output_lower_umpqua <- strm_wgt_fcn(lower_umpqua)
 
-
 # .................................calculate passability for many dataframes..............................
-# bpassage_compute_fcn <- function(df) {
-#   #prep data for calculation
-#   df <- df %>%
-#     group_by(strm_lev) %>% 
-#     summarise(product_pass_lev = prod(pass_score)) %>%
-#     ungroup()
-#   
-#   # Identify number of stream levels in population
-#   r <- max(df$strm_lev) + 1 - min(df$strm_lev) # this corrects for populations with no stream level of 1
-#   
-#   y <- 0
-#   
-#   # Calculate y (summation)
-#   for (i in 1:r) {
-#     temp_y <- sum(1/i)
-#     y <- y + temp_y
-#   }
-#   
-#   # Create new column in dataframe called strm_wgt
-#   df$strm_wgt <- numeric(nrow(df))
-#   
-#   # Compute strm_wgt in the column strm_wgt
-#   for (i in 1:r) {
-#     strm_wgt <- 1 / (i * y)
-#     df$strm_wgt[i] <- strm_wgt
-#   }
-#   # Compute passability by stream level
-#   df$lev_pass <- df$product_pass_lev * df$strm_wgt
-#   
-#   # Sum to get bpassage for each population
-#   bpassage <- sum(df$lev_pass)
-#   
-#   #bpassage_base <- data.frame(population = name, bpassge_base = bpassage_base)
-#   
-#   return(bpassage)
-# }
+old_bpassage_compute_fcn <- function(df) {
+  #prep data for calculation
+  df <- df %>%
+    group_by(strm_lev) %>%
+    summarise(product_pass_lev = prod(pass_score)) #%>%
+    #ungroup()
+  
+  # Identify number of stream levels in population
+  r <- max(df$strm_lev) + 1 - min(df$strm_lev) # this corrects for populations with no stream level of 1
+  
+  y <- 0
+  
+  # Calculate y (summation)
+  for (i in 1:r) {
+    temp_y <- sum(1/i)
+    y <- y + temp_y
+  }
+  
+  # Create new column in dataframe called strm_wgt
+  df$strm_wgt <- numeric(nrow(df))
+  
+  # Compute strm_wgt in the column strm_wgt
+  for (i in 1:r) {
+    strm_wgt <- 1 / (i * y)
+    df$strm_wgt[i] <- strm_wgt
+  }
+  
+  # Compute passability by stream level
+  df$lev_pass <- df$product_pass_lev * df$strm_wgt
+  
+  # Sum to get bpassage for each population
+  bpassage <- sum(df$lev_pass)
+  
+  bpassage_base <- data.frame(population = name, bpassge_base = bpassage_base)
+  
+  return(df)
+}
+
+
+
+# .................................compute stream weights with updated equation 2/28/24..............................
+
+# need to define the number of barriers in a stream level
+# need to define the number of barriers in a stream id
+
+temp <- alsea %>%
+  group_by(strm_id) %>%
+  summarise(nsr = n()) %>% 
+  ungroup() %>% 
+  group_by(strm_lev)
+
+barrier_weight_compute_fcn <- function(df) {
+  #prep data for calculation
+  df <- df %>%
+    group_by(strm_lev, strm_id) %>%
+    ungroup()
+
+  # Identify number of stream levels in population
+  r <- max(df$strm_lev) + 1 - min(df$strm_lev) # this corrects for populations with no stream level of 1
+
+  y <- 0
+
+  # Calculate y (summation of stream levels)
+  for (i in 1:r) {
+    temp_y <- sum(1/i)
+    y <- y + temp_y
+  }
+
+  # Create new column in dataframe called strm_wgt
+  df$barrier_wgt <- numeric(nrow(df))
+
+  # Compute barrier weight in the column barrier_wgt
+  for (i in 1:r) {
+    
+    # identify number of barriers in the stream level
+    nr <- summarise()
+    
+    # define sr
+    
+    for (j in 1:sr)
+      
+      # identify number of barriers in the stream id
+      nrs <- summarise()
+    
+      strm_id_wgt <- 1 / (i * y) * (nrs / nr)
+      df$strm_id_wgt[i] <- strm_id_wgt
+  }
+  strm_wgt <- 1 / (i * y) * (nrs / nr)
+  df$strm_wgt[i] <- strm_wgt
+  
+  summarise(nsr = n()) #count_scores_by_id
+  
+  
+  
+  # Compute passability by stream level
+  df$lev_pass <- df$product_pass_lev * df$strm_wgt
+
+  # Sum to get bpassage for each population
+  bpassage <- sum(df$lev_pass)
+
+  #bpassage_base <- data.frame(population = name, bpassge_base = bpassage_base)
+
+  return(bpassage)
+}
 
 
 
 # .................................calculate passability with updated equation 2/28/24..............................
-compute_fcn <- function(df) {
+bpassage_compute_fcn <- function(df) {
   
   #prep data for calculation
   df <- df %>%
     group_by(strm_lev, strm_id)
   
-  # Identify number of stream levels and stream IDs in population
-  r <- max(df$strm_lev) + 1 - min(df$strm_lev) # this corrects for populations with no stream level of 1
-  sr <- max(df$strm_id) + 1 - min(df$strm_id) # this needs to be adjusted.. or moved down to be within the outer for loop
+  # Identify number of stream levels in population
+  r <- max(df$strm_lev) - min(df$strm_lev) + 1 # this corrects for populations with no stream level of 1
   
-  bpassage <- 0  # Initialize bpassage (final output)
+  bpassage <- 0  # initialize bpassage (final output)
   
   # iterate over stream level
   for (i in 1:r) {
+    
+    sr <- max(df$strm_id) - min(df$strm_id) + 1 # this needs to be adjusted
     
     passability_strm_lev <- 0 # initialize
  
@@ -216,12 +285,12 @@ compute_fcn <- function(df) {
         # multiply pass_score by weight to get passability for a specific barrier
         barrier_passability <- pass_score * weight_strm_lev_strm_id
         
-        # compute the passability of the stream id sum the weighted barrier passability scores within the stream id to
+        # compute the passability of the stream id by adding the passability of each additional barrier
         passability_strm_id <- passability_strm_id + barrier_passability
         
         }
       
-      # compute the pasability of each stream level by taking sum the passability of each stream id
+      # compute the pasability of each stream level by taking sum the passability of each stream id within a stream level
       passability_strm_lev <- passability_strm_lev + passability_strm_id
       
       }
@@ -229,8 +298,10 @@ compute_fcn <- function(df) {
   bpassage <- bpassage + passability_strm_lev
   
   return(result)
+  
+  }
+  
 }
-
   
 # .................................calculate passability for many dataframes..............................
 
@@ -257,7 +328,7 @@ df_base_pass_list <- list(alsea = alsea,
             yaquina = yaquina)
 
 # Apply function to each data frame in the list and combine the results into one dataframe
-bpassage_base = map_df(.x=df_base_pass_list,~bpassage_compute_fcn(.x))
+bpassage_base = map_df(.x=df_base_pass_list,~old_bpassage_compute_fcn(.x))
 
 # Pivot longer
 bpassage_base <- bpassage_base %>% 
