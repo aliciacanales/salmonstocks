@@ -196,6 +196,7 @@ temp <- alsea %>%
   group_by(strm_lev)
 
 barrier_weight_compute_fcn <- function(df) {
+  browser()
   #prep data for calculation
   df <- df %>%
     group_by(strm_lev, strm_id) %>%
@@ -213,13 +214,13 @@ barrier_weight_compute_fcn <- function(df) {
   }
 
   # Create new column in dataframe called strm_wgt
-  df$barrier_wgt <- numeric(nrow(df))
+  df$strm_id_wgt <- numeric(nrow(df))
 
   # Compute barrier weight in the column barrier_wgt
   for (i in 1:r) {
     
     # identify number of barriers in the stream level
-    nr <- summarise()
+    nr <- count(df, strm_lev[i])
     
     # define sr
     
@@ -249,26 +250,34 @@ barrier_weight_compute_fcn <- function(df) {
   return(bpassage)
 }
 
-
-
 # .................................calculate passability with updated equation 2/28/24..............................
 bpassage_compute_fcn <- function(df) {
+  browser()
   
   #prep data for calculation
   df <- df %>%
-    group_by(strm_lev, strm_id)
+    group_by(strm_lev, strm_id) # match group by for whole flow
   
   # Identify number of stream levels in population
-  r <- max(df$strm_lev) - min(df$strm_lev) + 1 # this corrects for populations with no stream level of 1
+  r <- length(unique(df$strm_lev))
   
-  bpassage <- 0  # initialize bpassage (final output)
+  # Vector of levels
+  lev_rank <- seq(1:r)
+  
+  # initialize
+  bpassage <- 0
   
   # iterate over stream level
   for (i in 1:r) {
     
-    sr <- max(df$strm_id) - min(df$strm_id) + 1 # this needs to be adjusted
+    # define the value for the true stream level for i
+    true_lev <- unique(df$strm_lev)[i]
     
-    passability_strm_lev <- 0 # initialize
+    # identify number of barriers within the stream level
+    sr <- length(unique(df$strm_id[i]))
+    
+    # initialize
+    passability_strm_lev <- 0
  
     # iterate over stream id within stream level
     for (j in 1:sr) {
@@ -280,7 +289,7 @@ bpassage_compute_fcn <- function(df) {
         
         # Extract pass_score and weight for the current barrier
         pass_score <- df[g, "pass_score"]
-        weight_strm_lev_strm_id <- df[g, "weight_strm_lev_strm_id"] # using as a placeholder for now
+        weight_strm_lev_strm_id <- df[g, "weight_strm_lev_strm_id"] # using as a placeholder for now - function breaks here
       
         # multiply pass_score by weight to get passability for a specific barrier
         barrier_passability <- pass_score * weight_strm_lev_strm_id
@@ -328,7 +337,7 @@ df_base_pass_list <- list(alsea = alsea,
             yaquina = yaquina)
 
 # Apply function to each data frame in the list and combine the results into one dataframe
-bpassage_base = map_df(.x=df_base_pass_list,~old_bpassage_compute_fcn(.x))
+bpassage_base = map_df(.x=df_base_pass_list,~barrier_weight_compute_fcn(.x))
 
 # Pivot longer
 bpassage_base <- bpassage_base %>% 
