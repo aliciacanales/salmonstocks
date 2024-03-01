@@ -104,7 +104,7 @@ optimize_fcn <- function(weight){
 
 portfolios = map_df(.x=grid_list,~optimize_fcn(.x)) %>%
 
-  arrange(esu_returns_invest) # order by returns from investment
+  arrange(esu_returns_invest)# order by returns from investment
 
 
 
