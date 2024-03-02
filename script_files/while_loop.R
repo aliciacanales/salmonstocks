@@ -55,7 +55,8 @@ while_fcn <- function(budget_allocated,barrier_list) {
      
   rows_to_change <- min(index_choice, length(barrier_list[[j]])) ## to make sure the index choice isn't longer that the number of barriers
 
-     if (rows_to_change > 0) {
+  ## if else statment: if the rows to change is greater than zero then those rows will be updated in a new column called pass_score_invest where the passability scores will change to one. If there are no rows to change then the new column will have the same scores.  
+     if (rows_to_change > 0) { 
        barrier_list$pass_score_invest = barrier_list$pass_score  
        barrier_list$pass_score_invest[0:rows_to_change] <- 1
      } else {
