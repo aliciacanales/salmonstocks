@@ -184,6 +184,22 @@ old_bpassage_compute_fcn <- function(df) {
 
 
 
+# n <- 5
+# 
+# # Initialize an empty vector
+# result_vector <- numeric(n)
+# 
+# # Loop over each iteration
+# for (i in 1:n) {
+#   # Your computation here
+#   value <- i^2  # Example computation
+#   
+#   # Update the vector with the computed value
+#   result_vector[i] <- value
+# }
+
+
+
 # .................................compute stream weights with updated equation 2/28/24..............................
 
 # need to define the number of barriers in a stream level
@@ -254,12 +270,12 @@ r <- length(unique(alsea$strm_lev))
 strm_lev_vector <- numeric(r)
 
 # .................................calculate passability with updated equation 2/28/24..............................
-bpassage_compute_fcn <- function(df, ) {
+bpassage_compute_fcn <- function(df) {
   browser()
   
   #prep data for calculation
-  df <- df %>%
-    group_by(strm_lev, strm_id) # match group by for whole flow
+  df <- df #%>%
+    #group_by(strm_lev, strm_id) # match group by for whole flow
   
   # Identify number of stream levels in population
   r <- length(unique(df$strm_lev))
@@ -268,11 +284,19 @@ bpassage_compute_fcn <- function(df, ) {
   # lev_rank <- seq(1:r) # we can probably delete this
   
   # create a vector for level and level_weight (wr) that is the length of r (will fill in with data below)
-  strm_lev_vector <- numeric(r) # seq(1:r)
-  wr_vector <- numeric(r) # seq(1:r)
+  bpass_strm_lev_vector <- numeric(r) # seq(1:r)
+  wr_strm_lev_vector <- numeric(r) # seq(1:r)
   
   # initialize
   bpassage <- 0
+  y <- 0
+  # n_barrier_strm_lev <- 0
+  
+  # Calculate y (summation) mini for loop, this just needs to be defined outside of the for loop below because it is a constant there
+  for (i in 1:r) {
+    temp_y <- sum(1/i)
+    y <- y + temp_y
+  }
   
   # iterate over stream level
   for (i in 1:r) {
@@ -292,11 +316,18 @@ bpassage_compute_fcn <- function(df, ) {
     sr <- length(unique(df$strm_id[i]))
     
     # create a vector for stream_id and stream_id_weight (wsr) that is the length of sr (will fill in with data below)
-    strm_id_vector <- numeric(sr) # seq(1:sr)
-    wrs_vector <- numeric(sr) # seq(1:sr)
+    bpass_strm_id_vector <- numeric(sr) # seq(1:sr)
+    # wrs_strm_id_vector <- numeric(sr) # seq(1:sr)
+    
+    # compute weight by stream level
+    strm_wgt <- 1 / (i * y)
+    wr_strm_lev_vector[i] <- strm_wgt
     
     # initialize
-    passability_strm_lev <- 0
+    #passability_strm_lev <- 0
+    #n_barrier_strm_id <- 0
+    prod_pass_strm_id <- 0
+    w_strm_id <- 0
  
     # iterate over stream id within stream level
     for (j in 1:sr) {
@@ -306,49 +337,34 @@ bpassage_compute_fcn <- function(df, ) {
       
       # filter for just the data we want
       temp_id_df <- df %>% 
-        filter(strm_level == true_lev & strm_id == true_id)
+        filter(strm_lev == true_lev & strm_id == true_id)
       
       n_barrier_strm_id <- temp_id_df %>% 
         summarise(count = n())
       
       # compute the product of all pass scores within the same id
       prod_pass_strm_id <- prod(temp_id_df$pass_score)
+      #browser()
       
       # compute weight for stream id
       w_strm_id <- n_barrier_strm_id / n_barrier_strm_lev # this should fill in the vector for stream id
       
+      passability <- prod_pass_strm_id * w_strm_id # i think this output needs to fill in the vector for stream id (each iteration fills the vector)
+      
       # compute passability for stream id
-      bpass_strm_id <- prod_pass_strm_id * w_strm_id # i think this output needs to fill in the vector for stream id (each iteration fills the vector)
+      bpass_strm_id_vector <- passability # this shoul dhave [j] but function is being weird # i think this output needs to fill in the vector for stream id (each iteration fills the vector)
       
-      
-      
-      passability_strm_id <- 0  # initialize
-      
-      # iterate over each barrier (row) within the current stream ID
-      for (g in 1:nrow(df)) { # how do we define what to iterate over here?
-        
-        # Extract pass_score and weight for the current barrier
-        pass_score <- df[g, "pass_score"]
-        weight_strm_lev_strm_id <- df[g, "weight_strm_lev_strm_id"] # using as a placeholder for now - function breaks here
-      
-        # multiply pass_score by weight to get passability for a specific barrier
-        barrier_passability <- pass_score * weight_strm_lev_strm_id
-        
-        # compute the passability of the stream id by adding the passability of each additional barrier
-        passability_strm_id <- passability_strm_id + barrier_passability
-        
-        }
-      
-      # compute the pasability of each stream level by taking sum the passability of each stream id within a stream level
-      passability_strm_lev <- passability_strm_lev + passability_strm_id
-      
-      }
-  # compute bpassage for the watershed by taking the sum of the passability of each stream level
-  bpassage <- bpassage + passability_strm_lev
-  
-  return(result)
-  
+    }
+    
+    bpass_strm_lev <- sum(bpass_strm_id_vector)
+    
+    bpass_strm_lev_vector[i] <- bpass_strm_lev * wr_strm_lev_vector[i]
+    
   }
+  
+  bpassage <- sum(bpass_strm_lev_vector)
+  
+  return(bpassage)
   
 }
   
@@ -377,7 +393,7 @@ df_base_pass_list <- list(alsea = alsea,
             yaquina = yaquina)
 
 # Apply function to each data frame in the list and combine the results into one dataframe
-bpassage_base = map_df(.x=df_base_pass_list,~barrier_weight_compute_fcn(.x))
+bpassage_base = map_df(.x=df_base_pass_list,~bpassage_compute_fcn(.x))
 
 # Pivot longer
 bpassage_base <- bpassage_base %>% 
