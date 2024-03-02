@@ -269,9 +269,13 @@ barrier_weight_compute_fcn <- function(df) {
 r <- length(unique(alsea$strm_lev))
 strm_lev_vector <- numeric(r)
 
+temp <- unique(alsea$strm_lev)
+
+bpass_strm_id_vector <- numeric(length(unique(alsea$strm_id)))
+
 # .................................calculate passability with updated equation 2/28/24..............................
 bpassage_compute_fcn <- function(df) {
-  browser()
+  # browser()
   
   #prep data for calculation
   df <- df #%>%
@@ -279,6 +283,7 @@ bpassage_compute_fcn <- function(df) {
   
   # Identify number of stream levels in population
   r <- length(unique(df$strm_lev))
+  r_true <- unique(df$strm_lev)
   
   # Vector of levels
   # lev_rank <- seq(1:r) # we can probably delete this
@@ -302,7 +307,7 @@ bpassage_compute_fcn <- function(df) {
   for (i in 1:r) {
     
     # identify the value for the true stream level for i
-    true_lev <- unique(df$strm_lev[i])
+    true_lev <- r_true[i] #unique(df$strm_lev[i])
     
     # filter for just the level we want
     lev_df <- df %>% 
@@ -313,10 +318,11 @@ bpassage_compute_fcn <- function(df) {
       summarise(count = n())
     
     # identify number of ids within the stream level
-    sr <- length(unique(df$strm_id[i]))
+    sr <- length(unique(lev_df$strm_id))
+    sr_true <- unique(lev_df$strm_id)
     
     # create a vector for stream_id and stream_id_weight (wsr) that is the length of sr (will fill in with data below)
-    bpass_strm_id_vector <- numeric(sr) # seq(1:sr)
+    # bpass_strm_id_vector <- numeric(length(unique(lev_df$strm_id))) # (sr) # seq(1:sr)
     # wrs_strm_id_vector <- numeric(sr) # seq(1:sr)
     
     # compute weight by stream level
@@ -328,12 +334,13 @@ bpassage_compute_fcn <- function(df) {
     #n_barrier_strm_id <- 0
     prod_pass_strm_id <- 0
     w_strm_id <- 0
+    strm_lev_passability <- 0
  
     # iterate over stream id within stream level
     for (j in 1:sr) {
       
       # identify the value for the true stream id for j
-      true_id <- unique(df$strm_id)[j]
+      true_id <- sr_true[j]# unique(df$strm_id)[j]
       
       # filter for just the data we want
       temp_id_df <- df %>% 
@@ -351,14 +358,16 @@ bpassage_compute_fcn <- function(df) {
       
       passability <- prod_pass_strm_id * w_strm_id # i think this output needs to fill in the vector for stream id (each iteration fills the vector)
       
+      strm_lev_passability <- strm_lev_passability + passability
+      
       # compute passability for stream id
-      bpass_strm_id_vector <- passability # this shoul dhave [j] but function is being weird # i think this output needs to fill in the vector for stream id (each iteration fills the vector)
+      #bpass_strm_id_vector[j] <- passability # this shoul dhave [j] but function is being weird # i think this output needs to fill in the vector for stream id (each iteration fills the vector)
       
     }
     
-    bpass_strm_lev <- sum(bpass_strm_id_vector)
+    #bpass_strm_lev <- sum(bpass_strm_id_vector)
     
-    bpass_strm_lev_vector[i] <- bpass_strm_lev * wr_strm_lev_vector[i]
+    bpass_strm_lev_vector[i] <- strm_lev_passability * wr_strm_lev_vector[i]
     
   }
   
