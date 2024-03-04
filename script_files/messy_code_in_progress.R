@@ -49,7 +49,7 @@ cov_matrix <- cov(cov_matrix)
 
 
 optimize_fcn <- function(weight){
-  browser()
+  # browser()
   weight=weight %>% unlist()
   output1 <- pmap_dbl(list(budget, weight),budget_allocated_fcn) 
   output2 <- (pmap_dbl(list(output1,barrier_list),while_fcn)-1) # check to see if this is being transformed
