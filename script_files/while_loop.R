@@ -41,8 +41,7 @@ cost = array(108847, n) #barriers cost $108847 (median from data)
 
 ## run the while loop within a function and call it 'while_fcn'. Doing this so we can run the function through purrr with many budget allocations.
 while_fcn <- function(budget_allocated,barrier_list) {
-  browser()
-  
+  # browser()
     i = 1
     used_b = 0
 
@@ -53,19 +52,20 @@ while_fcn <- function(budget_allocated,barrier_list) {
   
   index_choice=i-1
      
-  rows_to_change <- min(index_choice, length(barrier_list[[j]])) ## to make sure the index choice isn't longer that the number of barriers
-
+  rows_to_change <- min(index_choice, length(barrier_list[[i]])) ## to make sure the index choice isn't longer that the number of barriers
+df = barrier_list
   ## if else statment: if the rows to change is greater than zero then those rows will be updated in a new column called pass_score_invest where the passability scores will change to one. If there are no rows to change then the new column will have the same scores.  
-     if (rows_to_change > 0) { 
-       barrier_list$pass_score_invest = barrier_list$pass_score  
-       barrier_list$pass_score_invest[0:rows_to_change] <- 1
+ if (rows_to_change > 0) { 
+       df$pass_score_invest = df$pass_score  
+       df$pass_score_invest[0:rows_to_change] <- 1
      } else {
-      barrier_list$pass_score_invest = barrier_list$pass_score
+      df$pass_score_invest = df$pass_score
      }
-     
+  return(df)
 }
 
-output2 <- pmap_dbl(list(130000,barrier_list),while_fcn)
+
+temp <- pmap(list(budget_allocated = 130000, barrier_list = barrier_list), while_fcn)
 
 ## Create 'index_choice_fcn' to map the 'budget_grid_list' through it
 index_choice_fcn <- function(budget_allocated){
