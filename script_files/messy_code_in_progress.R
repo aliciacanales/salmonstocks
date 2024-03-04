@@ -102,8 +102,8 @@ optimize_fcn <- function(weight){
 
   
   
-  return(s_invest) # to look at single dataframe
-  #return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
+  #return(s_invest) # to look at single dataframe
+  return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
 
