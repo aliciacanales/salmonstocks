@@ -47,17 +47,19 @@ while_fcn <- function(budget_allocated,barrier_list) {
 
     while(used_b <= budget_allocated) { #stop running if used_b is greater than budget_allocated
       used_b = barrier_list$cost[[i]] + used_b
+      index_choice=i-1
       i = i + 1
     }
   
-  index_choice=i-1
+  # index_choice=i-1
+  qc <- nrow(barrier_list)
      
-  rows_to_change <- min(index_choice, length(barrier_list[[i]])) ## to make sure the index choice isn't longer that the number of barriers
+  rows_to_change <- min(index_choice, nrow(barrier_list)) ## to make sure the index choice isn't longer that the number of barriers
 df = barrier_list
   ## if else statment: if the rows to change is greater than zero then those rows will be updated in a new column called pass_score_invest where the passability scores will change to one. If there are no rows to change then the new column will have the same scores.  
  if (rows_to_change > 0) { 
        df$pass_score_invest = df$pass_score  
-       df$pass_score_invest[0:rows_to_change] <- 1
+       df$pass_score_invest[1:rows_to_change] <- 1
      } else {
       df$pass_score_invest = df$pass_score
      }
@@ -65,7 +67,7 @@ df = barrier_list
 }
 
 
-temp <- pmap(list(budget_allocated = 130000, barrier_list = barrier_list), while_fcn)
+temp <- pmap(list(budget_allocated = 10000000, barrier_list = barrier_list), while_fcn)
 
 ## Create 'index_choice_fcn' to map the 'budget_grid_list' through it
 index_choice_fcn <- function(budget_allocated){

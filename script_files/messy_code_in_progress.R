@@ -9,6 +9,7 @@ set.seed(123)
 ## 108847.2 <- median
 ## budget = 3500000 and 23 mil. or find something else
 budget = 1300000
+budget = 10000000
 
 ## covariance (using covariance from 'coho' calulated in 'population.R')
 cov_temp <- coho[2:22]
@@ -25,6 +26,10 @@ cov_coho <- sum(cov(cov_rm[1:20])) # the sum of the cov of esu (without tahkenit
 cov <- sum(sigma %*% t(sigma) * weights %*% t(weights) * cov_matrix)
 #---
 temp <- 0
+
+
+sd <- sapply(coho[2:22], sd)
+sd_rm<-sd[-18]
 
 # Loop over each i
 for (i in 1:n) {
@@ -49,11 +54,11 @@ cov_matrix <- cov(cov_matrix)
 
 
 optimize_fcn <- function(weight){
-  # browser()
+  #browser()
   weight=weight %>% unlist()
   output1 <- pmap_dbl(list(budget, weight),budget_allocated_fcn) 
-  output2 <- (pmap_dbl(list(output1,barrier_list),while_fcn)-1) # check to see if this is being transformed
-  bpassage_invest <- bpassage_compute_fcn(output2)
+  output2 <- pmap(list(output1,barrier_list),while_fcn) # check to see if this is being transformed
+  bpassage_invest <- unlist(map_df(.x=output2,~bpassage_invest_compute_fcn(.x)))
   c_invest <- c_invest_fcn(z_c_df$z, bpassage_invest)
   p_invest <- p_invest_fcn(z_p_df$z, bpassage_invest)
   s_invest <- ((p_invest - 1) * c_invest)
@@ -97,7 +102,7 @@ optimize_fcn <- function(weight){
 
   
   
-  #return(cov_baseline) # to look at single dataframe
+  #return(s_invest) # to look at single dataframe
   return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
