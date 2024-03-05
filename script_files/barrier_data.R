@@ -1,130 +1,6 @@
-## ...............................Getting passability isolated..............................
-alsea <- read_csv(here('data', 'final_table_alsea_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score) 
-
-beaver <- read_csv(here('data', 'final_table_beaver_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-coos <- read_csv(here('data', 'final_table_coosbay_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-coquille <- read_csv(here('data', 'final_table_coquille_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-floras <- read_csv(here('data', 'final_table_floras_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-lower_umpqua <- read_csv(here('data', 'final_table_lowerUmp_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-middle_umpqua <- read_csv(here('data', 'final_table_midUmp_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-necanicum <- read_csv(here('data', 'final_table_necanicum_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(pass_score=pass_scores) %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-nehalem <- read_csv(here('data', 'final_table_nehalem_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-nestucca <- read_csv(here('data', 'final_table_nestucca_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-north_umpqua <- read_csv(here('data', 'final_table_northUmp_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-salmon <- read_csv(here('data', 'final_table_salmon_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-siletz <- read_csv(here('data', 'final_table_siletz_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-siltcoos <- read_csv(here('data', 'final_table_siltcoos_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-siuslaw <- read_csv(here('data', 'final_table_siuslaw_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-sixes <- read_csv(here('data', 'final_table_sixes_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-south_umpqua <- read_csv(here('data', 'final_table_southumpqua_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-tenmile <- read_csv(here('data', 'final_table_tenmile_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-tillamook <- read_csv(here('data', 'final_table_tillamook_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-yaquina <- read_csv(here('data', 'final_table_yaquina_v3.csv')) %>% 
-  clean_names() %>% 
-  rename(strm_id=stream_id) %>%
-  select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
-
-
-
 
 # .................................compute passability with updated equation 2/28/24..............................
-bpassage_compute_fcn <- function(df) {
+bpassage_base_compute_fcn <- function(df) {
   # browser()
   
   #prep data for calculation
@@ -222,34 +98,11 @@ bpassage_compute_fcn <- function(df) {
   return(bpassage)
   
 }
-  
-# .................................create list of dataframes..............................
-# create a list combining the individual population dataframes and name each of them
-df_base_pass_list <- list(alsea = alsea,
-            beaver = beaver,
-            coos = coos,
-            coquille = coquille,
-            floras = floras,
-            lower_umpqua = lower_umpqua, # has no pass score of 1
-            middle_umpqua = middle_umpqua,
-            necanicum = necanicum,
-            nehalem = nehalem,
-            nestucca = nestucca,
-            north_umpqua = north_umpqua, # has no pass score of 1
-            salmon = salmon,
-            siletz = siletz,
-            siltcoos = siltcoos,
-            siuslaw = siuslaw,
-            sixes = sixes,
-            south_umpqua = south_umpqua,
-            tenmile = tenmile,
-            tillamook = tillamook,
-            yaquina = yaquina)
 
 
 # .................................Compute passability for each population..............................
 # Apply function to each data frame in the list and combine the results into one dataframe
-bpassage_base = map_df(.x=df_base_pass_list,~bpassage_compute_fcn(.x))
+bpassage_base = map_df(.x=barrier_list,~bpassage_base_compute_fcn(.x))
 
 # Pivot longer
 bpassage_base <- bpassage_base %>% 
@@ -265,8 +118,7 @@ bpassage_invest_compute_fcn <- function(df) {
   # browser()
   
   #prep data for calculation
-  df <- df %>% 
-    rename(strm_id=stream_id)
+  df <- df
   
   # Identify number of stream levels in population
   r <- length(unique(df$strm_lev)) # number of levels in a population
@@ -354,17 +206,12 @@ bpassage_invest_compute_fcn <- function(df) {
     
   }
   
-  #bpassage <- data.frame(matrix())
-  
   #bpassage for the population
   bpassage <- data.frame(sum(bpass_strm_lev_v))
   
   return(bpassage)
   
 }
-
-bpassage <- data.frame(matrix())
-bpassage <- data.frame(sum(10))
 
 # end....................................................................................................................................
 
