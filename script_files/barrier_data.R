@@ -3,7 +3,7 @@ alsea <- read_csv(here('data', 'final_table_alsea_v3.csv')) %>%
   clean_names() %>% 
   rename(strm_id=stream_id) %>%
   select(c(strm_lev, strm_id, pass_score)) %>% 
-  arrange(strm_lev, strm_id, pass_score)
+  arrange(strm_lev, strm_id, pass_score) 
 
 beaver <- read_csv(here('data', 'final_table_beaver_v3.csv')) %>% 
   clean_names() %>% 
