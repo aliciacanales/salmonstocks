@@ -1,6 +1,8 @@
 
 library(tidyverse)
 library(purrr)
+library(furrr)
+install.packages(furrr)
 
 set.seed(123)
 #.......................... combinging while_loop into one.........................
@@ -117,8 +119,11 @@ optimize_fcn <- function(weight){
   return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
+plan(sequential)
+portfolios = future_map(.x=grid_list,~optimize_fcn(.x))
 
-portfolios = map_df(.x=grid_list,~optimize_fcn(.x)) #%>%
+
+#%>%
 
   arrange(esu_returns_invest)# order by returns from investment
 
