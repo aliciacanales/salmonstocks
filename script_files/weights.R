@@ -3,7 +3,7 @@ library(LaplacesDemon)
 library(nloptr)
 
 #..........................Create randomized weight allocations.........................
-n= 2200
+n= 50
 abundance_data <- coho[2:22] # raw population abundance data
 abundance_data <- data.frame(abundance_data[-18]) # remove Tahkenitch
 raw<-rdirichlet(n,rep(1,ncol(abundance_data))) #Generate 100 portfolio weights for all 20 streams
@@ -34,3 +34,5 @@ weights <- check
 ## Renaming column names and making df a list 
 colnames(weights) <- names(abundance_data) 
 grid_list<-split(weights,seq(nrow(weights)))
+
+weights <- read.csv(here('data', 'weights.csv'))
