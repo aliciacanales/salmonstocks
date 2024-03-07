@@ -51,6 +51,9 @@ cov_matrix <- coho[2:22] %>%
 
 cov_matrix <- cov(cov_matrix)
 
+# test new variance calculation
+temp_matrix <- as.matrix(cov_matrix) %*% as.matrix(temp)
+out <- t(as.matrix(temp)) %*% temp_matrix
 
 
 optimize_fcn <- function(weight){
@@ -72,47 +75,56 @@ optimize_fcn <- function(weight){
   sd_rm<-sd[-18]
   #cov_matrix <- cov(coho[2:22])
   
+  ## variance at baseline
+  temp_matrix <- as.matrix(cov_matrix) %*% as.matrix(s_baseline)
+  esu_var_baseline <- t(as.matrix(s_baseline)) %*% temp_matrix
+  
+  ## variance after investment
+  temp_matrix <- as.matrix(cov_matrix) %*% as.matrix(s_invest)
+  esu_var_invest <- t(as.matrix(s_invest)) %*% temp_matrix
+  
   ## covariance of investment
-  cov_2 <- 0
-  # Loop over each i
-  for (i in 1:20) {
-    # Calculate the sum for each i
-    cov_1 <- sum(sd_rm[i] * s_invest[i] * sd_rm[-i] * s_invest[-i] * cov_matrix[i])
-    # Add this sum to the total sum
-    cov_2 <- cov_2 + cov_1
-  }
-  cov_invest <- cov_2
-  
-  ## covariance of baseline
-  cov_2_baseline <- 0
-  # Loop over each i
-  for (i in 1:20) {
-    # Calculate the sum for each i
-    cov_1_baseline <- sum(sd_rm[i] * s_baseline[i] * sd_rm[-i] * s_baseline[-i] * cov_matrix[i])
-    # Add this sum to the total sum
-    cov_2_baseline <- cov_2_baseline + cov_1_baseline
-  }
-  cov_baseline <- cov_2_baseline
-  
-  
-  var_invest <- var_rm * (s_invest^2)
-  var_baseline <- var_rm * (s_baseline^2)
-  esu_var_invest <- sum(var_invest + cov_invest)
-  esu_var_baseline <- sum(var_baseline + cov_baseline)
+  # cov_2 <- 0
+  # # Loop over each i
+  # for (i in 1:20) {
+  #   # Calculate the sum for each i
+  #   cov_1 <- sum(sd_rm[i] * s_invest[i] * sd_rm[-i] * s_invest[-i] * cov_matrix[i])
+  #   # Add this sum to the total sum
+  #   cov_2 <- cov_2 + cov_1
+  # }
+  # cov_invest <- cov_2
+  # 
+  # ## covariance of baseline
+  # cov_2_baseline <- 0
+  # # Loop over each i
+  # for (i in 1:20) {
+  #   # Calculate the sum for each i
+  #   cov_1_baseline <- sum(sd_rm[i] * s_baseline[i] * sd_rm[-i] * s_baseline[-i] * cov_matrix[i])
+  #   # Add this sum to the total sum
+  #   cov_2_baseline <- cov_2_baseline + cov_1_baseline
+  # }
+  # cov_baseline <- cov_2_baseline
+  # 
+  # 
+  # var_invest <- var_rm * (s_invest^2)
+  # var_baseline <- var_rm * (s_baseline^2)
+  # esu_var_invest <- sum(var_invest + cov_invest)
+  # esu_var_baseline <- sum(var_baseline + cov_baseline)
 
   
   
-  #return(s_invest) # to look at single dataframe
+  #return(s_baseline) # to look at single dataframe
   return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
 
-portfolios = map_df(.x=grid_list,~optimize_fcn(.x)) %>%
+portfolios = map_df(.x=grid_list,~optimize_fcn(.x)) #%>%
 
   arrange(esu_returns_invest)# order by returns from investment
 
+temp <- temp
 
-
+temp_df <- temp[1, ]
 
 
 
@@ -128,7 +140,7 @@ temp <- test[-c(277:289), ]
 
 
 # portfolios and efficiency frontier
-my_plot <- ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
+my_plot <- ggplot(portfolios_3, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'gray', size = 2, alpha = .5) + 
   # geom_curve(x = 3.521570e+17, y = 205623.0,
   # xend = 3.892000e+17, yend = 211781.8,
@@ -138,17 +150,18 @@ my_plot <- ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
            #x = 1.5e+28, xend = 3.14e+27 , ## this controls how long the arrow is
            #y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
            #arrow = arrow(), color="black") +
-  geom_segment(aes(x = 0.7e+28,
-                   y = 187118.2,
-                   xend = 3.64e+27,
-                   yend = 187118.2),
-                   color = "black",
-                   linetype = "solid",
-                   arrow = arrow(length = unit(0.3, "cm"))) +
-  geom_text(x = 1.2e+28, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T) +
+  #geom_segment(aes(x = 0.7e+28,
+                   # y = 187118.2,
+                   # xend = 3.64e+27,
+                   # yend = 187118.2),
+                   # color = "black",
+                   # linetype = "solid",
+                   # arrow = arrow(length = unit(0.3, "cm"))) +
+  #geom_text(x = 1.2e+28, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T) +
   labs(x = 'ESU Variance', y = 'ESU Abundance') +
-  xlim(0, 7.7e+28) +
-  ylim(0, 1000000) +
+  #xlim(0, 7.7e+28) +
+  #ylim(0, 1000000) +
+  ggtitle("$10,000,000 Budget; 1093 Portfolios") +
   scale_y_continuous(labels = scales::comma) +
   theme(legend.position = "none") + 
   theme_minimal() +
