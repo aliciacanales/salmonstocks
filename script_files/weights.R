@@ -35,4 +35,5 @@ weights <- check
 colnames(weights) <- names(abundance_data) 
 grid_list<-split(weights,seq(nrow(weights)))
 
+weights <- write.csv('weights.csv',row.names = FALSE)
 weights <- read.csv(here('data', 'weights.csv'))

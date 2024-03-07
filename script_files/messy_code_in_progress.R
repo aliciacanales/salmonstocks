@@ -119,7 +119,7 @@ optimize_fcn <- function(weight){
   return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
-plan(sequential)
+plan(sequential, workers = 2)
 portfolios = future_map(.x=grid_list,~optimize_fcn(.x))
 
 
