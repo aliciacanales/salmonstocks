@@ -96,11 +96,11 @@ siuslaw_barriers <- read_csv(here('data', 'final_table_siuslaw_v3.csv')) %>%
   arrange(strm_lev,pass_score, stream_id)
 # arrange(strm_lev,pass_score)
 
-sixes_barriers <- read_csv(here('data', 'final_table_sixes_v3.csv')) %>% 
-  clean_names() %>% 
-  select(c(stream_id, pass_score, strm_lev, cost)) %>%  
-  arrange(strm_lev,pass_score, stream_id)
-# arrange(strm_lev,pass_score)
+# sixes_barriers <- read_csv(here('data', 'final_table_sixes_v3.csv')) %>% 
+#   clean_names() %>% 
+#   select(c(stream_id, pass_score, strm_lev, cost)) %>%  
+#   arrange(strm_lev,pass_score, stream_id)
+# # arrange(strm_lev,pass_score)
 
 south_umpqua_barriers <- read_csv(here('data', 'final_table_southumpqua_v3.csv')) %>% 
   clean_names() %>% 
@@ -131,7 +131,7 @@ max_length <- max(length(alsea$cost), length(beaver$cost), length(coos$cost),
                   length(middle_umpqua$cost), length(necanicum$cost), length(nehalem$cost),
                   length(nestucca$cost), length(north_umpqua$cost), length(salmon$cost),
                   length(siletz$cost), length(siltcoos$cost), length(siuslaw$cost),
-                  length(sixes$cost), length(south_umpqua$cost), length(tenmile$cost),
+                  length(south_umpqua$cost), length(tenmile$cost),
                   length(tillamook$cost), length(yaquina$cost))
 
 cost <- data.frame(alsea = c(alsea$cost, rep(NA, max_length - length(alsea$cost))),
@@ -149,7 +149,7 @@ cost <- data.frame(alsea = c(alsea$cost, rep(NA, max_length - length(alsea$cost)
                                    siletz = c(siletz$cost, rep(NA, max_length - length(siletz$cost))),
                                    siltcoos = c(siltcoos$cost, rep(NA, max_length - length(siltcoos$cost))),
                                    siuslaw = c(siuslaw$cost, rep(NA, max_length - length(siuslaw$cost))),
-                                   sixes = c(sixes$cost, rep(NA, max_length - length(sixes$cost))),
+                                   #sixes = c(sixes$cost, rep(NA, max_length - length(sixes$cost))),
                                    south_umpqua = c(south_umpqua$cost, rep(NA, max_length - length(south_umpqua$cost))),
                                    tenmile = c(tenmile$cost, rep(NA, max_length - length(tenmile$cost))),
                                    tillamook = c(tillamook$cost, rep(NA, max_length - length(tillamook$cost))),

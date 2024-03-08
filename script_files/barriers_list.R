@@ -123,6 +123,7 @@ siuslaw_barriers <- read_csv(here('data', 'final_table_siuslaw_v3.csv')) %>%
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
+
 sixes_barriers <- read_csv(here('data', 'final_table_sixes_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
@@ -193,7 +194,7 @@ barrier_list<- list(alsea = alsea_barriers,
                     
                     siuslaw = siuslaw_barriers,
                     
-                    sixes = sixes_barriers,
+                    #sixes = sixes_barriers,
                     
                     south_umpqua = south_umpqua_barriers,
                     

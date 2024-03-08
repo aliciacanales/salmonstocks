@@ -107,7 +107,7 @@ bpassage_base = map_df(.x=barrier_list,~bpassage_base_compute_fcn(.x))
 # Pivot longer
 bpassage_base <- bpassage_base %>% 
   pivot_longer(
-    cols = c(1:20),
+    cols = c(1:19),
     names_to = "population",
     values_to = "bpassage"
   )
@@ -231,7 +231,7 @@ max_length <- max(length(alsea$pass_score), length(beaver$pass_score), length(co
                   length(middle_umpqua$pass_score), length(necanicum$pass_score), length(nehalem$pass_score),
                   length(nestucca$pass_score), length(north_umpqua$pass_score), length(salmon$pass_score),
                   length(siletz$pass_score), length(siltcoos$pass_score), length(siuslaw$pass_score),
-                  length(sixes$pass_score), length(south_umpqua$pass_score), length(tenmile$pass_score),
+                  length(south_umpqua$pass_score), length(tenmile$pass_score),
                   length(tillamook$pass_score), length(yaquina$pass_score))
 
 ## Passability data frame with all the barriers from each population. NA values filled in the extra spaces. Not sure how the NAs will play out in out functions. 
@@ -252,7 +252,7 @@ passability_values_df <- data.frame(alsea = c(alsea$pass_score, rep(NA, max_leng
                           siletz = c(siletz$pass_score, rep(NA, max_length - length(siletz$pass_score))),
                           siltcoos = c(siltcoos$pass_score, rep(NA, max_length - length(siltcoos$pass_score))),
                           siuslaw = c(siuslaw$pass_score, rep(NA, max_length - length(siuslaw$pass_score))),
-                          sixes = c(sixes$pass_score, rep(NA, max_length - length(sixes$pass_score))),
+                          #sixes = c(sixes$pass_score, rep(NA, max_length - length(sixes$pass_score))),
                           south_umpqua = c(south_umpqua$pass_score, rep(NA, max_length - length(south_umpqua$pass_score))),
                           tenmile = c(tenmile$pass_score, rep(NA, max_length - length(tenmile$pass_score))),
                           tillamook = c(tillamook$pass_score, rep(NA, max_length - length(tillamook$pass_score))),
@@ -265,8 +265,8 @@ pass_values_na <- passability_values_df
 passability_values_df[is.na(passability_values_df)] <- 1
 
 ## taking the avg passability 
-passabilities_avg = colMeans(passability_values_df)
-avg_passability <- as.data.frame(passabilities_avg)
+#passabilities_avg = colMeans(passability_values_df)
+#avg_passability <- as.data.frame(passabilities_avg)
 
 
 ## ................................Getting bpassage isolated................................
@@ -361,11 +361,11 @@ siuslaw <- read_csv(here('data', 'final_table_siuslaw.csv')) %>%
   drop_na() %>% 
   rename(siuslaw = 'beta_pass')
 
-sixes <- read_csv(here('data', 'final_table_sixes.csv')) %>% 
-  clean_names() %>% 
-  select(beta_pass) %>% 
-  drop_na() %>% 
-  rename(sixes = 'beta_pass')
+# sixes <- read_csv(here('data', 'final_table_sixes.csv')) %>% 
+#   clean_names() %>% 
+#   select(beta_pass) %>% 
+#   drop_na() %>% 
+#   rename(sixes = 'beta_pass')
 
 south_umpqua <- read_csv(here('data', 'final_table_southumpqua.csv')) %>% 
   clean_names() %>% 

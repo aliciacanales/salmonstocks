@@ -24,32 +24,31 @@ cov_coho <- sum(cov(cov_rm[1:20])) # the sum of the cov of esu (without tahkenit
 #   budget_allocated <- budget * weight
 #   return(budget_allocated)
 # }
-
-cov <- sum(sigma %*% t(sigma) * weights %*% t(weights) * cov_matrix)
-#---
-temp <- 0
-
-
-sd <- sapply(coho[2:22], sd)
-sd_rm<-sd[-18]
-
-# Loop over each i
-for (i in 1:n) {
-  # Calculate the sum for each i
-  cov_1 <- sum(sd_rm[i] * s_invest[i] * sd_rm[-i] * s_invest[-i] * cov_matrix[i, -i])
-  # Add this sum to the total sum
-  cov_2 <- temp + cov_1
-}
+# 
+# cov <- sum(sigma %*% t(sigma) * weights %*% t(weights) * cov_matrix)
+# #---
+# temp <- 0
+# 
+# 
+# sd <- sapply(coho[2:22], sd)
+# sd_rm<-sd[-18]
+# 
+# # Loop over each i
+# for (i in 1:n) {
+#   # Calculate the sum for each i
+#   cov_1 <- sum(sd_rm[i] * s_invest[i] * sd_rm[-i] * s_invest[-i] * cov_matrix[i, -i])
+#   # Add this sum to the total sum
+#   cov_2 <- temp + cov_1
+# }
 
 # Finally, multiply by X_n and gamma
-covariance <- X_n * gamma * cov_2
-
-# Print the result
-print(expression2)
+# covariance <- X_n * gamma * cov_2
+# 
+# # Print the result
+# print(expression2)
 #---
 
-cov_matrix <- coho[2:22] %>% 
-  select(-tahkenitch)
+cov_matrix <- coho[2:20]
 
 cov_matrix <- cov(cov_matrix)
 
@@ -71,11 +70,11 @@ optimize_fcn <- function(weight){
   esu_returns_invest <- sum(s_invest)
   esu_returns_baseline <- sum(s_baseline)
   
-  var <- sapply(coho[2:22], var)
-  var_rm<-var[-18]
-  sd <- sapply(coho[2:22], sd)
-  sd_rm<-sd[-18]
-  #cov_matrix <- cov(coho[2:22])
+  # var <- sapply(coho[2:22], var)
+  # var_rm<-var[-18]
+  # sd <- sapply(coho[2:22], sd)
+  # sd_rm<-sd[-18]
+  # #cov_matrix <- cov(coho[2:22])
   
   ## variance at baseline
   temp_matrix <- as.matrix(cov_matrix) %*% as.matrix(s_baseline)
