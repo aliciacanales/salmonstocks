@@ -11,7 +11,7 @@ library(purrr)
 ## Create dataframe of the allocated budget by weight for each population. columns = populations, rows = portfolios.
 
 
-budget = 1300000
+budget = 1310000
   
 ## function to determine the budget allocated using weights
 budget_allocated_fcn <- function(budget,weight){
@@ -41,11 +41,11 @@ cost = array(108847, n) #barriers cost $108847 (median from data)
 
 ## run the while loop within a function and call it 'while_fcn'. Doing this so we can run the function through purrr with many budget allocations.
 while_fcn <- function(budget_allocated,barrier_list) {
-  # browser()
+  browser()
     i = 1
     used_b = 0
 
-    while(used_b <= budget_allocated) { #stop running if used_b is greater than budget_allocated
+    while(used_b <= budget_allocated && i <= length(barrier_list$cost)) { #stop running if used_b is greater than budget_allocated
       used_b = barrier_list$cost[[i]] + used_b
       index_choice=i-1
       i = i + 1
@@ -67,7 +67,7 @@ df = barrier_list
 }
 
 
-temp <- pmap(list(budget_allocated = 10000000, barrier_list = barrier_list), while_fcn)
+temp <- pmap(list(budget_allocated = 23000000, barrier_list = barrier_list), while_fcn)
 
 ## Create 'index_choice_fcn' to map the 'budget_grid_list' through it
 index_choice_fcn <- function(budget_allocated){
