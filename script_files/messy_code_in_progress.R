@@ -122,7 +122,9 @@ optimize_fcn <- function(weight){
 plan(multisession, workers = 4)
 test = future_map_dfr(.x=grid_list_temp,~optimize_fcn(.x))
 
-portfolios_23_5_map = map_df(.x=grid_list_5,~optimize_fcn(.x))
+portfolios_13.1_6.1 = map_df(.x=grid_list_6.1,~optimize_fcn(.x))
+
+weights4_thin <- weights4[-c(445:2000), ]
 
 
 # output results
@@ -132,7 +134,9 @@ write.csv(portfolios_3.5_3_map, 'portfolios_3.5_3_map.csv', row.names = FALSE)
 write.csv(portfolios_3.5_4_map, 'portfolios_3.5_4_map.csv', row.names = FALSE)
 write.csv(portfolios_3.5_5_map, 'portfolios_3.5_5_map.csv', row.names = FALSE)
 write.csv(portfolios_3.5_6.1_map, 'portfolios_3.5_6.1_map.csv', row.names = FALSE)
+write.csv(portfolios_13.1_6.1, 'portfolios_13.1_6.1_map.csv', row.names = FALSE)
 write.csv(portfolios_23_6.1_map, 'portfolios_23_6.1_map.csv', row.names = FALSE)
+write.csv(portfolios_23_4_thin_map, 'portfolios_23_4_thin_map.csv', row.names = FALSE)
 
 # combine individual dataframes for each budget into one output
 combined_3.5 <- rbind(portfolios_3.5_1_map,
@@ -144,6 +148,9 @@ combined_3.5 <- rbind(portfolios_3.5_1_map,
   arrange(-esu_returns_invest)
 
 combined_3.5_temp <- combined_3.5[-c(1:7), ]
+
+combined_23 <- rbind(portfolios_23_6.1_map,
+                     portfolios_23_4_thin_map)
 
 
 
@@ -159,7 +166,7 @@ temp <- test[-c(277:289), ]
 
 
 # portfolios and efficiency frontier
-my_plot <- ggplot(combined_3.5, aes(x = esu_var_invest, y = esu_returns_invest)) +
+my_plot <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'gray', size = 2, alpha = .5) +
   #geom_point(data = portfolios_3.5_2_map, aes(x = esu_var_invest, y = esu_returns_invest)) +
   #geom_point(colour = 'gray', size = 2, alpha = .5) +
