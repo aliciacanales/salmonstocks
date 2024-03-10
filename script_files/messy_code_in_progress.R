@@ -10,8 +10,9 @@ set.seed(123)
 ## 204045.3 <- mean
 ## 108847.2 <- median
 ## budget = 3500000 and 23 mil. or find something else
-budget = 1300000
+budget = 3500000
 budget = 10000000
+budget = 23000000
 
 ## covariance (using covariance from 'coho' calulated in 'population.R')
 cov_temp <- coho[2:22]
@@ -77,12 +78,12 @@ optimize_fcn <- function(weight){
   # #cov_matrix <- cov(coho[2:22])
   
   ## variance at baseline
-  temp_matrix <- as.matrix(cov_matrix) %*% as.matrix(s_baseline)
-  esu_var_baseline <- t(as.matrix(s_baseline)) %*% temp_matrix
+  temp_matrix_base <- as.matrix(cov_matrix) %*% as.matrix(s_baseline)
+  esu_var_baseline <- t(as.matrix(s_baseline)) %*% temp_matrix_base
   
   ## variance after investment
-  temp_matrix <- as.matrix(cov_matrix) %*% as.matrix(s_invest)
-  esu_var_invest <- t(as.matrix(s_invest)) %*% temp_matrix
+  temp_matrix_invest <- as.matrix(cov_matrix) %*% as.matrix(s_invest)
+  esu_var_invest <- t(as.matrix(s_invest)) %*% temp_matrix_invest
   
   ## covariance of investment
   # cov_2 <- 0
@@ -118,17 +119,31 @@ optimize_fcn <- function(weight){
   return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
-plan(sequential, workers = 2)
-portfolios = future_map(.x=grid_list,~optimize_fcn(.x))
+plan(multisession, workers = 4)
+test = future_map_dfr(.x=grid_list_temp,~optimize_fcn(.x))
+
+portfolios_23_5_map = map_df(.x=grid_list_5,~optimize_fcn(.x))
 
 
-#%>%
+# output results
+write.csv(portfolios_3.5_1_map, 'portfolios_3.5_1_map.csv', row.names = FALSE)
+write.csv(portfolios_3.5_2_map, 'portfolios_3.5_2_map.csv', row.names = FALSE)
+write.csv(portfolios_3.5_3_map, 'portfolios_3.5_3_map.csv', row.names = FALSE)
+write.csv(portfolios_3.5_4_map, 'portfolios_3.5_4_map.csv', row.names = FALSE)
+write.csv(portfolios_3.5_5_map, 'portfolios_3.5_5_map.csv', row.names = FALSE)
+write.csv(portfolios_3.5_6.1_map, 'portfolios_3.5_6.1_map.csv', row.names = FALSE)
+write.csv(portfolios_23_6.1_map, 'portfolios_23_6.1_map.csv', row.names = FALSE)
 
-  arrange(esu_returns_invest)# order by returns from investment
+# combine individual dataframes for each budget into one output
+combined_3.5 <- rbind(portfolios_3.5_1_map,
+                      portfolios_3.5_2_map,
+                      portfolios_3.5_3_map,
+                      portfolios_3.5_4_map,
+                      portfolios_3.5_5_map,
+                      portfolios_3.5_6.1_map) %>% 
+  arrange(-esu_returns_invest)
 
-temp <- temp
-
-temp_df <- temp[1, ]
+combined_3.5_temp <- combined_3.5[-c(1:7), ]
 
 
 
@@ -137,15 +152,17 @@ library(ggalt)
 
 # baseline esu returns = 187118.2
 # baseline esu variance = 3.141711e+17 (this will change with updated variance calculation)
-baseline_point <- data.frame(x =3.141711e+27, y = 187118.2)
+baseline_point <- data.frame(x =1.95539e+18, y = 186948.6)
 
 # remove outliers to plot (is this okay to do?)
 temp <- test[-c(277:289), ]
 
 
 # portfolios and efficiency frontier
-my_plot <- ggplot(portfolios_3, aes(x = esu_var_invest, y = esu_returns_invest)) +
-  geom_point(colour = 'gray', size = 2, alpha = .5) + 
+my_plot <- ggplot(combined_3.5, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  geom_point(colour = 'gray', size = 2, alpha = .5) +
+  #geom_point(data = portfolios_3.5_2_map, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  #geom_point(colour = 'gray', size = 2, alpha = .5) +
   # geom_curve(x = 3.521570e+17, y = 205623.0,
   # xend = 3.892000e+17, yend = 211781.8,
   # colour = 'red', curvature = -.3) +
@@ -165,13 +182,13 @@ my_plot <- ggplot(portfolios_3, aes(x = esu_var_invest, y = esu_returns_invest))
   labs(x = 'ESU Variance', y = 'ESU Abundance') +
   #xlim(0, 7.7e+28) +
   #ylim(0, 1000000) +
-  ggtitle("$10,000,000 Budget; 1093 Portfolios") +
+  #ggtitle("$10,000,000 Budget; 10,941 Portfolios") +
   scale_y_continuous(labels = scales::comma) +
   theme(legend.position = "none") + 
   theme_minimal() +
-  theme(axis.text.x = element_text(size = 14),
-        axis.text.y = element_text(size = 14),
-        axis.title = element_text(size = 17))
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 14))
 
 my_plot
 
