@@ -66,7 +66,7 @@ my_plot_3.5 +
   geom_density(aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_jitter()
 
-ggplot(all_portfolios_and_budget, aes(x = esu_var_invest, y = esu_returns_invest, color = Budget)) +
+plot_all <- ggplot(all_portfolios_and_budget, aes(x = esu_var_invest, y = esu_returns_invest, color = Budget)) +
   geom_jitter(aes(color = Budget), alpha = .3) +
   # geom_density_2d(aes(color = Budget)) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5, alpha = .5) +
@@ -76,15 +76,44 @@ ggplot(all_portfolios_and_budget, aes(x = esu_var_invest, y = esu_returns_invest
                        labels = c('$23 million', '$13.1 million', '$3.5 million')) +
   labs(x = 'ESU Variance', y = 'ESU Returns') +
   theme_minimal()
+plot_all +
+  geom_segment(aes(x = 1.58e+19,
+                   y = 187118.2,
+                   xend = 3.8e+18,
+                   yend = 187118.2),
+               color = "black",
+               linetype = "solid",
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 14)) +
+  geom_text(x = 3.95539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
+  ggtitle('All Portfolio Results Under 3 Different Budgets')
 
 
-ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest, color = 'red')) +
-  geom_jitter(aes(color = Budget), alpha = 1) +
-  stat_density_2d(aes(color = Budget)) +
-  # geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
-  xlim(0, 2e+19) +
-  scale_y_continuous(labels = scales::comma, limits = c(0, 1000000)) +
+plot_13 <- ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  geom_point(colour = 'gray', size = 2, alpha = .5) +
+  geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
+  xlim(0, 1.5e+20) +
+  scale_y_continuous(labels = scales::comma, limits = c(0, 2250000)) +
+  # annotate("segment",
+  # x = 1.5e+19, xend = 3.14e+27 , ## this controls how long the arrow is
+  # y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
+  # arrow = arrow(), color="black") +
+  geom_segment(aes(x = 1.58e+19,
+  y = 187118.2,
+  xend = 3.8e+18,
+  yend = 187118.2),
+  color = "black",
+  linetype = "solid",
+  arrow = arrow(length = unit(0.3, "cm"))) +
+geom_text(x = 3.95539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T) +
   labs(x = 'ESU Variance', y = 'ESU Returns') +
-  theme_minimal()
+  ggtitle("Portfolios Results for a $13.1 million Budget") +
+  theme_minimal() +
+  theme(legend.position = "none") + 
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 14))
 
-p
+plot_13
