@@ -12,3 +12,79 @@ eff_frontier <- ggplot(test, aes(x = , y = s_invest)) +
   ggrepel::geom_text_repel(aes(label = id,
                                size = 2)) +
   theme(legend.position = "none")
+
+portfolios_13_1 <- read_csv(here('data', 'portfolios1.csv'))
+portfolios_13_2 <- read_csv(here('data', 'portfolios2.csv'))
+portfolios_13_3 <- read_csv(here('data', 'portfolios3.csv'))
+portfolios_13_4 <- read_csv(here('data', 'portfolios4.csv'))
+portfolios_13_5 <- read_csv(here('data', 'portfolios5.csv'))
+portfolios_13_6 <- read_csv('portfolios_13.1_6.1_map.csv')
+
+combined_13 <- rbind(portfolios_13_1,
+                      portfolios_13_2,
+                      portfolios_13_3,
+                      portfolios_13_4,
+                      portfolios_13_5,
+                      portfolios_13_6) 
+combined_13 <- combined_13 %>% 
+  mutate('Budget' = '$13.1 million')
+
+
+
+my_plot_3.5 <- ggplot(combined_3.5, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  geom_point(colour = 'gray', size = 2, alpha = .5) +
+  #geom_point(data = portfolios_3.5_2_map, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  #geom_point(colour = 'gray', size = 2, alpha = .5) +
+  # geom_curve(x = 3.521570e+17, y = 205623.0,
+  # xend = 3.892000e+17, yend = 211781.8,
+  # colour = 'red', curvature = -.3) +
+  geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
+  #annotate("segment",
+  #x = 1.5e+28, xend = 3.14e+27 , ## this controls how long the arrow is
+  #y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
+  #arrow = arrow(), color="black") +
+  #geom_segment(aes(x = 0.7e+28,
+  # y = 187118.2,
+  # xend = 3.64e+27,
+  # yend = 187118.2),
+  # color = "black",
+  # linetype = "solid",
+  # arrow = arrow(length = unit(0.3, "cm"))) +
+#geom_text(x = 1.2e+28, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T) +
+labs(x = 'ESU Variance', y = 'ESU Abundance') +
+  #xlim(0, 7.7e+28) +
+  #ylim(0, 1000000) +
+  #ggtitle("$10,000,000 Budget; 10,941 Portfolios") +
+  scale_y_continuous(labels = scales::comma) +
+  theme(legend.position = "none") + 
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 14))
+
+my_plot_3.5 + 
+  geom_density(aes(x = esu_var_invest, y = esu_returns_invest)) +
+  geom_jitter()
+
+ggplot(all_portfolios_and_budget, aes(x = esu_var_invest, y = esu_returns_invest, color = Budget)) +
+  geom_jitter(aes(color = Budget), alpha = .3) +
+  # geom_density_2d(aes(color = Budget)) +
+  geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5, alpha = .5) +
+  xlim(0, 1.25e+20) +
+  scale_y_continuous(labels = scales::comma, limits = c(0, 2050000)) +
+  scale_color_discrete(limits = c('$23 million', '$13.1 million', '$3.5 million'),
+                       labels = c('$23 million', '$13.1 million', '$3.5 million')) +
+  labs(x = 'ESU Variance', y = 'ESU Returns') +
+  theme_minimal()
+
+
+ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest, color = 'red')) +
+  geom_jitter(aes(color = Budget), alpha = 1) +
+  stat_density_2d(aes(color = Budget)) +
+  # geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
+  xlim(0, 2e+19) +
+  scale_y_continuous(labels = scales::comma, limits = c(0, 1000000)) +
+  labs(x = 'ESU Variance', y = 'ESU Returns') +
+  theme_minimal()
+
+p
