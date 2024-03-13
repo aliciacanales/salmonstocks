@@ -13,6 +13,7 @@ eff_frontier <- ggplot(test, aes(x = , y = s_invest)) +
                                size = 2)) +
   theme(legend.position = "none")
 
+## BUDGET 13.1
 portfolios_13_1 <- read_csv(here('data', 'portfolios1.csv'))
 portfolios_13_2 <- read_csv(here('data', 'portfolios2.csv'))
 portfolios_13_3 <- read_csv(here('data', 'portfolios3.csv'))
@@ -29,7 +30,25 @@ combined_13 <- rbind(portfolios_13_1,
 combined_13 <- combined_13 %>% 
   mutate('Budget' = '$13.1 million')
 
+ej_portfolios_13_5 <- read_csv('portfolios_13.1_5_ej_map.csv')
 
+## BUDGET 3.5
+portfolios_3.5_1 <- read_csv('portfolios_3.5_1_map.csv')
+portfolios_3.5_2 <- read_csv('portfolios_3.5_2_map.csv')
+portfolios_3.5_3 <- read_csv('portfolios_3.5_3_map.csv')
+portfolios_3.5_4 <- read_csv('portfolios_3.5_4_map.csv')
+portfolios_3.5_5 <- read_csv('portfolios_3.5_5_map.csv')
+portfolios_3.5_6 <- read_csv('portfolios_3.5_6.1_map.csv')
+
+combined_3.5 <- rbind(portfolios_3.5_1,
+                      portfolios_3.5_2,
+                      portfolios_3.5_3,
+                      portfolios_3.5_4,
+                      portfolios_3.5_5,
+                      portfolios_3.5_6) 
+combined_3.5_temp <- combined_3.5[-c(1:7), ]
+
+ej_portfolios_3.5 <- read_csv('.csv')
 
 my_plot_3.5 <- ggplot(combined_3.5, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'gray', size = 2, alpha = .5) +
@@ -117,3 +136,43 @@ geom_text(x = 3.95539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5,
         axis.title = element_text(size = 14))
 
 plot_13
+
+ej_plot_13 <- ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  geom_point(colour = 'gray', size = 2, alpha = .5) +
+  geom_point(data = ej_portfolios_13_5, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red')+
+  geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
+  scale_y_continuous(labels = scales::comma) +
+  geom_segment(aes(x = 1.58e+19,
+                   y = 187118.2,
+                   xend = 4.1e+18,
+                   yend = 187118.2),
+               color = "black",
+               linetype = "solid",
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_text(x = 3.95539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
+  labs(x = 'ESU Variance', y = 'ESU Returns') +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 14)) +
+  theme_minimal()
+  
+ej_plot_3.5<- ggplot(data = combined_3.5_temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  geom_point(colour = 'gray', size = 2, alpha = .5) +
+  # geom_point(data = ej_portfolios_3, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red')+
+  geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
+  scale_y_continuous(labels = scales::comma) +
+  geom_segment(aes(x = 5e+18,
+                   y = 187118.2,
+                   xend = 2.6e+18,
+                   yend = 187118.2),
+               color = "black",
+               linetype = "solid",
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_text(x = 1e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
+  labs(x = 'ESU Variance', y = 'ESU Returns') +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 14)) +
+  theme_minimal()
+
+
