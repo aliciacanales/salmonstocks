@@ -3,9 +3,11 @@ library(LaplacesDemon)
 library(nloptr)
 
 #..........................Create randomized weight allocations.........................
-n= 2200
-abundance_data <- coho[2:22] # raw population abundance data
-abundance_data <- data.frame(abundance_data[-18]) # remove Tahkenitch
+
+n= 35000
+abundance_data <- coho[2:20] # raw population abundance data
+#abundance_data <- data.frame(abundance_data[-18]) # remove Tahkenitch
+
 raw<-rdirichlet(n,rep(1,ncol(abundance_data))) #Generate 100 portfolio weights for all 20 streams
 rounded<-round(raw,2) # round to two decimals
 
@@ -33,4 +35,24 @@ weights <- check
 
 ## Renaming column names and making df a list 
 colnames(weights) <- names(abundance_data) 
+
+first_thousand<- weights[1:2000,]
+second_thousand <- weights[20001:4000, ]
+third_thousand <- weights[4001:6000, ]
+fourth_thousand <- weights[6001:8000, ]
+fifth_thousand <- weights[8001:10000, ]
+sixth_thousand <- weights[10001:10951, ]
+
+write.csv(weights,'all_weights.csv', row.names = FALSE)
+write.csv(first_thousand, 'weights1.csv',row.names = FALSE)
+write.csv(second_thousand, 'weights2.csv',row.names = FALSE)
+write.csv(third_thousand, 'weights3.csv',row.names = FALSE)
+write.csv(fourth_thousand, 'weights4.csv',row.names = FALSE)
+write.csv(fifth_thousand, 'weights5.csv',row.names = FALSE)
+write.csv(sixth_thousand, 'weights6.csv',row.names = FALSE)
+
+
+weights <- read.csv(here('data', 'weights1.csv'))
 grid_list<-split(weights,seq(nrow(weights)))
+
+

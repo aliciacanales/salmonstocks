@@ -730,13 +730,13 @@ colnames(rand)<-c(paste0("weight_",1:length(pop_return_mean_df_t)),"var","mu")
 #Initial plot
 ```{r}
 p_initial<-ggplot(data=var_out,aes(y=port_mean,x=var_res))+
-  #geom_point(color="grey",alpha=0.5)+
-  #geom_point(aes(x=rand[hold,4],y=rand[hold,5]),size=3)+
-  #geom_line()+
+  geom_point(color="grey",alpha=0.5)+
+  geom_point(aes(x=rand[hold,4],y=rand[hold,5]),size=3)+
+  geom_line()+
   geom_line() +
-  #annotate("label",x=.8,y=1.75,label=paste("Weights currently:\n","(",paste(round(rand[hold,1:3],3),collapse = ", "),")"))+
-  #xlim(-0.5,1.5)+
-  #ylim(0,3.5)+
+  annotate("label",x=.8,y=1.75,label=paste("Weights currently:\n","(",paste(round(rand[hold,1:3],3),collapse = ", "),")"))+
+  xlim(-0.5,1.5)+
+  ylim(0,3.5)+
   theme_classic()
 
 p_initial
@@ -771,8 +771,8 @@ p_a<-ggplot(data=var_out,aes(y=port_mean,x=var_res))+
   geom_path() +
   geom_point(aes(x=var_2019, y=mean_2019), size=2) +
   labs(x="Variance", y="Mean Return")+
-  scale_x_continuous(breaks = c(1, 25), labels = c("low", "high")) +
-  scale_y_continuous(breaks = c(.25, 2.3), labels = c("low", "high")) +
+  scale_x_continuous(breaks = c(1, 25), labels = c("Low", "High")) +
+  scale_y_continuous(breaks = c(.25, 2.3), labels = c("Low", "High")) +
   #xlim(-0.5,1.5)+
   #ylim(0,3.5)+
   theme_classic() +
@@ -795,42 +795,55 @@ mean_keep=which.min(abs(mean_list-mean_2019))
 p2 <- p_a + annotate("segment",x=var_2019,y=mean_2019,xend=var_out$var_res[var_keep],yend=mean_list[var_keep],color="grey", linetype = 'dashed')
  
 
-p3 <- p2 + geom_segment(aes(x = var_2019, 
+p2.1 <- p2 + geom_segment(aes(x = var_2019, 
                  y = mean_2019, 
                  xend = var_out$var_res[var_keep], 
-                 yend = mean_list[var_keep]), 
+                 yend = 1.15), 
              color = "grey", 
-             linetype = "dashed", 
-             arrow = arrow(type = "closed", length = unit(0.3, "cm")))
-
+             linetype = "dashed") + 
+             # arrow = arrow(type = 'closed', length = unit(0.3, "cm"))) +
+  geom_point(aes(x=var_2019, y= mean_list[var_keep]), colour='red', size = 3)
+p2.1
 
 weights_2019 <-df_2019/tot_pop ## make this into a graph for 2019 
 
 var_out$weights[var_keep] ## showing us the weights for 2019 round them 
+
 ```
 
 ```{r}
-p3 <- p2 + geom_segment(aes(x = var_2019, 
+p3 <- p2.1 + geom_segment(aes(x = var_2019, 
                  y = mean_2019, 
                  xend = var_out$var_res[var_keep], 
                  yend = mean_list[var_keep]), 
              color = "grey", 
-             linetype = "dashed", 
-             arrow = arrow(type = "closed", length = unit(0.3, "cm")))
+             linetype = "dashed") 
+             # arrow = arrow(type = "closed", length = unit(0.3, "cm")))
 
 p3
 
-p4 <-p3+ annotate("segment",x=var_2019,y=mean_2019,xend=var_out$var_res[mean_keep],yend=mean_list[mean_keep],color="grey", linetype = 'dashed')
-p5 <- p4 + geom_point(aes(x=var_2019, y=mean_2019), size=3) +
-  geom_segment(aes(x = var_2019, 
+p4 <-p2.1+ annotate("segment",x=var_2019,y=mean_2019,xend=var_out$var_res[mean_keep],yend=mean_list[mean_keep],color="grey", linetype = 'dashed')
+p5 <- p4 + geom_point(aes(x=var_2019, y=mean_2019), size=2.5) +
+  geom_segment(aes(x = 2.9, 
                  y = mean_2019, 
-                 xend = var_out$var_res[mean_keep], 
+                 xend = var_out$var_res[mean_keep] + .25 , 
                  yend = mean_list[mean_keep]), 
              color = "grey", 
-             linetype = "dashed", 
-             arrow = arrow(type = "closed", length = unit(0.3, "cm")))
-p5
-
+             linetype = "dashed") + 
+             # arrow = arrow(type = "closed", length = unit(0.3, "cm"))) +
+  geom_point(aes(x= 1.0, y= mean_2019), colour='blue', size = 3)
+p5 + theme(axis.text.x = element_text(size = 11),
+           axis.text.y = element_text(size = 11),
+           axis.title = element_text(size = 14)) +
+  geom_segment(aes(x = var_2019 + 5,
+                   y = mean_2019,
+                   xend = var_2019 + .5,
+                   yend = mean_2019),
+               color = "black",
+               linetype = "solid",
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_text(x = var_2019 + 8, y = mean_2019, label = "Baseline Portfolio", size = 4, 
+            check_overlap = T)
 
 ```
 
@@ -870,8 +883,13 @@ table_1_2019 # weights for 2019 in a kable
 weights_mean_df<- as.data.frame(var_out$weights[var_keep]) %>% 
   round(3)
 
-colnames(weights_mean_df) <- c("alsea","beaver","coos","coquille","floras","lower_umpqua","middle_umpqua","necanicum","nehalem","nestucca","north_umpqua","salmon","siletz","siltcoos","siuslaw","sixes","south_umpqua","tahkenitch","tenmile","tillamook","yaquina") #check that naming is ok
+colnames(weights_mean_df) <- c("Alsea","Beaver","Coos","Coquille","Floras","Lower Umpqua","Middle Umpqua","Necanicum","Nehalem","Nestucca","North Umpqua","Salmon","Siletz","Siltcoos","Siuslaw","Sixes","South Umpqua","Tahkenitch","Tenmile","Tillamook","Yaquina")
 
+test1 <- weights_mean_df %>% 
+  pivot_longer(1:21,
+               names_to = 'Population',
+               values_to = 'Set of Weights')
+test1
 sum2 <- rbind(weights_2019, weights_mean_df)
 
 table_2_2019 <- sum2 %>%
@@ -883,25 +901,37 @@ table_2_2019 ## weights for 2019 when variance is held
 
 #Table 3
 weights_var_df<- as.data.frame(var_out$weights[mean_keep]) %>% 
-  round(3)
-colnames(weights_var_df) <- c("alsea","beaver","coos","coquille","floras","lower_umpqua","middle_umpqua","necanicum","nehalem","nestucca","north_umpqua","salmon","siletz","siltcoos","siuslaw","sixes","south_umpqua","tahkenitch","tenmile","tillamook","yaquina")
+  round(3) 
+colnames(weights_var_df) <- c("Alsea", "Beaver","Coos","Coquille","Floras","Lower Umpqua","Middle Umpqua","Necanicum","Nehalem","Nestucca","North Umpqua","Salmon","Siletz","Siltcoos","Siuslaw","Sixes","South Umpqua","Tahkenitch","Tenmile","Tillamook","Yaquina")
 
-sum3 <- rbind(weights_2019, weights_mean_df, weights_var_df) %>%
+test <- weights_var_df %>% 
+  pivot_longer(1:21,
+               names_to = 'Population',
+               values_to = 'Set of Weights')
+
+
+sum3 <- rbind(weights_mean_df, weights_var_df) %>%
   round(3) %>% 
   rename_with(str_to_title)
 
-sum3$Weights<- c('2019', 'Scenario_1', 'Scenario_2')
+scenario_table <- merge(test, test1, by = "Population")
+colnames(scenario_table) <- c('Population', 'Optimized Weights 1', 'Optimized Weights 2')
+
+scenario_table %>% 
+  kable(align = "c") %>% 
+  kable_styling(bootstrap_options = "striped",
+                position = "center", full_width = FALSE, html_font = 'Cambria', font_size = 15)
 
 sum3<- sum3 %>%     
 relocate(Weights, .before = 'Alsea')
-
 
 
 table_3_2019 <- sum3 %>% 
   kable(align = "c") %>% 
   kable_styling(bootstrap_options = "striped",
                 position = "center", full_width = FALSE, html_font = 'Cambria', font_size = 15)
-table_3_2019 ## weights for 2019 when variance is held
+table_3_2019 %>% 
+  ## weights for 2019 when variance is held
 
 sum(var_out$weights[mean_keep])
 

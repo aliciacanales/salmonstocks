@@ -1,6 +1,8 @@
 
 library(tidyverse)
 library(purrr)
+library(furrr)
+install.packages(furrr)
 
 set.seed(123)
 #.......................... combinging while_loop into one.........................
@@ -8,7 +10,9 @@ set.seed(123)
 ## 204045.3 <- mean
 ## 108847.2 <- median
 ## budget = 3500000 and 23 mil. or find something else
-budget = 1300000
+budget = 3500000
+budget = 10000000
+budget = 23000000
 
 ## covariance (using covariance from 'coho' calulated in 'population.R')
 cov_temp <- coho[2:22]
@@ -21,39 +25,45 @@ cov_coho <- sum(cov(cov_rm[1:20])) # the sum of the cov of esu (without tahkenit
 #   budget_allocated <- budget * weight
 #   return(budget_allocated)
 # }
-
-cov <- sum(sigma %*% t(sigma) * weights %*% t(weights) * cov_matrix)
-#---
-temp <- 0
-
-# Loop over each i
-for (i in 1:n) {
-  # Calculate the sum for each i
-  cov_1 <- sum(sd_rm[i] * s_invest[i] * sd_rm[-i] * s_invest[-i] * cov_matrix[i, -i])
-  # Add this sum to the total sum
-  cov_2 <- temp + cov_1
-}
+# 
+# cov <- sum(sigma %*% t(sigma) * weights %*% t(weights) * cov_matrix)
+# #---
+# temp <- 0
+# 
+# 
+# sd <- sapply(coho[2:22], sd)
+# sd_rm<-sd[-18]
+# 
+# # Loop over each i
+# for (i in 1:n) {
+#   # Calculate the sum for each i
+#   cov_1 <- sum(sd_rm[i] * s_invest[i] * sd_rm[-i] * s_invest[-i] * cov_matrix[i, -i])
+#   # Add this sum to the total sum
+#   cov_2 <- temp + cov_1
+# }
 
 # Finally, multiply by X_n and gamma
-covariance <- X_n * gamma * cov_2
-
-# Print the result
-print(expression2)
+# covariance <- X_n * gamma * cov_2
+# 
+# # Print the result
+# print(expression2)
 #---
 
-cov_matrix <- coho[2:22] %>% 
-  select(-tahkenitch)
+cov_matrix <- coho[2:20]
 
 cov_matrix <- cov(cov_matrix)
 
+# test new variance calculation
+temp_matrix <- as.matrix(cov_matrix) %*% as.matrix(temp)
+out <- t(as.matrix(temp)) %*% temp_matrix
 
 
 optimize_fcn <- function(weight){
-  browser()
+  #browser()
   weight=weight %>% unlist()
   output1 <- pmap_dbl(list(budget, weight),budget_allocated_fcn) 
-  output2 <- (pmap_dbl(list(output1,barrier_list),while_fcn)-1) # check to see if this is being transformed
-  bpassage_invest <- bpassage_compute_fcn(output2)
+  output2 <- pmap(list(output1,barrier_list),while_fcn) # check to see if this is being transformed
+  bpassage_invest <- unlist(map_df(.x=output2,~bpassage_invest_compute_fcn(.x)))
   c_invest <- c_invest_fcn(z_c_df$z, bpassage_invest)
   p_invest <- p_invest_fcn(z_p_df$z, bpassage_invest)
   s_invest <- ((p_invest - 1) * c_invest)
@@ -61,53 +71,86 @@ optimize_fcn <- function(weight){
   esu_returns_invest <- sum(s_invest)
   esu_returns_baseline <- sum(s_baseline)
   
-  var <- sapply(coho[2:22], var)
-  var_rm<-var[-18]
-  sd <- sapply(coho[2:22], sd)
-  sd_rm<-sd[-18]
-  #cov_matrix <- cov(coho[2:22])
+  # var <- sapply(coho[2:22], var)
+  # var_rm<-var[-18]
+  # sd <- sapply(coho[2:22], sd)
+  # sd_rm<-sd[-18]
+  # #cov_matrix <- cov(coho[2:22])
+  
+  ## variance at baseline
+  temp_matrix_base <- as.matrix(cov_matrix) %*% as.matrix(s_baseline)
+  esu_var_baseline <- t(as.matrix(s_baseline)) %*% temp_matrix_base
+  
+  ## variance after investment
+  temp_matrix_invest <- as.matrix(cov_matrix) %*% as.matrix(s_invest)
+  esu_var_invest <- t(as.matrix(s_invest)) %*% temp_matrix_invest
   
   ## covariance of investment
-  cov_2 <- 0
-  # Loop over each i
-  for (i in 1:20) {
-    # Calculate the sum for each i
-    cov_1 <- sum(sd_rm[i] * s_invest[i] * sd_rm[-i] * s_invest[-i] * cov_matrix[i])
-    # Add this sum to the total sum
-    cov_2 <- cov_2 + cov_1
-  }
-  cov_invest <- cov_2
-  
-  ## covariance of baseline
-  cov_2_baseline <- 0
-  # Loop over each i
-  for (i in 1:20) {
-    # Calculate the sum for each i
-    cov_1_baseline <- sum(sd_rm[i] * s_baseline[i] * sd_rm[-i] * s_baseline[-i] * cov_matrix[i])
-    # Add this sum to the total sum
-    cov_2_baseline <- cov_2_baseline + cov_1_baseline
-  }
-  cov_baseline <- cov_2_baseline
-  
-  
-  var_invest <- var_rm * (s_invest^2)
-  var_baseline <- var_rm * (s_baseline^2)
-  esu_var_invest <- sum(var_invest + cov_invest)
-  esu_var_baseline <- sum(var_baseline + cov_baseline)
+  # cov_2 <- 0
+  # # Loop over each i
+  # for (i in 1:20) {
+  #   # Calculate the sum for each i
+  #   cov_1 <- sum(sd_rm[i] * s_invest[i] * sd_rm[-i] * s_invest[-i] * cov_matrix[i])
+  #   # Add this sum to the total sum
+  #   cov_2 <- cov_2 + cov_1
+  # }
+  # cov_invest <- cov_2
+  # 
+  # ## covariance of baseline
+  # cov_2_baseline <- 0
+  # # Loop over each i
+  # for (i in 1:20) {
+  #   # Calculate the sum for each i
+  #   cov_1_baseline <- sum(sd_rm[i] * s_baseline[i] * sd_rm[-i] * s_baseline[-i] * cov_matrix[i])
+  #   # Add this sum to the total sum
+  #   cov_2_baseline <- cov_2_baseline + cov_1_baseline
+  # }
+  # cov_baseline <- cov_2_baseline
+  # 
+  # 
+  # var_invest <- var_rm * (s_invest^2)
+  # var_baseline <- var_rm * (s_baseline^2)
+  # esu_var_invest <- sum(var_invest + cov_invest)
+  # esu_var_baseline <- sum(var_baseline + cov_baseline)
 
   
   
-  #return(cov_baseline) # to look at single dataframe
+  #return(s_baseline) # to look at single dataframe
   return(round(data.frame(esu_returns_invest, esu_returns_baseline, esu_var_invest, esu_var_baseline),3))
 }
 
+plan(multisession, workers = 4)
+test = future_map_dfr(.x=grid_list_temp,~optimize_fcn(.x))
 
-portfolios = map_df(.x=grid_list,~optimize_fcn(.x)) %>%
+portfolios_13.1_6.1 = map_df(.x=grid_list_6.1,~optimize_fcn(.x))
 
-  arrange(esu_returns_invest)# order by returns from investment
+weights4_thin <- weights4[-c(445:2000), ]
 
 
+# output results
+write.csv(portfolios_3.5_1_map, 'portfolios_3.5_1_map.csv', row.names = FALSE)
+write.csv(portfolios_3.5_2_map, 'portfolios_3.5_2_map.csv', row.names = FALSE)
+write.csv(portfolios_3.5_3_map, 'portfolios_3.5_3_map.csv', row.names = FALSE)
+write.csv(portfolios_3.5_4_map, 'portfolios_3.5_4_map.csv', row.names = FALSE)
+write.csv(portfolios_3.5_5_map, 'portfolios_3.5_5_map.csv', row.names = FALSE)
+write.csv(portfolios_3.5_6.1_map, 'portfolios_3.5_6.1_map.csv', row.names = FALSE)
+write.csv(portfolios_13.1_6.1, 'portfolios_13.1_6.1_map.csv', row.names = FALSE)
+write.csv(portfolios_23_6.1_map, 'portfolios_23_6.1_map.csv', row.names = FALSE)
+write.csv(portfolios_23_4_thin_map, 'portfolios_23_4_thin_map.csv', row.names = FALSE)
 
+# combine individual dataframes for each budget into one output
+combined_3.5 <- rbind(portfolios_3.5_1_map,
+                      portfolios_3.5_2_map,
+                      portfolios_3.5_3_map,
+                      portfolios_3.5_4_map,
+                      portfolios_3.5_5_map,
+                      portfolios_3.5_6.1_map) %>% 
+  arrange(-esu_returns_invest)
+
+combined_3.5_temp <- combined_3.5[-c(1:7), ]
+
+combined_23 <- rbind(portfolios_23_6.1_map,
+                     portfolios_23_4_thin_map)
 
 
 
@@ -116,15 +159,17 @@ library(ggalt)
 
 # baseline esu returns = 187118.2
 # baseline esu variance = 3.141711e+17 (this will change with updated variance calculation)
-baseline_point <- data.frame(x =3.141711e+27, y = 187118.2)
+baseline_point <- data.frame(x =1.95539e+18, y = 186948.6)
 
 # remove outliers to plot (is this okay to do?)
 temp <- test[-c(277:289), ]
 
 
 # portfolios and efficiency frontier
-my_plot <- ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
-  geom_point(colour = 'gray', size = 2, alpha = .5) + 
+my_plot <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  geom_point(colour = 'gray', size = 2, alpha = .5) +
+  #geom_point(data = portfolios_3.5_2_map, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  #geom_point(colour = 'gray', size = 2, alpha = .5) +
   # geom_curve(x = 3.521570e+17, y = 205623.0,
   # xend = 3.892000e+17, yend = 211781.8,
   # colour = 'red', curvature = -.3) +
@@ -133,23 +178,24 @@ my_plot <- ggplot(temp, aes(x = esu_var_invest, y = esu_returns_invest)) +
            #x = 1.5e+28, xend = 3.14e+27 , ## this controls how long the arrow is
            #y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
            #arrow = arrow(), color="black") +
-  geom_segment(aes(x = 0.7e+28,
-                   y = 187118.2,
-                   xend = 3.64e+27,
-                   yend = 187118.2),
-                   color = "black",
-                   linetype = "solid",
-                   arrow = arrow(length = unit(0.3, "cm"))) +
-  geom_text(x = 1.2e+28, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T) +
+  #geom_segment(aes(x = 0.7e+28,
+                   # y = 187118.2,
+                   # xend = 3.64e+27,
+                   # yend = 187118.2),
+                   # color = "black",
+                   # linetype = "solid",
+                   # arrow = arrow(length = unit(0.3, "cm"))) +
+  #geom_text(x = 1.2e+28, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T) +
   labs(x = 'ESU Variance', y = 'ESU Abundance') +
-  xlim(0, 7.7e+28) +
-  ylim(0, 1000000) +
+  #xlim(0, 7.7e+28) +
+  #ylim(0, 1000000) +
+  #ggtitle("$10,000,000 Budget; 10,941 Portfolios") +
   scale_y_continuous(labels = scales::comma) +
   theme(legend.position = "none") + 
   theme_minimal() +
-  theme(axis.text.x = element_text(size = 14),
-        axis.text.y = element_text(size = 14),
-        axis.title = element_text(size = 17))
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 14))
 
 my_plot
 

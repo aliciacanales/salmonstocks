@@ -2,7 +2,7 @@
 
 ## cleaning data to generate reciprocal form of recruits and abundance
 coho_recruits <- coho %>% 
-  pivot_longer(cols = 2:22,
+  pivot_longer(cols = 2:20,
                names_to = 'population',
                values_to = 'abundance') %>% 
   mutate(year = as.numeric(year)) %>% 
@@ -38,7 +38,7 @@ all_nls<- function(coho_recruits){
 }
 
 equilibrium_all <- coho_recruits %>% 
-  filter(population!="tahkenitch") %>% 
+  #filter(population!="tahkenitch") %>% 
   nest() %>% 
   mutate(nls_model = map(data, ~all_nls(.x))) %>% 
   mutate(coeff=map(nls_model, ~coefficients(.x)))
