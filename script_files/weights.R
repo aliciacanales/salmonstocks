@@ -4,11 +4,17 @@ library(nloptr)
 
 #..........................Create randomized weight allocations.........................
 
-n= 35000
+n= 60000
 abundance_data <- coho[2:20] # raw population abundance data
 #abundance_data <- data.frame(abundance_data[-18]) # remove Tahkenitch
 
 raw<-rdirichlet(n,rep(1,ncol(abundance_data))) #Generate 100 portfolio weights for all 20 streams
+
+# ej weights
+# raw<-rdirichlet(n,c(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 3))
+
+colnames(raw) <- names(abundance_data) 
+
 rounded<-round(raw,2) # round to two decimals
 
 # Need to make sure the weights still add up to 1
@@ -36,23 +42,23 @@ weights <- check
 ## Renaming column names and making df a list 
 colnames(weights) <- names(abundance_data) 
 
-first_thousand<- weights[1:2000,]
-second_thousand <- weights[20001:4000, ]
-third_thousand <- weights[4001:6000, ]
-fourth_thousand <- weights[6001:8000, ]
-fifth_thousand <- weights[8001:10000, ]
-sixth_thousand <- weights[10001:10951, ]
+first_thousand_ej <- weights[1:2000,]
+second_thousand_ej <- weights[20001:4000, ]
+third_thousand_ej <- weights[4001:6000, ]
+fourth_thousand_ej <- weights[6001:8000, ]
+fifth_thousand_ej <- weights[8001:10000, ]
+sixth_thousand_ej <- weights[10001:10236, ]
 
-write.csv(weights,'all_weights.csv', row.names = FALSE)
-write.csv(first_thousand, 'weights1.csv',row.names = FALSE)
-write.csv(second_thousand, 'weights2.csv',row.names = FALSE)
-write.csv(third_thousand, 'weights3.csv',row.names = FALSE)
-write.csv(fourth_thousand, 'weights4.csv',row.names = FALSE)
-write.csv(fifth_thousand, 'weights5.csv',row.names = FALSE)
-write.csv(sixth_thousand, 'weights6.csv',row.names = FALSE)
+write.csv(weights,'all_weights_ej.csv', row.names = FALSE)
+write.csv(first_thousand_ej, 'weights1_ej.csv',row.names = FALSE)
+write.csv(second_thousand_ej, 'weights2_ej.csv',row.names = FALSE)
+write.csv(third_thousand_ej, 'weights3_ej.csv',row.names = FALSE)
+write.csv(fourth_thousand_ej, 'weights4_ej.csv',row.names = FALSE)
+write.csv(fifth_thousand_ej, 'weights5_ej.csv',row.names = FALSE)
+write.csv(sixth_thousand_ej, 'weights6_ej.csv',row.names = FALSE)
 
 
-weights <- read.csv(here('data', 'weights1.csv'))
-grid_list<-split(weights,seq(nrow(weights)))
+weights5_ej <- read.csv(here('data', 'ej_weights', 'weights5_ej.csv'))
+grid_list_5_ej<-split(weights5_ej,seq(nrow(weights5_ej)))
 
 
