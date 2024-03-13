@@ -13,6 +13,21 @@ library(ggplot2)
 #                                size = 2)) +
 #   theme(legend.position = "none")
 
+## BUDGET 23
+# portfolios_23_1 <- read_csv('portfolios_23_1_map.csv') # no portfolios yet
+# portfolios_23_2 <- read_csv('portfolios_23_2_map.csv') # no portfolios yet
+# portfolios_23_3 <- read_csv('portfolios_23_3_map.csv') # no portfolios yet
+portfolios_23_4_thin <- read_csv('portfolios_23_4_thin_map.csv') # only 444 observations, because error at portfolio 445 - so only ran portfolios 1-444 in weights 4
+#portfolios_23_5 <- read_csv('portfolios_23_5_map.csv') # no portfolios yet
+portfolios_23_6 <- read_csv('portfolios_23_6.1_map.csv')
+
+combined_23 <- rbind(portfolios_23_4_thin,
+                     portfolios_23_6)
+
+combined_23 <- combined_23 %>% 
+  mutate('Budget' = '$23 million')
+
+
 ## BUDGET 13.1
 portfolios_13_1 <- read_csv(here('data', 'portfolios1.csv'))
 portfolios_13_2 <- read_csv(here('data', 'portfolios2.csv'))
@@ -55,6 +70,12 @@ ej_portfolios_3.5 <- read_csv('.csv')
 #   geom_density(aes(x = esu_var_invest, y = esu_returns_invest)) +
 #   geom_jitter()
 ##.........................................................................
+
+
+## PLOTS FOR BUDGET 23
+
+
+
 
 ## PLOTS FOR BUDGET 13.1
 
