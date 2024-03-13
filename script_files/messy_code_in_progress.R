@@ -11,7 +11,7 @@ set.seed(123)
 ## 108847.2 <- median
 ## budget = 3500000 and 23 mil. or find something else
 budget = 3500000
-budget = 10000000
+budget = 13100000
 budget = 23000000
 
 ## covariance (using covariance from 'coho' calulated in 'population.R')
@@ -122,9 +122,10 @@ optimize_fcn <- function(weight){
 plan(multisession, workers = 4)
 test = future_map_dfr(.x=grid_list_temp,~optimize_fcn(.x))
 
-portfolios_13.1_6.1 = map_df(.x=grid_list_6.1,~optimize_fcn(.x))
+portfolios_13.1_5_ej = map_df(.x=grid_list_5_ej,~optimize_fcn(.x))
 
 weights4_thin <- weights4[-c(445:2000), ]
+weights4_test <- weights4[445, ]
 
 
 # output results
@@ -137,6 +138,8 @@ write.csv(portfolios_3.5_6.1_map, 'portfolios_3.5_6.1_map.csv', row.names = FALS
 write.csv(portfolios_13.1_6.1, 'portfolios_13.1_6.1_map.csv', row.names = FALSE)
 write.csv(portfolios_23_6.1_map, 'portfolios_23_6.1_map.csv', row.names = FALSE)
 write.csv(portfolios_23_4_thin_map, 'portfolios_23_4_thin_map.csv', row.names = FALSE)
+write.csv(portfolios_23_5_ej, 'portfolios_23_5_ej_map.csv', row.names = FALSE)
+write.csv(portfolios_23_6_ej, 'portfolios_23_6_ej_map.csv', row.names = FALSE)
 
 # combine individual dataframes for each budget into one output
 combined_3.5 <- rbind(portfolios_3.5_1_map,
@@ -168,28 +171,29 @@ temp <- test[-c(277:289), ]
 # portfolios and efficiency frontier
 my_plot <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'gray', size = 2, alpha = .5) +
+  geom_point(data = portfolios_23_6_ej, aes(x = esu_var_invest, y = esu_returns_invest), colour = "red") +
   #geom_point(data = portfolios_3.5_2_map, aes(x = esu_var_invest, y = esu_returns_invest)) +
   #geom_point(colour = 'gray', size = 2, alpha = .5) +
   # geom_curve(x = 3.521570e+17, y = 205623.0,
   # xend = 3.892000e+17, yend = 211781.8,
   # colour = 'red', curvature = -.3) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
-  #annotate("segment",
-           #x = 1.5e+28, xend = 3.14e+27 , ## this controls how long the arrow is
-           #y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
-           #arrow = arrow(), color="black") +
-  #geom_segment(aes(x = 0.7e+28,
-                   # y = 187118.2,
-                   # xend = 3.64e+27,
-                   # yend = 187118.2),
-                   # color = "black",
-                   # linetype = "solid",
-                   # arrow = arrow(length = unit(0.3, "cm"))) +
-  #geom_text(x = 1.2e+28, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T) +
+  # annotate("segment",
+  #          x = 1.5e+28, xend = 3.14e+27 , ## this controls how long the arrow is
+  #          y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
+  #          arrow = arrow(), color="black") +
+  geom_segment(aes(x = 1.5e+19,
+                   y = 187118.2,
+                   xend = 4e+18,
+                   yend = 187118.2),
+                   color = "black",
+                   linetype = "solid",
+                   arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_text(x = 3.6e+19, y = 187118.2, label = "Baseline Portfolio", size = 4, check_overlap = T) +
   labs(x = 'ESU Variance', y = 'ESU Abundance') +
-  #xlim(0, 7.7e+28) +
+  xlim(1.5e+18, 1.5e+20) +
   #ylim(0, 1000000) +
-  #ggtitle("$10,000,000 Budget; 10,941 Portfolios") +
+  ggtitle("Portfolio Results for a $23 Million Budget") +
   scale_y_continuous(labels = scales::comma) +
   theme(legend.position = "none") + 
   theme_minimal() +
