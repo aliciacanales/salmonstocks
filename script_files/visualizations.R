@@ -86,13 +86,8 @@ ej_portfolios_3.5 <- read_csv('.csv')
 ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'gray', size = 2, alpha = .5) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
-  geom_line(data = eff_front, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red') +
-  # xlim(0, 1.5e+20) +
+  geom_line(data = eff_front_13, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red') +
   scale_y_continuous(labels = scales::comma) +
-  # annotate("segment",
-  # x = 1.5e+19, xend = 3.14e+27 , ## this controls how long the arrow is
-  # y = 187118.2, yend = 187118.2, ## controls where the tip of the arrow ends
-  # arrow = arrow(), color="black") +
   geom_segment(aes(x = 1.58e+19,
   y = 187118.2,
   xend = 3.8e+18,
@@ -102,7 +97,6 @@ ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest)) +
   arrow = arrow(length = unit(0.3, "cm"))) +
 geom_text(x = 3.95539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T) +
   labs(x = 'ESU Variance', y = 'ESU Returns') +
-  ggtitle("Portfolios Results for a $13.1 million Budget") +
   theme_minimal() +
   theme(legend.position = "none") +
   theme(axis.text.x = element_text(size = 11),
