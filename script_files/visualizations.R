@@ -13,20 +13,29 @@ library(ggplot2)
 #                                size = 2)) +
 #   theme(legend.position = "none")
 
+baseline_point <- data.frame(x =1.95539e+18, y = 186948.6)
+
 ## BUDGET 23
-# portfolios_23_1 <- read_csv('portfolios_23_1_map.csv') # no portfolios yet
-# portfolios_23_2 <- read_csv('portfolios_23_2_map.csv') # no portfolios yet
-# portfolios_23_3 <- read_csv('portfolios_23_3_map.csv') # no portfolios yet
-portfolios_23_4_thin <- read_csv('portfolios_23_4_thin_map.csv') # only 444 observations, because error at portfolio 445 - so only ran portfolios 1-444 in weights 4
-#portfolios_23_5 <- read_csv('portfolios_23_5_map.csv') # no portfolios yet
+portfolios_23_1 <- read_csv('portfolios_23_1_map.csv') 
+portfolios_23_2 <- read_csv('portfolio_2_23.csv')
+portfolios_23_3 <- read_csv('portfolios_23_3_map.csv') 
+portfolios_23_4 <- read_csv('portfolios_23_4_map.csv') # only 444 observations, because error at portfolio 445 - so only ran portfolios 1-444 in weights 4
+portfolios_23_5 <- read_csv('portfolios_23_5_map.csv') 
 portfolios_23_6 <- read_csv('portfolios_23_6.1_map.csv')
 
-combined_23 <- rbind(portfolios_23_4_thin,
+combined_23 <- rbind(portfolios_23_1,
+                     portfolios_23_2,
+                     portfolios_23_3,
+                     portfolios_23_4,
+                     portfolios_23_5,
                      portfolios_23_6)
 
-combined_23 <- combined_23 %>% 
-  mutate('Budget' = '$23 million')
+# combined_23 <- combined_23 %>% 
+#   mutate('Budget' = '$23 million')
 
+eff_front_23 <-combined_23 %>% 
+  arrange(esu_var_invest) %>% 
+  subset(esu_returns_invest==cummax(esu_returns_invest))
 
 ## BUDGET 13.1
 portfolios_13_1 <- read_csv(here('data', 'portfolios1.csv'))
@@ -74,7 +83,26 @@ ej_portfolios_3.5 <- read_csv('.csv')
 
 ## PLOTS FOR BUDGET 23
 
-
+plot_23 <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  geom_point(colour = 'gray', size = 2, alpha = .5) +
+  geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
+  geom_line(data = eff_front_23, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red') +
+  scale_y_continuous(labels = scales::comma) +
+  geom_segment(aes(x = 2e+19,
+                   y = 187118.2,
+                   xend = 5e+18,
+                   yend = 187118.2),
+               color = "black",
+               linetype = "solid",
+               arrow = arrow(length = unit(0.3, "cm"))) +
+  geom_text(x = 5e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T) +
+  labs(x = 'ESU Variance', y = 'ESU Returns') +
+  theme_minimal() +
+  theme(legend.position = "none") + 
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 11),
+        axis.title = element_text(size = 14))
+plot_23
 
 
 ## PLOTS FOR BUDGET 13.1
