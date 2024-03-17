@@ -16,12 +16,12 @@ library(ggplot2)
 baseline_point <- data.frame(x =1.95539e+18, y = 186948.6)
 
 ## BUDGET 23
-portfolios_23_1 <- read_csv('portfolios_23_1_map.csv') 
-portfolios_23_2 <- read_csv('portfolio_2_23.csv')
-portfolios_23_3 <- read_csv('portfolios_23_3_map.csv') 
-portfolios_23_4 <- read_csv('portfolios_23_4_map.csv') # only 444 observations, because error at portfolio 445 - so only ran portfolios 1-444 in weights 4
-portfolios_23_5 <- read_csv('portfolios_23_5_map.csv') 
-portfolios_23_6 <- read_csv('portfolios_23_6.1_map.csv')
+portfolios_23_1 <- read_csv(here('data', 'portfolios', '23_million', 'portfolios_23_1_map.csv')) 
+portfolios_23_2 <- read_csv(here('data', 'portfolios', '23_million', 'portfolio_2_23.csv'))
+portfolios_23_3 <- read_csv(here('data', 'portfolios', '23_million', 'portfolios_23_3_map.csv')) 
+portfolios_23_4 <- read_csv(here('data', 'portfolios', '23_million', 'portfolios_23_4_map.csv')) # only 444 observations, because error at portfolio 445 - so only ran portfolios 1-444 in weights 4
+portfolios_23_5 <- read_csv(here('data', 'portfolios', '23_million', 'portfolios_23_5_map.csv')) 
+portfolios_23_6 <- read_csv(here('data', 'portfolios', '23_million', 'portfolios_23_6.1_map.csv'))
 
 combined_23 <- rbind(portfolios_23_1,
                      portfolios_23_2,
@@ -38,12 +38,12 @@ eff_front_23 <-combined_23 %>%
   subset(esu_returns_invest==cummax(esu_returns_invest))
 
 ## BUDGET 13.1
-portfolios_13_1 <- read_csv(here('data', 'portfolios1.csv'))
-portfolios_13_2 <- read_csv(here('data', 'portfolios2.csv'))
-portfolios_13_3 <- read_csv(here('data', 'portfolios3.csv'))
-portfolios_13_4 <- read_csv(here('data', 'portfolios4.csv'))
-portfolios_13_5 <- read_csv(here('data', 'portfolios5.csv'))
-portfolios_13_6 <- read_csv('portfolios_13.1_6.1_map.csv')
+portfolios_13_1 <- read_csv(here('data', 'portfolios', '13.1_million', 'portfolios1.csv'))
+portfolios_13_2 <- read_csv(here('data', 'portfolios', '13.1_million', 'portfolios2.csv'))
+portfolios_13_3 <- read_csv(here('data', 'portfolios', '13.1_million', 'portfolios3.csv'))
+portfolios_13_4 <- read_csv(here('data', 'portfolios', '13.1_million', 'portfolios4.csv'))
+portfolios_13_5 <- read_csv(here('data', 'portfolios', '13.1_million', 'portfolios5.csv'))
+portfolios_13_6 <- read_csv(here('data', 'portfolios', '13.1_million', 'portfolios_13.1_6.1_map.csv'))
 
 combined_13 <- rbind(portfolios_13_1,
                       portfolios_13_2,
@@ -57,12 +57,12 @@ combined_13 <- combined_13 %>%
 ej_portfolios_13_5 <- read_csv('portfolios_13.1_5_ej_map.csv')
 
 ## BUDGET 3.5
-portfolios_3.5_1 <- read_csv('portfolios_3.5_1_map.csv')
-portfolios_3.5_2 <- read_csv('portfolios_3.5_2_map.csv')
-portfolios_3.5_3 <- read_csv('portfolios_3.5_3_map.csv')
-portfolios_3.5_4 <- read_csv('portfolios_3.5_4_map.csv')
-portfolios_3.5_5 <- read_csv('portfolios_3.5_5_map.csv')
-portfolios_3.5_6 <- read_csv('portfolios_3.5_6.1_map.csv')
+portfolios_3.5_1 <- read_csv(here('data', 'portfolios', '3.5_million', 'portfolios_3.5_1_map.csv'))
+portfolios_3.5_2 <- read_csv(here('data', 'portfolios', '3.5_million', 'portfolios_3.5_2_map.csv'))
+portfolios_3.5_3 <- read_csv(here('data', 'portfolios', '3.5_million', 'portfolios_3.5_3_map.csv'))
+portfolios_3.5_4 <- read_csv(here('data', 'portfolios', '3.5_million', 'portfolios_3.5_4_map.csv'))
+portfolios_3.5_5 <- read_csv(here('data', 'portfolios', '3.5_million', 'portfolios_3.5_5_map.csv'))
+portfolios_3.5_6 <- read_csv(here('data', 'portfolios', '3.5_million', 'portfolios_3.5_6.1_map.csv'))
 
 combined_3.5 <- rbind(portfolios_3.5_1,
                       portfolios_3.5_2,
