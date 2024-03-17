@@ -62,6 +62,7 @@ combined_13 <- rbind(portfolios_13_1,
                       portfolios_13_4,
                       portfolios_13_5,
                       portfolios_13_6) 
+
 combined_13 <- combined_13 %>% 
   mutate('Budget' = '$13.1 million')
 
@@ -91,6 +92,9 @@ combined_3.5 <- rbind(portfolios_3.5_1,
                       portfolios_3.5_4,
                       portfolios_3.5_5,
                       portfolios_3.5_6) 
+
+combined_3.5 <- combined_3.5 %>% 
+  mutate('Budget' = '$3.5 million')
 
 eff_front_3.5 <- combined_3.5 %>% 
   arrange(esu_var_invest) %>% 
@@ -221,6 +225,7 @@ no_outliers_plot_3.5 <- ggplot(combined_3.5_temp, aes(x = esu_var_invest, y = es
         axis.title = element_text(size = 14))+
   theme_minimal()
 
+
 no_outliers_plot_3.5
 
 ej_plot_3.5<- ggplot(data = combined_3.5, aes(x = esu_var_invest, y = esu_returns_invest)) +
@@ -243,18 +248,18 @@ ej_plot_3.5<- ggplot(data = combined_3.5, aes(x = esu_var_invest, y = esu_return
         axis.title = element_text(size = 14)) +
   theme_minimal()
 
-## PLOTS FOR ALL BUDGETS
+## ALL BUDGETS
 
-plot_all <- ggplot(all_portfolios_and_budget, aes(x = esu_var_invest, y = esu_returns_invest, color = Budget)) +
-  geom_jitter(aes(color = Budget), alpha = .3) +
-  # geom_density_2d(aes(color = Budget)) +
-  geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5, alpha = .5) +
-  xlim(0, 1.25e+20) +
-  scale_y_continuous(labels = scales::comma, limits = c(0, 2050000)) +
-  scale_color_discrete(limits = c('$23 million', '$13.1 million', '$3.5 million'),
-                       labels = c('$23 million', '$13.1 million', '$3.5 million')) +
-  labs(x = 'ESU Variance', y = 'ESU Returns') +
+all_portfolios_and_budgets <- rbind(combined_23,
+                                    combined_13,
+                                    combined_3.5)
+
+ggplot(all_portfolios_and_budgets, aes(x = esu_returns_invest, y = ..density.., fill = Budget))+
+  geom_density(aes(color = Budget), position = 'stack') +
+  labs(x = 'ESU Returns', y = 'Density') +
   theme_minimal()
+
+
 plot_all +
   geom_segment(aes(x = 1.58e+19,
                    y = 187118.2,
