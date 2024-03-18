@@ -1,7 +1,15 @@
 library(ggplot2)
-<<<<<<< HEAD
 
 baseline_point <- data.frame(x =1.95539e+18, y = 186948.6)
+all_weights <- read_csv(here('data', 'standard_weights', 'all_weights.csv')) 
+
+selected_portfolios_23 <- slice(budget_allocated_df, c(1012, 5923))
+selected_portfolios_13 <- slice(budget_allocated_df, c(10283, 10215))
+selected_portfolios_3.5 <- slice(budget_allocated_df, c(8007, 171))
+
+write.csv(selected_portfolios_23, 'selected_portfolios_23.csv', row.names = FALSE)
+write.csv(selected_portfolios_13, 'selected_portfolios_13.csv', row.names = FALSE)
+write.csv(selected_portfolios_3.5, 'selected_portfolios_3.5.csv', row.names = FALSE)
 
 ## BUDGET 23
 portfolios_23_1 <- read_csv(here('data', 'portfolios', '23_million', 'portfolios_23_1_map.csv')) 
@@ -19,7 +27,8 @@ combined_23 <- rbind(portfolios_23_1,
                      portfolios_23_6)
 
 combined_23 <- combined_23 %>%
-  mutate('Budget' = '$23 million')
+  mutate('portfolio' = paste("portfolio", 1:nrow(combined_23), sep = " "),
+         'Budget' = '$23 million')
 
 eff_front_23 <-combined_23 %>% 
   arrange(esu_var_invest) %>% 
@@ -30,26 +39,6 @@ ej_portfolios_23_6 <- read_csv(here('data', 'portfolios', '23_million', 'portfol
 ej_combined_13 <- rbind(ej_portfolios_23_5,
                      ej_portfolios_23_6)
 
-ej_plot_23 <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest)) +
-  geom_point(colour = 'gray', size = 2, alpha = .5) +
-  geom_point(data = ej_combined_13, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red')+
-  geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
-  scale_y_continuous(labels = scales::comma) +
-  geom_segment(aes(x = 1.58e+19,
-                   y = 187118.2,
-                   xend = 4.1e+18,
-                   yend = 187118.2),
-               color = "black",
-               linetype = "solid",
-               arrow = arrow(length = unit(0.3, "cm"))) +
-  geom_text(x = 3.95539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
-  labs(x = 'ESU Variance', y = 'ESU Returns') +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 14)) +
-  theme_minimal()
-
-baseline_point <- data.frame(x =1.95539e+18, y = 186948.6)
 
 ## BUDGET 13.1
 
@@ -70,8 +59,9 @@ combined_13 <- rbind(portfolios_13_1,
 
 combined_13$rank <- cummax(rank(combined_13$esu_returns_invest))
 
-combined_13 <- combined_13 %>% 
-  mutate('Budget' = '$13.1 million')
+combined_13 <- combined_13 %>%
+  mutate('portfolio' = paste("portfolio", 1:nrow(combined_23), sep = " "),
+         'Budget' = '$13 million')
 
 eff_front_13 <-combined_13 %>% 
   arrange(esu_var_invest) %>% 
@@ -102,8 +92,9 @@ combined_3.5 <- rbind(portfolios_3.5_1,
                       portfolios_3.5_6) 
 
 
-combined_3.5 <- combined_3.5 %>% 
-  mutate('Budget' = '$3.5 million')
+combined_3.5 <- combined_3.5 %>%
+  mutate('portfolio' = paste("portfolio", 1:nrow(combined_23), sep = " "),
+         'Budget' = '$3.5 million')
 
 eff_front_3.5 <- combined_3.5 %>% 
   arrange(esu_var_invest) %>% 
