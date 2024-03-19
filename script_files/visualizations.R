@@ -1,5 +1,4 @@
 library(ggplot2)
-<<<<<<< HEAD
 
 baseline_point <- data.frame(x =1.95539e+18, y = 186948.6)
 
