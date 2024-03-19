@@ -1,5 +1,5 @@
 ## making the barrier data into a list of dataframes with only cost, stream level, and passability for all barriers. Arranged by stream level and stream ID
-alsea_barriers <- read_csv(here('data', 'final_table_alsea_v3.csv')) %>% 
+alsea_barriers <- read_csv(here('data', 'barrier_data' ,'final_table_alsea_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -7,7 +7,7 @@ alsea_barriers <- read_csv(here('data', 'final_table_alsea_v3.csv')) %>%
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-beaver_barriers <- read_csv(here('data', 'final_table_beaver_v3.csv')) %>% 
+beaver_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_beaver_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -15,7 +15,7 @@ beaver_barriers <- read_csv(here('data', 'final_table_beaver_v3.csv')) %>%
   rename('strm_id' = 'stream_id')%>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-coos_barriers <- read_csv(here('data', 'final_table_coosbay_v3.csv')) %>% 
+coos_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_coosbay_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -23,7 +23,7 @@ coos_barriers <- read_csv(here('data', 'final_table_coosbay_v3.csv')) %>%
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-coquille_barriers <- read_csv(here('data', 'final_table_coquille_v3.csv')) %>% 
+coquille_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_coquille_v3.csv')) %>% 
   clean_names() %>% 
   mutate(cost = ifelse(cost == 0.00, 19097.2, cost),
          barrier_id = row_number()) %>% 
@@ -32,7 +32,7 @@ coquille_barriers <- read_csv(here('data', 'final_table_coquille_v3.csv')) %>%
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-floras_barriers <- read_csv(here('data', 'final_table_floras_v3.csv')) %>% 
+floras_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_floras_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -40,7 +40,7 @@ floras_barriers <- read_csv(here('data', 'final_table_floras_v3.csv')) %>%
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-lower_umpqua_barriers <- read_csv(here('data', 'final_table_lowerUmp_v3.csv')) %>% 
+lower_umpqua_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_lowerUmp_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -48,7 +48,7 @@ lower_umpqua_barriers <- read_csv(here('data', 'final_table_lowerUmp_v3.csv')) %
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-middle_umpqua_barriers <- read_csv(here('data', 'final_table_midUmp_v3.csv')) %>% 
+middle_umpqua_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_midUmp_v3.csv')) %>% 
   clean_names() %>% 
   mutate(cost = ifelse(cost == 0.00, 19097.2, cost),
          barrier_id = row_number()) %>% 
@@ -57,7 +57,7 @@ middle_umpqua_barriers <- read_csv(here('data', 'final_table_midUmp_v3.csv')) %>
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-necanicum_barriers <- read_csv(here('data', 'final_table_necanicum_v3.csv')) %>% 
+necanicum_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_necanicum_v3.csv')) %>% 
   clean_names() %>% 
   rename(pass_score=pass_scores) %>% 
   mutate(cost = ifelse(cost == 0.00, 19097.2, cost),
@@ -67,7 +67,7 @@ necanicum_barriers <- read_csv(here('data', 'final_table_necanicum_v3.csv')) %>%
   rename('strm_id' = 'stream_id')%>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-nehalem_barriers <- read_csv(here('data', 'final_table_nehalem_v3.csv')) %>% 
+nehalem_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_nehalem_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -75,7 +75,7 @@ nehalem_barriers <- read_csv(here('data', 'final_table_nehalem_v3.csv')) %>%
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-nestucca_barriers <- read_csv(here('data', 'final_table_nestucca_v3.csv')) %>% 
+nestucca_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_nestucca_v3.csv')) %>% 
   clean_names() %>% 
   mutate(cost = ifelse(cost == 0.00, 19097.2, cost),
           barrier_id = row_number()) %>% 
@@ -83,7 +83,7 @@ nestucca_barriers <- read_csv(here('data', 'final_table_nestucca_v3.csv')) %>%
   arrange(strm_lev,stream_id, pass_score) %>% 
   rename('strm_id' = 'stream_id')
 
-north_umpqua_barriers <- read_csv(here('data', 'final_table_northUmp_v3.csv')) %>% 
+north_umpqua_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_northUmp_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -91,7 +91,7 @@ north_umpqua_barriers <- read_csv(here('data', 'final_table_northUmp_v3.csv')) %
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-salmon_barriers <- read_csv(here('data', 'final_table_salmon_v3.csv')) %>% 
+salmon_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_salmon_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -99,7 +99,7 @@ salmon_barriers <- read_csv(here('data', 'final_table_salmon_v3.csv')) %>%
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-siletz_barriers <- read_csv(here('data', 'final_table_siletz_v3.csv')) %>% 
+siletz_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_siletz_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -107,7 +107,7 @@ siletz_barriers <- read_csv(here('data', 'final_table_siletz_v3.csv')) %>%
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-siltcoos_barriers <- read_csv(here('data', 'final_table_siltcoos_v3.csv')) %>% 
+siltcoos_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_siltcoos_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -115,7 +115,7 @@ siltcoos_barriers <- read_csv(here('data', 'final_table_siltcoos_v3.csv')) %>%
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-siuslaw_barriers <- read_csv(here('data', 'final_table_siuslaw_v3.csv')) %>% 
+siuslaw_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_siuslaw_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -124,7 +124,7 @@ siuslaw_barriers <- read_csv(here('data', 'final_table_siuslaw_v3.csv')) %>%
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
 
-sixes_barriers <- read_csv(here('data', 'final_table_sixes_v3.csv')) %>% 
+sixes_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_sixes_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -132,7 +132,7 @@ sixes_barriers <- read_csv(here('data', 'final_table_sixes_v3.csv')) %>%
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-south_umpqua_barriers <- read_csv(here('data', 'final_table_southumpqua_v3.csv')) %>% 
+south_umpqua_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_southumpqua_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -140,7 +140,7 @@ south_umpqua_barriers <- read_csv(here('data', 'final_table_southumpqua_v3.csv')
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-tenmile_barriers <- read_csv(here('data', 'final_table_tenmile_v3.csv')) %>% 
+tenmile_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_tenmile_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -148,7 +148,7 @@ tenmile_barriers <- read_csv(here('data', 'final_table_tenmile_v3.csv')) %>%
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-tillamook_barriers <- read_csv(here('data', 'final_table_tillamook_v3.csv')) %>% 
+tillamook_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_tillamook_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
@@ -156,7 +156,7 @@ tillamook_barriers <- read_csv(here('data', 'final_table_tillamook_v3.csv')) %>%
   rename('strm_id' = 'stream_id') %>% 
   mutate(pass_score = ifelse(pass_score == 1.0, 0.9, pass_score))
 
-yaquina_barriers <- read_csv(here('data', 'final_table_yaquina_v3.csv')) %>% 
+yaquina_barriers <- read_csv(here('data', 'barrier_data' , 'final_table_yaquina_v3.csv')) %>% 
   clean_names() %>% 
   mutate(barrier_id = row_number()) %>% 
   select(c(barrier_id, pass_score, stream_id, strm_lev, cost)) %>% 
