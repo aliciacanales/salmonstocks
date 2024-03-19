@@ -248,13 +248,13 @@ ej_plot_3.5<- ggplot(data = combined_3.5, aes(x = esu_var_invest, y = esu_return
         axis.title = element_text(size = 14)) +
   theme_minimal()
 
-## ALL BUDGETS
+## DENSITY PLOT - ALL BUDGETS
 
 all_portfolios_and_budgets <- rbind(combined_23,
                                     combined_13,
                                     combined_3.5)
 
-ggplot(all_portfolios_and_budgets, aes(x = esu_returns_invest, y = ..density.., fill = Budget))+
+plot_all <- ggplot(temp2_combined_df, aes(x = esu_returns_invest, y = ..density.., fill = Budget))+
   geom_density(aes(color = Budget), position = 'stack') +
   labs(x = 'ESU Returns', y = 'Density') +
   theme_minimal()
@@ -273,4 +273,37 @@ plot_all +
         axis.title = element_text(size = 14)) +
   geom_text(x = 3.95539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
   ggtitle('All Portfolio Results Under 3 Different Budgets')
+
+## Density Plot
+
+# data wrangling for density plot
+temp_combined_23 <- mutate(combined_23, Budget = "$23 Million Budget")
+temp_combined_13 <- mutate(combined_13, Budget = "$13 Million Budget")
+temp_combined_3.5 <- mutate(combined_3.5, Budget = "$3.5 Million Budget")
+temp2_combined_df <- bind_rows(temp_combined_23, temp_combined_13)
+
+# as factor
+temp2_combined_df$Budget <- factor(temp2_combined_df$Budget, levels = c("$3.5 Million Budget", "$13 Million Budget", "$23 Million Budget"))
+
+density_plot <- ggplot(temp2_combined_df, aes(x = esu_var_invest, y = esu_returns_invest)) +
+  stat_density_2d(data = combined_23, aes(color = "$23 Million Budget"), size = 1) +
+  stat_density_2d(data = combined_13, aes(color = "$13 Million Budget"), size = 1) +
+  stat_density_2d(data = combined_3.5, aes(color = "$3.5 Million Budget"), size = 1) +
+  scale_color_manual(name = "", 
+                     values = c("$23 Million Budget" = "#69b3a2", 
+                                "$13 Million Budget" = "coral1", 
+                                "$3.5 Million Budget" = "#F1D83B")) + #"#404080"
+  labs(x = "Variance", y = "Returns") +
+  scale_x_continuous(breaks = c(1.5e+18, 1.3e+19, 2.5e+19, 3.7e+19, 4.9e+19, 6.1e+19),
+                     labels = c("1.5e+18", "1.3e+19", "2.5e+19", "3.7e+19", "4.9e+19", "6.1e+19")) +
+  scale_y_continuous(breaks = seq(175000, 1500000, length.out = 4),
+                     labels = c("175,000", "500,000", "1,000,000", "1,500,000")) +
+  guides(color = guide_legend()) +
+  theme_minimal() +
+  theme(
+    text = element_text(size = 12),  # Increase text height to 12
+    axis.text = element_text(size = 12),  # Increase axis labels to 12
+    axis.title = element_text(size = 14),  # Increase axis titles to 14
+    legend.text = element_text(size = 12)  # Increase legend names to 12
+  )
 
