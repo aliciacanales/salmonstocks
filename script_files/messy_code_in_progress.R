@@ -220,70 +220,75 @@ p5 +theme(axis.title = element_text(size = 15),
 
 
 # plot 1 wrangling
-optimal_portfolio_1 <- budget_allocated_df[643, ] %>% # this is random, just using for framework for now
+budget_allocated_df <- read_csv(here('data', 'portfolios', 'optimal_portfolios', 'selected_portfolios_23_budget.csv'))
+optimal_portfolio_1_23 <- budget_allocated_df[1, ] %>% # this is random, just using for framework for now
   rename_with(str_to_title)
 
-names(optimal_portfolio_1)[names(optimal_portfolio_1) == 'Lower_umpqua'] <- 'Lower Umpqua'
-names(optimal_portfolio_1)[names(optimal_portfolio_1) == 'Middle_umpqua'] <- 'Middle Umpqua'
-names(optimal_portfolio_1)[names(optimal_portfolio_1) == 'North_umpqua'] <- 'North Umpqua'
-names(optimal_portfolio_1)[names(optimal_portfolio_1) == 'South_umpqua'] <- 'South Umpqua'
+names(optimal_portfolio_1_23)[names(optimal_portfolio_1_23) == 'Lower_umpqua'] <- 'Lower Umpqua'
+names(optimal_portfolio_1_23)[names(optimal_portfolio_1_23) == 'Middle_umpqua'] <- 'Middle Umpqua'
+names(optimal_portfolio_1_23)[names(optimal_portfolio_1_23) == 'North_umpqua'] <- 'North Umpqua'
+names(optimal_portfolio_1_23)[names(optimal_portfolio_1_23) == 'South_umpqua'] <- 'South Umpqua'
  
-optimal_portfolio_1 <- optimal_portfolio_1 %>% 
- pivot_longer(cols = 1:20,
+optimal_portfolio_1_23 <- optimal_portfolio_1_23 %>% 
+ pivot_longer(cols = 1:19,
                names_to = 'population',
                values_to = 'budget_allocated')
 
 
 # plot 1 wrangling
-optimal_portfolio_2 <- budget_allocated_df[645, ] %>% # this is random, just using for framework for now
+optimal_portfolio_2_23 <- budget_allocated_df[2, ] %>% # this is random, just using for framework for now
   rename_with(str_to_title)
   
-names(optimal_portfolio_2)[names(optimal_portfolio_2) == 'Lower_umpqua'] <- 'Lower Umpqua'
-names(optimal_portfolio_2)[names(optimal_portfolio_2) == 'Middle_umpqua'] <- 'Middle Umpqua'
-names(optimal_portfolio_2)[names(optimal_portfolio_2) == 'North_umpqua'] <- 'North Umpqua'
-names(optimal_portfolio_2)[names(optimal_portfolio_2) == 'South_umpqua'] <- 'South Umpqua'
+names(optimal_portfolio_2_23)[names(optimal_portfolio_2_23) == 'Lower_umpqua'] <- 'Lower Umpqua'
+names(optimal_portfolio_2_23)[names(optimal_portfolio_2_23) == 'Middle_umpqua'] <- 'Middle Umpqua'
+names(optimal_portfolio_2_23)[names(optimal_portfolio_2_23) == 'North_umpqua'] <- 'North Umpqua'
+names(optimal_portfolio_2_23)[names(optimal_portfolio_2_23) == 'South_umpqua'] <- 'South Umpqua'
   
-optimal_portfolio_2 <- optimal_portfolio_2 %>%  
-  pivot_longer(cols = 1:20,
+optimal_portfolio_2_23 <- optimal_portfolio_2_23 %>%  
+  pivot_longer(cols = 1:19,
                names_to = 'population',
                values_to = 'budget_allocated')
 
 
 
 # lollipop plot 1
-p1 <- optimal_portfolio_1 %>% 
+p1 <- optimal_portfolio_1_23 %>% 
   ggplot(aes(x = fct_reorder(population, budget_allocated), #fct_reorder lets us set the order of the first value, by the second value ($ invested)
              y = budget_allocated)) +
   ggalt::geom_lollipop() +
   # labs(x = "Population", y = "Budget Allocated (USD)") +
-  ggtitle("Portfolio 1", subtitle = "Returns: 872,367\nVariance: 2.075620e+28") +
+  ggtitle("Portfolio A", subtitle = "Returns: 2,109,848\nVariance: 8.629809e+19") +
   theme(plot.title = element_text(hjust = 0.5)) +
   # scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
-  scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
+  scale_y_continuous(labels = function(x) paste0('$',x / 1000000, "M")) +
   # gghighlight::gghighlight(population == "tillamook") + # if we want to emphasize a single population
   #coord_flip() +
+  labs(y = 'Budget Allocated') +
+  xlab(NULL) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme(axis.title = element_text(size = 15)) +
   theme(plot.subtitle = element_text(hjust = 0.5)) +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12.5)) +
-  
   coord_flip()
 
+ggsave("optimal_portfolio_A_plot.png", plot = p1, width = 10, height = 6, dpi = 300, bg = "white")
                
-# lollipop plot 2       
-p2 <- optimal_portfolio_2 %>% 
+# lollipop plot 2 
+p2 <- optimal_portfolio_2_23 %>% 
   ggplot(aes(x = fct_reorder(population, budget_allocated), #fct_reorder lets us set the order of the first value, by the second value ($ invested)
              y = budget_allocated)) +
   ggalt::geom_lollipop() +
   # labs(x = " ", y = "Budget Allocated (USD)") +
-  ggtitle("Portfolio 2", subtitle = "Returns: 929,908\nVariance: 3.354325e+28") +
+  ggtitle("Portfolio B", subtitle = "Returns: 1,355,534\nVariance: 1.959021e+19") +
   theme(plot.title = element_text(hjust = 0.5)) +
   # scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
-  scale_y_continuous(labels = scales::dollar_format(prefix="$")) +
+  scale_y_continuous(labels = function(x) paste0('$',x / 1000000, "M")) +
   # gghighlight::gghighlight(population == "tillamook") + # if we want to emphasize a single population
   #coord_flip() +
+  labs(y = 'Budget Allocated') +
+  xlab(NULL) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5)) +
   theme(axis.title = element_text(size = 15)) +
@@ -291,14 +296,16 @@ p2 <- optimal_portfolio_2 %>%
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 12.5)) +
   coord_flip()
-
+ggsave("optimal_portfolio_B_plot.png", plot = p2, width = 10, height = 6, dpi = 300, bg = "white")
 
 
 p3 <- p1+p2 & xlab(NULL) & ylab(NULL)
+p1 <- p1 & xlab(NULL) & ylab(NULL)
+p2 <- p2 & xlab(NULL) & ylab(NULL)
   
-wrap_elements(panel = p3) +
+wrap_elements(p1) +
   labs(tag = 'Budget Allocated (USD)') +
-  theme(plot.tag = element_text(size = 13),
+  theme(plot.tag = element_text(size = 11),
         plot.tag.position = "bottom")
 
   
