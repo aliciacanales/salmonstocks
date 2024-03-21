@@ -33,8 +33,10 @@ ej_combined_13 <- rbind(ej_portfolios_23_5,
 
 ej_plot_23 <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'gray', size = 2, alpha = .5) +
-  geom_point(data = ej_combined_13, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red')+
+  geom_point(data = ej_portfolios_23_5, aes(x = esu_var_invest, y = esu_returns_invest), color = 'green4', alpha = .5)+
+  geom_line(data = eff_front_23, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red', size = 1.2) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
+  scale_x_continuous(labels = c('', '5.0e+19', '1.0e+20', '1.5e+20', '2.0e+20')) +
   scale_y_continuous(labels = scales::comma) +
   geom_segment(aes(x = 1.58e+19,
                    y = 187118.2,
@@ -45,10 +47,12 @@ ej_plot_23 <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest
                arrow = arrow(length = unit(0.3, "cm"))) +
   geom_text(x = 3.95539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
   labs(x = 'ESU Variance', y = 'ESU Returns') +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 14)) +
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title = element_text(size = 15)) 
+ggsave("ej_plot_23.png", plot = ej_plot_23, width = 10, height = 6, dpi = 300, bg = "white")
+
 
 baseline_point <- data.frame(x =1.95539e+18, y = 186948.6)
 
@@ -138,10 +142,10 @@ plot_23 <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest)) 
   geom_point(colour = 'gray', size = 2, alpha = .5) +
   geom_line(data = eff_front_23, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red', size = 1.2) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
-  geom_point(data = optimial_port, aes(x = esu_var_invest, y = esu_returns_invest),color = "blue", size = 5, pch = 1, stroke = 1.5) +
-  geom_point(data = optimial_port, aes(x = esu_var_invest, y = esu_returns_invest),color = "#3b3b3b", size = 1.5) +
+  # geom_point(data = optimial_port, aes(x = esu_var_invest, y = esu_returns_invest),color = "blue", size = 5, pch = 1, stroke = 1.5) +
+  # geom_point(data = optimial_port, aes(x = esu_var_invest, y = esu_returns_invest),color = "#3b3b3b", size = 1.5) +
   scale_y_continuous(labels = scales::comma) +
-  scale_x_continuous(labels = c('0', '5.0e+19', '1.0e+20', '1.5e+20', '2.0e+20')) +
+  scale_x_continuous(labels = c('', '5.0e+19', '1.0e+20', '1.5e+20', '2.0e+20')) +
   geom_segment(aes(x = 2e+19,
                    y = 187118.2,
                    xend = 5e+18,
@@ -152,10 +156,12 @@ plot_23 <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest)) 
   geom_text(x = 4e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
   labs(x = 'ESU Variance', y = 'ESU Returns') +
   theme(legend.position = "none") +
+  theme_minimal() +
   theme(axis.text.x = element_text(size = 15),
-        axis.text.y = element_text(size = 15)) +
-  theme_minimal()
+        axis.text.y = element_text(size = 15),
+        axis.title = element_text(size = 15)) 
 plot_23
+
 
 ggsave("plot_23_circles.png", plot = plot_23, width = 10, height = 6, dpi = 300, bg = "white")
 ggsave("plot_23.png", plot = plot_23, width = 10, height = 6, dpi = 300, bg = "white")
@@ -167,7 +173,7 @@ plot_13 <- ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest)) 
   geom_line(data = eff_front_13, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red', size = 1.2) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
   scale_y_continuous(labels = scales::comma) +
-  scale_x_continuous(labels = c('0', '5.0e+19', '1.0e+20', '1.5e+20')) +
+  scale_x_continuous(labels = c('', '5.0e+19', '1.0e+20', '1.5e+20')) +
   geom_segment(aes(x = 1.58e+19,
                    y = 187118.2,
                    xend = 4.1e+18,
@@ -177,18 +183,20 @@ plot_13 <- ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest)) 
                arrow = arrow(length = unit(0.3, "cm"))) +
   geom_text(x = 3e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
   labs(x = 'ESU Variance', y = 'ESU Returns') +
+  theme_minimal()+
   theme(axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
-        axis.title = element_text(size = 15)) +
-  theme_minimal()
+        axis.title = element_text(size = 15))
 plot_13
 
 ggsave("plot_13.png", plot = plot_13, width = 10, height = 6, dpi = 300, bg = "white")
 
 ej_plot_13 <- ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'gray', size = 2, alpha = .5) +
-  geom_point(data = ej_combined_13, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red', size = 1.2)+
+  geom_point(data = ej_portfolios_13_5, aes(x = esu_var_invest, y = esu_returns_invest), color = 'green4', alpha = .5)+
+  geom_line(data = eff_front_13, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red', size = 1.2) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
+  scale_x_continuous(labels = c('', '5.0e+19', '1.0e+20', '1.5e+20')) +
   scale_y_continuous(labels = scales::comma) +
   geom_segment(aes(x = 1.58e+19,
                    y = 187118.2,
@@ -199,10 +207,12 @@ ej_plot_13 <- ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest
                arrow = arrow(length = unit(0.3, "cm"))) +
   geom_text(x = 3.95539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
   labs(x = 'ESU Variance', y = 'ESU Returns') +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 14)) +
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title = element_text(size = 15))
+  
+ggsave("ej_plot_13.png", plot = ej_plot_13, width = 10, height = 6, dpi = 300, bg = "white")
 
 ## PLOTS FOR BUDGET 3.5
 outliers_plot_3.5 <- ggplot(combined_3.5, aes(x = esu_var_invest, y = esu_returns_invest)) +
@@ -254,7 +264,8 @@ ggsave("no_outliers_plot_3.5.png", plot = no_outliers_plot_3.5, width = 10, heig
 
 ej_plot_3.5<- ggplot(data = combined_3.5, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'gray', size = 2, alpha = .5) +
-  geom_line(data = eff_front_3.5_without_outliers, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red') +
+  geom_point(data = ej_portfolios_3.5, aes(x = esu_var_invest, y = esu_returns_invest), color = 'green4', alpha = .5) +
+  geom_line(data = eff_front_3.5_without_outliers, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red', size = 1.2) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
   geom_segment(aes(x = 3e+18,
                    y = 187118.2,
@@ -265,19 +276,21 @@ ej_plot_3.5<- ggplot(data = combined_3.5, aes(x = esu_var_invest, y = esu_return
                arrow = arrow(length = unit(0.3, "cm"))) +
   geom_text(x = 4.4e+18, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
   labs(x = 'ESU Variance', y = 'ESU Abundance') +
-  xlim(1e+18, 1e+19) + ## this can be changed
-  scale_y_continuous(limits = c(150000, 500000), labels = scales::comma) +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 14))+
-  theme_minimal()
+  xlim(1.85e+18, 2.4e+18) + ## this can be changed
+  scale_y_continuous(limits = c(175000, 275000), labels = scales::comma) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title = element_text(size = 15))
+
+ggsave("ej_plot_3.5.png", plot =  ej_plot_3.5, width = 10, height = 6, dpi = 300, bg = "white")
 
 
 no_outliers_plot_3.5
 
 ej_plot_3.5<- ggplot(data = combined_3.5, aes(x = esu_var_invest, y = esu_returns_invest)) +
   geom_point(colour = 'gray', size = 2, alpha = .5) +
-  geom_point(data = ej_portfolios_3.5, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red')+
+  geom_point(data = ej_portfolios_3.5, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red', size = 1.2)+
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
   geom_segment(aes(x = 3e+18,
                    y = 187118.2,
@@ -290,10 +303,10 @@ ej_plot_3.5<- ggplot(data = combined_3.5, aes(x = esu_var_invest, y = esu_return
   labs(x = 'ESU Variance', y = 'ESU Returns') +
   xlim(1e+18, 1e+19) +
   scale_y_continuous(limits = c(150000, 500000), labels = scales::comma) +
+  theme_minimal() +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 14)) +
-  theme_minimal()
+        axis.title = element_text(size = 14))
 
 ## DENSITY PLOT - ALL BUDGETS
 
