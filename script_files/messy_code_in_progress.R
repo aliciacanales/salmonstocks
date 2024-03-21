@@ -257,7 +257,7 @@ p1 <- optimal_portfolio_1_23 %>%
              y = budget_allocated)) +
   ggalt::geom_lollipop() +
   # labs(x = "Population", y = "Budget Allocated (USD)") +
-  ggtitle("Portfolio A", subtitle = "Returns: 2,109,848\nVariance: 8.629809e+19") +
+  ggtitle("Portfolio B", subtitle = "Returns: 2,109,848\nVariance: 8.629809e+19") +
   theme(plot.title = element_text(hjust = 0.5)) +
   # scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
   scale_y_continuous(labels = function(x) paste0('$',x / 1000000, "M")) +
@@ -269,11 +269,11 @@ p1 <- optimal_portfolio_1_23 %>%
   theme(plot.title = element_text(hjust = 0.5)) +
   theme(axis.title = element_text(size = 15)) +
   theme(plot.subtitle = element_text(hjust = 0.5)) +
-  theme(axis.text.x = element_text(size = 12),
+  theme(axis.text.x = element_text(size = 13),
         axis.text.y = element_text(size = 12.5)) +
   coord_flip()
 
-ggsave("optimal_portfolio_A_plot.png", plot = p1, width = 10, height = 6, dpi = 300, bg = "white")
+ggsave("optimal_portfolio_B_plot.png", plot = p1, width = 10, height = 6, dpi = 300, bg = "white")
                
 # lollipop plot 2 
 p2 <- optimal_portfolio_2_23 %>% 
@@ -281,7 +281,7 @@ p2 <- optimal_portfolio_2_23 %>%
              y = budget_allocated)) +
   ggalt::geom_lollipop() +
   # labs(x = " ", y = "Budget Allocated (USD)") +
-  ggtitle("Portfolio B", subtitle = "Returns: 1,355,534\nVariance: 1.959021e+19") +
+  ggtitle("Portfolio A", subtitle = "Returns: 1,355,534\nVariance: 1.959021e+19") +
   theme(plot.title = element_text(hjust = 0.5)) +
   # scale_x_discrete(labels = function(x) toTitleCase(x)) + # Need to fix the names with two words still
   scale_y_continuous(labels = function(x) paste0('$',x / 1000000, "M")) +
@@ -293,10 +293,10 @@ p2 <- optimal_portfolio_2_23 %>%
   theme(plot.title = element_text(hjust = 0.5)) +
   theme(axis.title = element_text(size = 15)) +
   theme(plot.subtitle = element_text(hjust = 0.5)) +
-  theme(axis.text.x = element_text(size = 12),
+  theme(axis.text.x = element_text(size = 13),
         axis.text.y = element_text(size = 12.5)) +
   coord_flip()
-ggsave("optimal_portfolio_B_plot.png", plot = p2, width = 10, height = 6, dpi = 300, bg = "white")
+ggsave("optimal_portfolio_A_plot.png", plot = p2, width = 10, height = 6, dpi = 300, bg = "white")
 
 
 p3 <- p1+p2 & xlab(NULL) & ylab(NULL)
