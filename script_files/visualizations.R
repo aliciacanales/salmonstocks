@@ -46,7 +46,7 @@ ej_plot_23 <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest
                linetype = "solid",
                arrow = arrow(length = unit(0.3, "cm"))) +
   geom_text(x = 3.55539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
-  labs(x = 'ESU Variance', y = 'ESU Returns') +
+  labs(x = 'ESU Variance', y = 'ESU Abundance') +
   theme_minimal() +
   theme(axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
@@ -156,12 +156,12 @@ plot_23 <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest)) 
   geom_text(x = 4e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
   geom_text(x = 1.8e+19, y = 1450000, label = "Portfolio A", size = 3, check_overlap = T, color = 'black') +
   geom_text(x = 8.5e+19, y = 2200000, label = "Portfolio B", size = 3, check_overlap = T, color = 'black') +
-  labs(x = 'ESU Variance', y = 'ESU Returns') +
+  labs(x = 'ESU Variance', y = 'ESU Abundance') +
   theme(legend.position = "none") +
   theme_minimal() +
   theme(axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
-        axis.title = element_text(size = 15)) 
+        axis.title = element_text(size = 15))
 plot_23
 
 
@@ -184,7 +184,7 @@ plot_13 <- ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest)) 
                linetype = "solid",
                arrow = arrow(length = unit(0.3, "cm"))) +
   geom_text(x = 3e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
-  labs(x = 'ESU Variance', y = 'ESU Returns') +
+  labs(x = 'ESU Variance', y = 'ESU Abundance') +
   theme_minimal()+
   theme(axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
@@ -208,7 +208,7 @@ ej_plot_13 <- ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest
                linetype = "solid",
                arrow = arrow(length = unit(0.3, "cm"))) +
   geom_text(x = 3e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
-  labs(x = 'ESU Variance', y = 'ESU Returns') +
+  labs(x = 'ESU Variance', y = 'ESU Abundance') +
   theme_minimal() +
   theme(axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
