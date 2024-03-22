@@ -45,7 +45,7 @@ ej_plot_23 <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest
                color = "black",
                linetype = "solid",
                arrow = arrow(length = unit(0.3, "cm"))) +
-  geom_text(x = 3.95539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
+  geom_text(x = 3.55539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
   labs(x = 'ESU Variance', y = 'ESU Returns') +
   theme_minimal() +
   theme(axis.text.x = element_text(size = 15),
@@ -142,8 +142,8 @@ plot_23 <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest)) 
   geom_point(colour = 'gray', size = 2, alpha = .5) +
   geom_line(data = eff_front_23, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red', size = 1.2) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 1.5) +
-  # geom_point(data = optimial_port, aes(x = esu_var_invest, y = esu_returns_invest),color = "blue", size = 5, pch = 1, stroke = 1.5) +
-  # geom_point(data = optimial_port, aes(x = esu_var_invest, y = esu_returns_invest),color = "#3b3b3b", size = 1.5) +
+  geom_point(data = optimial_port, aes(x = esu_var_invest, y = esu_returns_invest),color = "blue", size = 5, pch = 1, stroke = 1.5) +
+  geom_point(data = optimial_port, aes(x = esu_var_invest, y = esu_returns_invest),color = "#3b3b3b", size = 1.5) +
   scale_y_continuous(labels = scales::comma) +
   scale_x_continuous(labels = c('', '5.0e+19', '1.0e+20', '1.5e+20', '2.0e+20')) +
   geom_segment(aes(x = 2e+19,
@@ -154,6 +154,8 @@ plot_23 <- ggplot(combined_23, aes(x = esu_var_invest, y = esu_returns_invest)) 
                linetype = "solid",
                arrow = arrow(length = unit(0.3, "cm"))) +
   geom_text(x = 4e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
+  geom_text(x = 1.8e+19, y = 1450000, label = "Portfolio A", size = 3, check_overlap = T, color = 'black') +
+  geom_text(x = 8.5e+19, y = 2200000, label = "Portfolio B", size = 3, check_overlap = T, color = 'black') +
   labs(x = 'ESU Variance', y = 'ESU Returns') +
   theme(legend.position = "none") +
   theme_minimal() +
@@ -205,7 +207,7 @@ ej_plot_13 <- ggplot(combined_13, aes(x = esu_var_invest, y = esu_returns_invest
                color = "black",
                linetype = "solid",
                arrow = arrow(length = unit(0.3, "cm"))) +
-  geom_text(x = 3.95539e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
+  geom_text(x = 3e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
   labs(x = 'ESU Variance', y = 'ESU Returns') +
   theme_minimal() +
   theme(axis.text.x = element_text(size = 15),
@@ -260,6 +262,9 @@ no_outliers_plot_3.5 <- ggplot(combined_3.5_temp, aes(x = esu_var_invest, y = es
 no_outliers_plot_3.5
 ggsave("no_outliers_plot_3.5.png", plot = no_outliers_plot_3.5, width = 10, height = 6, dpi = 300, bg = "white")
 
+x <- ej_portfolios_3.5 %>% 
+  filter(esu_returns_invest <= 189000 & esu_var_invest <= 1.99e+18)
+
 
 
 ej_plot_3.5<- ggplot(data = combined_3.5, aes(x = esu_var_invest, y = esu_returns_invest)) +
@@ -267,17 +272,17 @@ ej_plot_3.5<- ggplot(data = combined_3.5, aes(x = esu_var_invest, y = esu_return
   geom_point(data = ej_portfolios_3.5, aes(x = esu_var_invest, y = esu_returns_invest), color = 'green4', alpha = .5) +
   geom_line(data = eff_front_3.5_without_outliers, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red', size = 1.2) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
-  geom_segment(aes(x = 3e+18,
-                   y = 187118.2,
-                   xend = 2.1e+18,
-                   yend = 187118.2),
+  geom_segment(aes(x = 1.96e+18,
+                   y = 186950,
+                   xend = 1.956e+18,
+                   yend = 186950),
                color = "black",
                linetype = "solid",
                arrow = arrow(length = unit(0.3, "cm"))) +
-  geom_text(x = 4.4e+18, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
+  geom_text(x = 1.964e+18, y = 186950, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
   labs(x = 'ESU Variance', y = 'ESU Abundance') +
-  xlim(1.85e+18, 2.4e+18) + ## this can be changed
-  scale_y_continuous(limits = c(175000, 275000), labels = scales::comma) +
+  xlim(1.954e+18, 1.99e+18) + ## this can be changed
+  scale_y_continuous(limits = c(186500, 189000), labels = scales::comma) +
   theme_minimal() +
   theme(axis.text.x = element_text(size = 15),
         axis.text.y = element_text(size = 15),
