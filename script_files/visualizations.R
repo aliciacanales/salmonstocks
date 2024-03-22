@@ -231,10 +231,11 @@ outliers_plot_3.5 <- ggplot(combined_3.5, aes(x = esu_var_invest, y = esu_return
                arrow = arrow(length = unit(0.3, "cm"))) +
   geom_text(x = 0.84e+19, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
   labs(x = 'ESU Variance', y = 'ESU Abundance') +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 14))+
-  theme_minimal()
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title = element_text(size = 15))
+
 
 outliers_plot_3.5
 ggsave("outliers_plot_3.5.png", plot = outliers_plot_3.5, width = 10, height = 6, dpi = 300, bg = "white")
@@ -243,21 +244,21 @@ no_outliers_plot_3.5 <- ggplot(combined_3.5_temp, aes(x = esu_var_invest, y = es
   geom_point(colour = 'gray', size = 2, alpha = 1/10) +
   geom_line(data = eff_front_3.5_without_outliers, aes(x = esu_var_invest, y = esu_returns_invest), color = 'red', size = 1.2) +
   geom_point(data = baseline_point, aes(x, y), color = "black", size = 3) +
-  geom_segment(aes(x = 2.21e+18,
-                   y = 187118.2,
-                   xend = 2.001e+18,
-                   yend = 187118.2),
+  geom_segment(aes(x = 1.96e+18,
+                   y = 186950,
+                   xend = 1.956e+18,
+                   yend = 186950),
                color = "black",
                linetype = "solid",
                arrow = arrow(length = unit(0.3, "cm"))) +
-  geom_text(x = 2.4e+18, y = 187118.2, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
+  geom_text(x = 1.964e+18, y = 186950, label = "Baseline Portfolio", size = 5, check_overlap = T, color = 'black') +
   labs(x = 'ESU Variance', y = 'ESU Abundance') +
-  xlim(1.95e+18, 3.5e+18) +
-  scale_y_continuous(limits = c(150000, 430000), labels = scales::comma) +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 11),
-        axis.title = element_text(size = 14))+
-  theme_minimal()
+  xlim(1.954e+18, 1.99e+18) + ## this can be changed
+  scale_y_continuous(limits = c(186500, 189000), labels = scales::comma) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 15),
+        axis.title = element_text(size = 15))
 
 no_outliers_plot_3.5
 ggsave("no_outliers_plot_3.5.png", plot = no_outliers_plot_3.5, width = 10, height = 6, dpi = 300, bg = "white")
